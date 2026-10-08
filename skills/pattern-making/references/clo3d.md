@@ -1,0 +1,68 @@
+# CLO3D
+
+This skill is made to work with **clo3d-mcp-extended**, which provides the plug-in to load in CLO3D and an
+MCP server of 170 tools: https://github.com/adriendelmas/clo3d-mcp-extended
+
+The skill computes the pattern (measurements, blocks, transformations, grading). clo3d-mcp-extended builds
+it in CLO3D (pieces, seams, fabrics, placement on the avatar, simulation, images). The skill works on its
+own for pattern making and the SVG and DXF exports. For CLO3D, it needs the clo3d-mcp-extended plug-in.
+
+## Setup
+
+1. Install clo3d-mcp-extended and register its MCP server in the agent (see its README).
+2. In CLO3D: Script menu, Script Editor, open `plugin/clo3d_mcp_plugin.py` from clo3d-mcp-extended, Run.
+   Once per session. CLO3D stays usable while the plug-in listens.
+
+## Three ways to send a pattern
+
+1. **Standalone script, no plug-in**: the `block` or `piece` command writes `clo3d_<size>.py`. In CLO3D,
+   open it in the Script Editor and click Run. Works with any agent.
+2. **Direct send to the plug-in, no MCP server**: `python scripts/pattern.py clo3d folder/clo3d_38.json`
+   creates and names the pieces. The exchange folder is changed with `--dir` or `CLO3D_MCP_DIR`.
+3. **MCP tools**: the agent drives CLO3D directly, which allows going as far as the assembled garment.
+
+## Complete garment with the MCP tools
+
+Absolute rule: before placing anything, read the real position and bounds of the piece
+(`get_pattern_details`, `get_bounding_box`), and capture the view (`export_snapshot_2d`,
+`export_view_image`) before and after. The user may have moved pieces by hand.
+
+1. **Pieces**: `create_pattern` with the points of the `clo3d_<size>.json` file (millimetres, y upwards,
+   `[x, y, type]`). Type 3 points are Bezier controls: a curved edge becomes one exact line in CLO3D.
+   Lines are numbered in point order, from 0. The `edges` list of the file names each line.
+2. **Check the lines**: `get_line_lengths` must give back the lengths of the pattern edges.
+3. **Seams**: `sew_lines` between edges that join. If a seam crosses itself, invert `direction_b`.
+4. **Darts**: draw them as internal lines (`create_internal_shape`), or sew the two legs together.
+5. **Placement**: `get_arrangement_list`, then `arrange_pattern` for each piece. This needs an avatar that
+   has arrangement points, such as those of CLO3D's library.
+6. **Fabric and simulation**: `set_pattern_fabric`, `set_fabric_material`, `simulate`, then
+   `set_fit_maps` and `export_view_image` to judge balance and tension.
+
+## Logos: the sewn patch
+
+Placing a logo directly is approximate and refused on pieces created by script. Reliable method:
+
+1. `duplicate_fabric` from an existing fabric, then `set_fabric_maps` with the logo as `base_color`.
+2. Create the patch piece in the intended shape, and give it this fabric (`set_pattern_fabric`).
+3. Draw on the garment a closed internal shape of the same shape, at the exact intended position
+   (`create_internal_shape`, same frame as the piece outline).
+4. Sew each edge of the patch onto the matching line of the shape: `sew_lines` with `child_b`.
+
+## Notches, buttons, buttonholes
+
+The API does not create them directly. The pieces JSON export (`export_pattern_json`) holds them:
+
+- button (`ButtonHeadList`) and buttonhole (`ButtonHoleList`): `{"fOffSetX", "fOffSetY", "fAngle"}`;
+- notch (`NotchList`): `{"ShapeID": piece ID, "StartPosition": outline point, "EndPosition": piece
+  center, "fAngle": 0, "IsCCW": true, "fWidth": 0, "fLength": 0, "uiNotchType": 4}`.
+
+Coordinates are those of the 2D window, like the piece points. `import_pattern_json` **replaces the whole
+scene**: build the complete garment in the JSON (pieces, seams, notches, buttons), import it once, then
+place the patches. Have the project saved first.
+
+## Known limits (CLO3D 2025.2)
+
+- Seam allowances, pleats and zips placed on a seam: missing from the API, to be done in CLO3D.
+- CLO3D's option objects are not exposed to Python: no opening a project without a dialog, no DXF import
+  with options.
+- A placed logo can be neither moved nor deleted through the API; deleting the piece deletes its logos.
