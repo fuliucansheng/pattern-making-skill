@@ -28,7 +28,61 @@ glove, a gored skirt is not a circle skirt. Do this analysis every time, write i
    which edge), folds, grain, finishes (hems, topstitching, elastic), closures, materials, estimated
    dimensions with what they were estimated from, and the confidence of each conclusion.
 
-## Catalogue: gloves
+## Catalogues
+
+The protocol applies to every garment and accessory. The tables below list, by family, the variants that
+change the pattern and what tells them apart on a photo. When a garment is not listed, build the same
+kind of table for it before drafting.
+
+### Skirts
+
+| Part | Variants | How to tell them apart |
+|---|---|---|
+| Body | Straight with darts, A-line, gored (4, 6, 8 or more panels), half or full circle, wrap, tiered, pleated | Count the vertical seams around the skirt. Darts stop short; panel seams run to the hem. A circle skirt flutes evenly all round with no darts; a gored skirt flutes from each seam |
+| Waist | Waistband (straight or contoured), facing, yoke, elastic | A band shows a seam line below the waist edge; a facing shows nothing outside but topstitching or a clean edge |
+| Closure | Invisible zip (seam only), lapped zip (visible flap), buttons, wrap tie | Look at center back and the sides |
+| Hem | Turned and topstitched, blind, rolled, raw | Row of stitches parallel to the hem, or none |
+
+### Trousers
+
+| Part | Variants | How to tell them apart |
+|---|---|---|
+| Legs | Straight, tapered, wide, flared; side seam or no side seam | Follow the outside of the leg for a seam line |
+| Front | Flat front, pleats, darts | Folds starting at the waistband |
+| Rise and waist | High, mid, low; waistband, yoke at the back (jeans), elastic | Where the waistband sits on the body in worn photos |
+| Pockets | Slant, on-seam, welt, patch, jeans scoop with coin pocket | Opening shape and topstitching |
+| Fly | Zip fly with visible J-stitch, button fly, side zip | Curved topstitching at center front |
+
+### Tops, shirts, dresses
+
+| Part | Variants | How to tell them apart |
+|---|---|---|
+| Shaping | Darts (bust, waist, shoulder), princess lines (from shoulder or armhole), side seams only (knits, boxy) | Darts end in a point; princess seams run the full length through the bust point |
+| Sleeve | Set-in, dropped shoulder, raglan, kimono or dolman, cap | Armhole seam at the shoulder point (set-in), below it (dropped), diagonal neck to underarm (raglan), none (kimono) |
+| Neckline and collar | Facing, binding, rib band, mock neck, stand, shirt collar with stand, flat collar, notched lapel | A stand shows a seam between collar and stand; a flat collar lies on the shoulders |
+| Front | Plain, placket (concealed or visible), button extension, wrap | Count the rows of topstitching on the front edge |
+| Back | Plain, yoke, center back seam, box pleat | Horizontal seam across the shoulders (yoke) |
+| Cuffs and hems | Cuff with placket, rib, turned hem, curved shirt-tail hem | Shape of the hem on the side view |
+
+### Jackets and coats
+
+| Part | Variants | How to tell them apart |
+|---|---|---|
+| Body | Side panels, princess lines, back seam, side seams | Count the vertical seams on front, side and back views |
+| Sleeve | One-piece, two-piece (seams at the front and back of the arm), raglan | A two-piece sleeve shows a seam on the back of the arm towards the elbow |
+| Collar | Notched lapel, shawl, stand, hood | The notch where collar meets lapel; a shawl collar has no notch |
+| Closure | Single or double breasted, zip, toggles, hidden placket | Button rows and overlap width |
+| Inside | Lined, half lined, unlined (bound seams) | Visible at the opening on flat views |
+
+### Knits
+
+| Part | Variants | How to tell them apart |
+|---|---|---|
+| Seams | Side seams, raglan, tubular (no side seam) | Seam lines on the sides or none |
+| Bands | Rib at neck, cuffs, hem; self-fabric band; turned hem with twin needle | Ribbed texture, or two parallel rows of stitches |
+| Fit | Negative ease (stretched on the body), zero, loose | Worn photos: the knit stretches, the rib opens |
+
+### Gloves
 
 | Part | Variants | How to tell them apart |
 |---|---|---|
@@ -42,15 +96,6 @@ glove, a gored skirt is not a circle skirt. Do this analysis every time, write i
 
 Glove fit: the hand part is tight, with zero or negative ease in leather. The thumb hole and the thumb
 are drafted from the hand: thumb base round, thumb length, angle of the thumb towards the fingers.
-
-## Catalogue: other garments
-
-- **Skirts**: straight with darts, A-line, gored (count the panels), half or full circle (the grain
-  turns around the waist; a full circle has the bias at the sides), wrap, yoke.
-- **Tops and shirts**: set-in, raglan (diagonal seam from neck to underarm) or kimono sleeve (no
-  armhole seam); yoke; plackets; collar stand or no stand; cuffs; princess lines (curved seam through
-  the bust point) or darts.
-- **Knits**: few seams, no darts, rib bands at the neck, cuffs and hem.
 
 ## Example: long leather gloves
 
