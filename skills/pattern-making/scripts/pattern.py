@@ -1286,6 +1286,92 @@ def crossing_check(piece):
     return None
 
 
+MIN_NECK_CM, MIN_SIDE_AREA = 4.0, 40.0     # narrowest passage allowed between two wide parts of a piece
+WITHIN_TOL_CM = 0.6                        # a facing may pass its piece by the turn of cloth only
+
+
+def resample(pts, step=1.0):
+    """Closed polyline resampled every `step` cm."""
+    out, carry = [], 0.0
+    for a, b in zip(pts, pts[1:] + pts[:1]):
+        l = dist(a, b)
+        t = carry
+        while t < l:
+            out.append((a[0] + (b[0] - a[0]) * t / l, a[1] + (b[1] - a[1]) * t / l))
+            t += step
+        carry = t - l
+    return out
+
+
+def inside_polygon(q, poly):
+    c = False
+    for a, b in zip(poly, poly[1:] + poly[:1]):
+        if (a[1] > q[1]) != (b[1] > q[1]) and q[0] < (b[0] - a[0]) * (q[1] - a[1]) / (b[1] - a[1]) + a[0]:
+            c = not c
+    return c
+
+
+def seg_dist(q, a, b):
+    dx, dy = b[0] - a[0], b[1] - a[1]
+    l2 = dx * dx + dy * dy
+    t = 0.0 if l2 == 0 else max(0.0, min(1.0, ((q[0] - a[0]) * dx + (q[1] - a[1]) * dy) / l2))
+    return dist(q, (a[0] + dx * t, a[1] + dy * t))
+
+
+def neck_check(piece):
+    """A piece pinched between two wide parts (a lining strip left between a facing and a seam) cannot be sewn
+    or worn. Flags any chord narrower than MIN_NECK_CM that splits the piece into two parts both larger than
+    MIN_SIDE_AREA. Narrow strips (bindings, flies, fourchettes) and narrow protrusions (fingers) pass."""
+    pts = resample(outline(piece, 16))
+    n = len(pts)
+    if n < 8:
+        return None
+    arc = [i * 1.0 for i in range(n)]
+    per = float(n)
+    worst = None
+    for i in range(n):
+        for j in range(i + 2, n):
+            d = dist(pts[i], pts[j])
+            if d >= MIN_NECK_CM or (worst is not None and d >= worst):
+                continue
+            a1 = arc[j] - arc[i]
+            if min(a1, per - a1) < 3 * max(d, 1.0):
+                continue
+            mid = ((pts[i][0] + pts[j][0]) / 2, (pts[i][1] + pts[j][1]) / 2)
+            if not inside_polygon(mid, pts):
+                continue
+            if min(abs(area(pts[i:j + 1])), abs(area(pts[j:] + pts[:i + 1]))) > MIN_SIDE_AREA:
+                worst = d
+    if worst is None:
+        return None
+    return check(f"{piece['name']}: narrowest passage between two wide parts (cm)", worst, MIN_NECK_CM,
+                 round(MIN_NECK_CM - worst - 0.01, 2))
+
+
+def within_checks(pieces):
+    """Pieces declaring "within": "<piece>" (facings, linings, interfacings) must lie inside that piece, up to
+    the turn of cloth."""
+    by = {p["name"]: p for p in pieces}
+    out = []
+    for p in pieces:
+        w = p.get("within")
+        if not w:
+            continue
+        suffix = p["name"][-2:] if p["name"][-2:] in (" L", " R") else ""
+        parent = by.get(w + suffix) or by.get(w)
+        if parent is None:
+            out.append(check(f"{p['name']}: piece '{w}' it should lie within is missing", 1, 0, 0))
+            continue
+        poly = outline(parent, 24)
+        segs = list(zip(poly, poly[1:] + poly[:1]))
+        worst = 0.0
+        for q in resample(outline(p, 24)):
+            if not inside_polygon(q, poly):
+                worst = max(worst, min(seg_dist(q, a, b) for a, b in segs))
+        out.append(check(f"{p['name']}: lies within {parent['name']} (cm outside)", worst, 0, WITHIN_TOL_CM))
+    return out
+
+
 def expand_mirrors(pieces, seams):
     """Pieces with "mirror": true become "<name> L" and its mirror "<name> R"; seams naming "{side}" are
     written once per side."""
@@ -1348,9 +1434,10 @@ def export(sets, out, title, allowance=None):
         checks = r.setdefault("checks", [])
         for p in r["pieces"]:
             checks += fold_checks(p)
-            c = crossing_check(p)
-            if c:
-                checks.append(c)
+            for c in (crossing_check(p), neck_check(p)):
+                if c:
+                    checks.append(c)
+        checks += within_checks(r["pieces"])
         if r.get("seams"):
             rows = seam_table(cloj, r["seams"])
             write_seam_table(rows, os.path.join(out, f"seams_{sz}.md"))
@@ -1815,6 +1902,18 @@ def test():
         assert any("right angle at the fold" in k for k in ck), ck
         fails = next(c for k, c in ck.items() if k.startswith("Seams:"))
         assert fails["value"] == 2, fails             # side seams 30.07 vs 30.59 cm: flagged on both sides
+    # pinched pieces and pieces that pass the piece they belong to
+    def box(nm, x0, x1, y0, y1, **kw):
+        return dict({"name": nm, "outline": [{"p": [x0, y0]}, {"p": [x1, y0]}, {"p": [x1, y1]}, {"p": [x0, y1]}]}, **kw)
+    pinched = {"name": "Lining", "outline": [{"p": [0, 0]}, {"p": [12, 0]}, {"p": [12, 15]}, {"p": [3, 30]},
+                                             {"p": [12, 45]}, {"p": [12, 60]}, {"p": [0, 60]}]}
+    assert neck_check(pinched) and neck_check(pinched)["value"] < MIN_NECK_CM, "pinched lining not flagged"
+    assert neck_check(box("Fly", 0, 4.5, 0, 60)) is None, "a narrow strip is not a pinch"
+    assert all(neck_check(p) is None for p in g["pieces"]), "glove fingers are protrusions, not pinches"
+    wc = {c["label"]: c for c in within_checks([box("Front", -8, 15, 0, 100), box("Facing", -8, 5, 0, 100, within="Front"),
+                                                 box("Wide facing", -8, 20, 0, 100, within="Front")])}
+    assert wc["Facing: lies within Front (cm outside)"]["value"] == 0
+    assert wc["Wide facing: lies within Front (cm outside)"]["value"] > WITHIN_TOL_CM
     gr = tr_["grain"]
     ys_ = [n["p"][1] for n in tr_["outline"]]
     assert all(min(ys_) <= g[1] <= max(ys_) for g in gr), ("grain line outside the trank", gr)
