@@ -833,9 +833,9 @@ def block_glove(h, stretch_ease=2.0):
     slit_target = hl["h_TR"] * ease
 
     # thumb template (unit = thumb height, x from the fold axis, y down from the top of the lobes)
-    T = {"C": (0, 0.15), "LL": (-0.14, 0), "a": (-0.29, 0.20), "N1": (-0.32, 0.39), "N2": (-0.38, 0.58),
+    T = {"C": (0, 0.15), "LL": (-0.15, 0), "a": (-0.29, 0.20), "N1": (-0.32, 0.39), "N2": (-0.38, 0.58),
          "b": (-0.30, 0.85), "B": (0, 1.0), "c": (0.27, 0.85), "RM": (0.34, 0.48), "Ps": (0.35, 0.39),
-         "d": (0.30, 0.15), "RL": (0.16, 0)}
+         "d": (0.30, 0.15), "RL": (0.15, 0)}
     order = ["C", "LL", "a", "N1", "N2", "b", "B", "c", "RM", "Ps", "d", "RL", "C"]
     pts_ = [T[k] for k in order]
 
@@ -872,7 +872,8 @@ def block_glove(h, stretch_ease=2.0):
         run += L
         nodes_i[name] = at_len(run)
     nodes_i["t_Ps"] = knot["Ps"]
-    nodes_i["t_Ps2"] = at_len(cumD[knot["Ps"]] + 1.0)    # upper lip of the thumb slit, 1 mm further
+    # upper lip of the thumb slit: placed so both sides of the tip seam have the same length
+    nodes_i["t_Ps2"] = max(knot["Ps"] + 1, at_len(cumD[knot["RL"]] - (cumD[knot["N1"]] - cumD[knot["LL"]])))
     nodes_i["t_RL"] = knot["RL"]
 
     def tangent(i):
@@ -899,9 +900,14 @@ def block_glove(h, stretch_ease=2.0):
     # thumb slit: from the lower lip at Ps inward to the dot, back to the upper lip
     Ps, Ps2 = D[nodes_i["t_Ps"]], D[nodes_i["t_Ps2"]]
     dtpl = (0.19 * ksc, -0.54 * ksc)                     # dot of the template
-    vdx, vdy = dtpl[0] - Ps[0], dtpl[1] - Ps[1]
-    lsl = math.hypot(vdx, vdy)
-    Dt = (Ps[0] + vdx / lsl * slit_target, Ps[1] + vdy / lsl * slit_target)
+    # end of the thumb slit: both lips match the trank slit lips (circles round Ps and Ps2), on the dot's side
+    r1, r2 = slit_target, hl["h_D"] * ease
+    dd = dist(Ps, Ps2)
+    a_ = (r1 ** 2 - r2 ** 2 + dd ** 2) / (2 * dd)
+    hh = math.sqrt(max(r1 ** 2 - a_ ** 2, 0.0))
+    ux, uy = (Ps2[0] - Ps[0]) / dd, (Ps2[1] - Ps[1]) / dd
+    cands = [(Ps[0] + ux * a_ - uy * hh * sg, Ps[1] + uy * a_ + ux * hh * sg) for sg in (1, -1)]
+    Dt = min(cands, key=lambda q: dist(q, dtpl))
     th_o.append({"name": "t_Ps", "p": list(Ps)})
     th_o.append({"name": "t_D", "p": list(Dt)})
     th_o.append({"name": "t_Ps2", "p": list(Ps2), "c": fit_seg(nodes_i["t_Ps2"], nodes_i["t_RL"])})
@@ -943,7 +949,8 @@ def block_glove(h, stretch_ease=2.0):
         seams.append([f"Fourchette {a_} ({a_}{b_})", "base_b", "base_p", f"Fourchette {b_} ({a_}{b_})", "base_b", "base_p"])
     seams.append(["Trank", "b_I_t1", "C0", "Trank", "p_I_t0", "C0"])          # index outer seam
     for f in "IMRL":
-        seams.append(["Trank", f"b_{f}_t0", f"b_{f}_t1", "Trank", f"p_{f}_t1", f"p_{f}_t0"])
+        seams.append(["Trank", f"b_{f}_t0", f"b_{f}_t1", "Trank", f"p_{f}_t1", f"p_{f}_t0",
+                      {"ease": back_w[f] / palm_w[f] - 1, "why": "back finger wider than the palm (W/2 + 4 / W/2 - 4)"}])
     seams.append(["Trank", "side_b", "b_L_t0", "Trank", "side_p", "p_L_t1"])   # little finger outer side
     seams.append(["Trank", "cuff_b", "side_b", "Trank", "cuff_p", "side_p"])   # side seam
     # CLO3D opening of the hole: slit from the nearest outline node (see slit_holes), sewn back together
@@ -951,13 +958,13 @@ def block_glove(h, stretch_ease=2.0):
     seams.append(["Trank", near[1], near[2], "Trank", near[1] + "~", near[2] + "~"])
     seams += [["Thumb", "t_C", "t_LL", "Thumb", "t_C", "t_RL"],          # tip: the two lobes sewn together
               ["Thumb", "t_LL", "t_N1", "Thumb", "t_RL", "t_Ps2"],
-              ["Thumb", "t_N1", "t_Nv", "Trank", "h_TR2", "h_V"],          # between the notches: the flap edges
-              ["Thumb", "t_Nv", "t_N2", "Trank", "h_V", "h_TL"],
-              ["Thumb", "t_N2", "t_B", "Trank", "h_TL", "h_B"],            # round the hole, notch B to notch B
-              ["Thumb", "t_B", "t_RM", "Trank", "h_B", "h_RM"],
-              ["Thumb", "t_RM", "t_Ps", "Trank", "h_RM", "h_TR"],
-              ["Thumb", "t_Ps", "t_D", "Trank", "h_TR", "h_D"],            # thumb slit takes the flap
-              ["Thumb", "t_D", "t_Ps2", "Trank", "h_D", "h_TR2"]]
+              ["Thumb", "t_N1", "t_Nv", "Trank", "h_TR2", "h_V", {"ease": ease - 1, "why": "thumb eased into the hole"}],          # between the notches: the flap edges
+              ["Thumb", "t_Nv", "t_N2", "Trank", "h_V", "h_TL", {"ease": ease - 1, "why": "thumb eased into the hole"}],
+              ["Thumb", "t_N2", "t_B", "Trank", "h_TL", "h_B", {"ease": ease - 1, "why": "thumb eased into the hole"}],            # round the hole, notch B to notch B
+              ["Thumb", "t_B", "t_RM", "Trank", "h_B", "h_RM", {"ease": ease - 1, "why": "thumb eased into the hole"}],
+              ["Thumb", "t_RM", "t_Ps", "Trank", "h_RM", "h_TR", {"ease": ease - 1, "why": "thumb eased into the hole"}],
+              ["Thumb", "t_Ps", "t_D", "Trank", "h_TR", "h_D", {"ease": ease - 1, "why": "thumb eased into the hole"}],            # thumb slit takes the flap
+              ["Thumb", "t_D", "t_Ps2", "Trank", "h_D", "h_TR2", {"ease": ease - 1, "why": "thumb eased into the hole"}]]
 
     # ---- to cm, y down (skill axes), trank origin at the wrist line
     def conv(nodes, flip=True):
@@ -1194,9 +1201,109 @@ def write_clo3d(pieces, offs, path, size, seams=None):
                               "edges": [{"line": i, "from": n.get("name", ""), "length_mm": round(length(edge(q, i)) * 10, 1)}
                                         for i, n in enumerate(q["outline"])]})
     if seams:
-        out["seams"] = seams                 # [piece A, node a1, node a2, piece B, node b1, node b2]: a1 to b1
+        out["seams"] = seams                 # [piece A, a1, a2, piece B, b1, b2, {"ease": r, "why": ...}]: a1 to b1
     with open(path, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=1)
+    return out
+
+
+# ------------------------------------------------------------------ universal validation
+# Applied to every export, whatever the garment. Seams follow the law of reciprocal lengths: two edges sewn
+# together have the same length within 1 mm, unless an ease is declared on the seam with its reason
+# (e.g. sleeve cap ease, back finger tips wider than the palm). Pieces cut on the fold meet the fold at a
+# right angle. Outlines never cross themselves.
+
+SEAM_TOL_MM = 1.0
+
+
+def seam_ease(s_):
+    extra = s_[6] if len(s_) > 6 and isinstance(s_[6], dict) else {}
+    return float(extra.get("ease", 0.0)), extra.get("why", "")
+
+
+def seam_table(cloj, seams):
+    """Rows (piece A, edge A, mm, piece B, edge B, mm, ease, why, ok) for every seam, read on the pieces as
+    sent to CLO3D (unfolded, holes opened)."""
+    pcs = {p["name"]: p for p in cloj["pieces"]}
+    rows = []
+    for s_ in seams or []:
+        if s_[0] not in pcs or s_[3] not in pcs:
+            rows.append((s_[0], f"{s_[1]}-{s_[2]}", None, s_[3], f"{s_[4]}-{s_[5]}", None, 0, "piece missing", False))
+            continue
+        try:
+            (la, _), (lb, _) = _clo_edge(pcs[s_[0]], s_[1], s_[2]), _clo_edge(pcs[s_[3]], s_[4], s_[5])
+        except SystemExit as err:
+            rows.append((s_[0], f"{s_[1]}-{s_[2]}", None, s_[3], f"{s_[4]}-{s_[5]}", None, 0, str(err), False))
+            continue
+        a_mm, b_mm = pcs[s_[0]]["edges"][la]["length_mm"], pcs[s_[3]]["edges"][lb]["length_mm"]
+        ease, why = seam_ease(s_)
+        ok = abs(a_mm - b_mm * (1 + ease)) <= SEAM_TOL_MM
+        rows.append((s_[0], f"{s_[1]}-{s_[2]}", a_mm, s_[3], f"{s_[4]}-{s_[5]}", b_mm, ease, why, ok))
+    return rows
+
+
+def write_seam_table(rows, path):
+    lines = ["| Piece A | Edge A | mm | Piece B | Edge B | mm | Ease | Why | Status |", "|---|---|---|---|---|---|---|---|---|"]
+    for r in rows:
+        ea = "" if not r[6] else f"{r[6] * 100:+.1f} %"
+        lines.append(f"| {r[0]} | {r[1]} | {r[2]} | {r[3]} | {r[4]} | {r[5]} | {ea} | {r[7]} | {'OK' if r[8] else '!!'} |")
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
+
+
+def _tangent_end(piece, i, at_start):
+    pts = edge(piece, i, 64)
+    a, b = (pts[0], pts[1]) if at_start else (pts[-2], pts[-1])
+    l = dist(a, b) or 1
+    return ((b[0] - a[0]) / l, (b[1] - a[1]) / l)
+
+
+def fold_checks(piece):
+    """Right angle where the outline meets a fold edge (the unfolded piece has no point or dip there)."""
+    out, n = [], len(piece["outline"])
+    for k in piece.get("fold", []):
+        f = _tangent_end(piece, k, True)
+        for node, t in ((k, _tangent_end(piece, (k - 1) % n, False)), ((k + 1) % n, _tangent_end(piece, (k + 1) % n, True))):
+            ang = math.degrees(math.acos(min(1.0, abs(f[0] * t[0] + f[1] * t[1]))))
+            name = piece["outline"][node].get("name", node)
+            out.append(check(f"{piece['name']}: right angle at the fold, {name} (deg)", ang, 90.0, 2.0))
+    return out
+
+
+def crossing_check(piece):
+    pts = outline(piece, 10)
+    segs = list(zip(pts, pts[1:] + pts[:1]))
+    for i in range(len(segs)):
+        for j in range(i + 2, len(segs) - (1 if i == 0 else 0)):
+            (a, b), (c, d) = segs[i], segs[j]
+            den = (b[0] - a[0]) * (d[1] - c[1]) - (b[1] - a[1]) * (d[0] - c[0])
+            if abs(den) < 1e-12:
+                continue
+            t = ((c[0] - a[0]) * (d[1] - c[1]) - (c[1] - a[1]) * (d[0] - c[0])) / den
+            u = ((c[0] - a[0]) * (b[1] - a[1]) - (c[1] - a[1]) * (b[0] - a[0])) / den
+            if 0 < t < 1 and 0 < u < 1:
+                return check(f"{piece['name']}: outline crosses itself (count)", 1, 0, 0)
+    return None
+
+
+def expand_mirrors(pieces, seams):
+    """Pieces with "mirror": true become "<name> L" and its mirror "<name> R"; seams naming "{side}" are
+    written once per side."""
+    out = []
+    for p in pieces:
+        if p.get("mirror"):
+            base = {k: v for k, v in p.items() if k != "mirror"}
+            out += [dict(base, name=p["name"] + " L"), mirror_piece(base, p["name"] + " R")]
+        else:
+            out.append(p)
+    exp = []
+    for s_ in seams or []:
+        if any("{side}" in str(x) for x in s_[:6]):
+            for side in ("L", "R"):
+                exp.append([x.replace("{side}", side) if isinstance(x, str) else x for x in s_])
+        else:
+            exp.append(s_)
+    return out, exp
 
 
 def write_clo_script(json_path, py_path):
@@ -1227,6 +1334,8 @@ def rounded(o):
 
 def export(sets, out, title, allowance=None):
     os.makedirs(out, exist_ok=True)
+    for _, r in sets:
+        r["pieces"], r["seams"] = expand_mirrors(r["pieces"], r.get("seams"))
     if allowance is not None:
         for _, r in sets:
             for p in r["pieces"]:
@@ -1235,7 +1344,22 @@ def export(sets, out, title, allowance=None):
     offs, _, _ = layout([r["pieces"] for _, r in sets])
     for sz, r in sets:
         write_dxf(r["pieces"], offs, os.path.join(out, f"pattern_{sz}.dxf"), sz)
-        write_clo3d(r["pieces"], offs, os.path.join(out, f"clo3d_{sz}.json"), sz, r.get("seams"))
+        cloj = write_clo3d(r["pieces"], offs, os.path.join(out, f"clo3d_{sz}.json"), sz, r.get("seams"))
+        checks = r.setdefault("checks", [])
+        for p in r["pieces"]:
+            checks += fold_checks(p)
+            c = crossing_check(p)
+            if c:
+                checks.append(c)
+        if r.get("seams"):
+            rows = seam_table(cloj, r["seams"])
+            write_seam_table(rows, os.path.join(out, f"seams_{sz}.md"))
+            bad = [x for x in rows if not x[8]]
+            checks.append(check(f"Seams: lengths match within {SEAM_TOL_MM:.0f} mm or declared ease, "
+                                f"{len(rows)} seams (failures)", len(bad), 0, 0))
+            for x in bad[:12]:
+                checks.append(check(f"  seam {x[0]} {x[1]} / {x[3]} {x[4]} (mm, {x[7] or 'no ease declared'})",
+                                    x[2] if x[2] is not None else -1, (x[5] or 0) * (1 + x[6]), SEAM_TOL_MM))
         write_clo_script(os.path.join(out, f"clo3d_{sz}.json"), os.path.join(out, f"clo3d_{sz}.py"))
         with open(os.path.join(out, f"pieces_{sz}.json"), "w", encoding="utf-8") as f:
             json.dump(rounded({"title": title, "size": sz, "pieces": r["pieces"]}), f, ensure_ascii=False, indent=1)
@@ -1246,8 +1370,11 @@ def report(sets):
     for sz, r in sets:
         print(f"\n== Size {sz}")
         for c in r["checks"]:
-            unit = "mm" if "(mm" in c["label"] or "mm)" in c["label"] else "cm"
-            label = c["label"].replace(" (mm)", "").replace(", mm)", ")")
+            lab = c["label"]
+            unit = ("mm" if "(mm" in lab or "mm)" in lab else "deg" if "(deg)" in lab
+                    else "" if "(failures)" in lab or "(count)" in lab else "cm")
+            label = (lab.replace(" (mm)", "").replace(", mm)", ")").replace(" (deg)", "")
+                     .replace(" (failures)", ", failures").replace(" (count)", ""))
             if c["expected"] is None:
                 print(f"   {label}: {c['value']} {unit}")
                 continue
@@ -1383,7 +1510,7 @@ def cmd_glove(args):
         right = [mirror_piece(p, "Glove R " + p["name"]) for p in left["pieces"]]
         for p in left["pieces"]:
             p["name"] = "Glove L " + p["name"]
-        seams = [[f"Glove {side} {a[0]}", a[1], a[2], f"Glove {side} {a[3]}", a[4], a[5]]
+        seams = [[f"Glove {side} {a[0]}", a[1], a[2], f"Glove {side} {a[3]}", a[4], a[5]] + list(a[6:])
                  for side in ("L", "R") for a in left["seams"]]
         sets.append((sz, {"pieces": left["pieces"] + right, "checks": left["checks"], "seams": seams}))
     export(sets, args.out, "glove", args.allowance)
@@ -1466,11 +1593,13 @@ def cmd_piece(args):
         if len(p.get("outline", [])) < 3 or not all(len(n.get("p", [])) == 2 for n in p["outline"]):
             raise SystemExit(f"Invalid piece: {p.get('name', '?')} (at least 3 nodes with \"p\": [x, y])")
     sz = str(data.get("size", "one"))
-    export([(sz, {"pieces": data["pieces"], "checks": []})], args.out, data.get("title", "pattern"), args.allowance)
-    for p in data["pieces"]:
+    sets = [(sz, {"pieces": data["pieces"], "checks": [], "seams": data.get("seams", [])})]
+    export(sets, args.out, data.get("title", "pattern"), args.allowance)
+    ok = report(sets)
+    for p in sets[0][1]["pieces"]:
         print(f"{p['name']}: " + ", ".join(f"edge {i} = {length(edge(p, i)):.2f} cm" for i in range(len(p["outline"]))))
     print(f"Files written to {os.path.abspath(args.out)}")
-    return 0
+    return 0 if ok else 2
 
 
 def test():
@@ -1555,13 +1684,25 @@ def test():
         with open(os.path.join(d, "g.json"), encoding="utf-8") as f:
             gj = json.load(f)
         pcs_ = {p["name"]: p for p in gj["pieces"]}
-        for s_ in gj["seams"]:
-            (la, _), (lb, _) = _clo_edge(pcs_[s_[0]], s_[1], s_[2]), _clo_edge(pcs_[s_[3]], s_[4], s_[5])
-            la_, lb_ = pcs_[s_[0]]["edges"][la]["length_mm"], pcs_[s_[3]]["edges"][lb]["length_mm"]
-            tip = s_[1].endswith("_t0") and s_[2].endswith("_t1")      # back tips are wider by design
-            eased = s_[0] == "Thumb" and s_[3] == "Trank"                # thumb edges carry 3 % ease
-            tol = 4.0 if tip else (max(1.5, 0.04 * lb_) if eased else 1.5)
-            assert abs(la_ - lb_) <= tol, (s_, la_, lb_)
+        bad = [r for r in seam_table(gj, gj["seams"]) if not r[8]]
+        assert not bad, bad                                              # reciprocal lengths, declared ease
+    # recipe: any garment as data (mirror pairs, seams per side, declared ease) is validated the same way
+    recipe = {"pieces": [
+        {"name": "Panel", "mirror": True, "outline": [{"name": "tl", "p": [0, 0]}, {"name": "tr", "p": [20, 0]},
+                                                       {"name": "br", "p": [22, 30]}, {"name": "bl", "p": [0, 30]}]},
+        {"name": "Front", "fold": [3], "outline": [{"name": "cw", "p": [0, 0]}, {"name": "sw", "p": [18, 0]},
+                                                    {"name": "sh", "p": [24, 30]}, {"name": "ch", "p": [0, 30]}]}],
+        "seams": [["Panel {side}", "tr", "br", "Front", "sw", "sh"], ["Panel L", "tl", "bl", "Panel R", "tl", "bl"]]}
+    with tempfile.TemporaryDirectory() as d:
+        sets_ = [("one", {"pieces": recipe["pieces"], "seams": recipe["seams"], "checks": []})]
+        export(sets_, d, "recipe")
+        names_ = [p["name"] for p in sets_[0][1]["pieces"]]
+        assert names_ == ["Panel L", "Panel R", "Front"], names_
+        assert len(sets_[0][1]["seams"]) == 3
+        ck = {c["label"]: c for c in sets_[0][1]["checks"]}
+        assert any("right angle at the fold" in k for k in ck), ck
+        fails = next(c for k, c in ck.items() if k.startswith("Seams:"))
+        assert fails["value"] == 2, fails             # side seams 30.07 vs 30.59 cm: flagged on both sides
     print("All tests pass.")
     return 0
 

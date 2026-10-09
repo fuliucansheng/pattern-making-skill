@@ -45,6 +45,43 @@ JSON format read by `python scripts/pattern.py piece file.json` and produced by 
   `t`, fraction of the edge length between 0 and 1.
 - **`grain`**: two points of the grain line arrow.
 - **`cut`**, **`size`**: texts printed on the pattern.
+- **`holes`**: closed inner cut-outs (thumb hole, design cut-outs), each `{"name": ..., "outline": [...]}`
+  with named nodes like the outline. SVG and DXF draw them; the CLO3D export opens each one to the nearest
+  outline node through a slit 1.5 mm wide, to be sewn back (`node` / `node~` pairs), because the API
+  cannot cut a hole.
+- **`mirror: true`**: the piece is cut as a left and right pair. The export writes `<name> L` and its mirror
+  `<name> R` (same node names, same winding).
+
+## Seams (any garment, as data)
+
+A file read by `piece` may carry a top-level `"seams"` list. Each seam pairs two edges by node names, first
+node to first node:
+
+```json
+"seams": [
+  ["Back", "side_waist", "hip", "Front", "side_waist", "hip"],
+  ["Sleeve {side}", "cap", "back_underarm", "Bodice back", "shoulder", "underarm",
+   {"ease": 0.05, "why": "sleeve cap ease, set-in sleeve in wool"}],
+  ["Collar", "c0", "c1", "Bodice back", "center_neck", "neck"]
+]
+```
+
+- `{side}` in a piece name writes the seam once for `L` and once for `R` (mirrored pieces).
+- **Law of reciprocal lengths**: two sewn edges are the same length within 1 mm. Any intended difference
+  (cap ease, gathers, easing a back onto a front) is declared as `ease` (ratio, edge A = edge B x (1 + ease))
+  with its reason in `why`. An undeclared difference is an error.
+- For inserted pieces (gussets, thumbs, collars, godets), name matching anchor points on both pieces (A, B,
+  C, D or descriptive names) and split edges at those anchors, so every seam is one edge to one edge.
+
+On every export the engine checks, for every garment:
+
+| Check | Rule | Output |
+|---|---|---|
+| Seam lengths | Within 1 mm, or the declared ease | `seams_<size>.md` table and a `!!` line per failure |
+| Fold | The outline meets each fold edge at 90 degrees (2 degrees tolerance), so the unfolded piece has no point or dip | report line per fold corner |
+| Outline | Never crosses itself | report line |
+
+`python scripts/pattern.py clo3d clo3d_<size>.json --assemble` then sews every seam in CLO3D.
 
 ## Tips
 

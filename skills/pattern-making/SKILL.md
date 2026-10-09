@@ -28,6 +28,26 @@ the calculations are done by `scripts/pattern.py` (Python 3.8 or newer, standard
 7. **Stay neutral on the method.** The engine's blocks are proportional and tied to no author. If the
    person follows a given method (Aldrich, Armstrong, Müller, Esmod, Bunka, other), use its values.
 
+## Construction laws (checked by the engine on every export)
+
+1. **Reciprocal lengths**: edges sewn together have the same length within 1 mm. Every intended difference
+   (cap ease, gathers, easing) is declared on the seam with its ratio and reason.
+2. **Right angles at the fold**: a half piece meets its fold at 90 degrees (neckline, waist, hem), so the
+   unfolded piece has no point or dip.
+3. **Volume needs shaping**: the body is not developable. Curvature is taken by darts, seams, ease or
+   stretch; joints with large movement get inserted pieces (gussets, set-in thumbs, crotch extensions).
+4. **Shapes come from real patterns**: complex pieces (thumbs, gussets, collars, sleeve heads) follow the
+   shapes of published patterns, scaled to the measurements, never an improvised outline.
+
+A pattern is finished when its report has no `!!` line and its seam table (`seams_<size>.md`) is all OK.
+
+## Any garment as data
+
+Garments the engine has no block for are written as a recipe: pieces with named nodes, Bezier curves, holes
+and mirror pairs, plus a seam list pairing edges by node names, with declared ease
+(`references/piece-format.md`). `python scripts/pattern.py piece recipe.json --out folder` validates it with
+the same laws, exports it, and `clo3d ... --assemble` sews it in CLO3D. No new code per garment.
+
 ## Knowledge map
 
 | Need | Sheet |
