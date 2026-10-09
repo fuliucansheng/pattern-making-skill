@@ -534,7 +534,7 @@ Formulas (net):
 4. Crown side is a frustum: slant s = sqrt(h^2 + (Rb - Rt)^2). Unfold the cone: outer radius Lout = s x Rb/(Rb - Rt), inner radius Lin = Lout - s,
    sector angle alpha = 360 x Rb / Lout degrees. Add the back seam allowance.
    Example, H = 570, Cb = 580, h = 80, theta = 8 degrees: Rb = 92.3, Ct = 580 - 70.6 = 509.4, Rt = 81.1, s = 80.8,
-   Lout = 672, Lin = 591, alpha = 49.4 degrees.
+   Lout = 663.3, Lin = 582.5, alpha = 50.1 degrees (recomputed; an earlier version gave 672 / 591 / 49.4).
    (A simple alternative is a straight band H + 10 long and 80 high, narrowed 15 mm per side at the top.)
 5. Brim width B 40 to 60 (droopy 65 to 70). Flat brim: ring with inner radius Rb, outer radius Rb + B. Drooping brim at angle delta below the horizontal:
    sector angle theta_b = 360 x cos(delta), inner radius ri = Cb/(2 pi cos(delta)), outer radius ro = ri + B. delta = 15 degrees gives 347.7 degrees; 25 degrees gives 326.3 degrees [T, derived].
@@ -727,7 +727,9 @@ CLO3D: set the grain at 45 degrees; mesh 5 mm.
 | Interlining | 1 | |
 
 1. Pre-tied butterfly: finished bow 120 x 60, cut 2 x (130 + 130), center band 20 x 40.
-2. Self-tie: a strip with ends 60 to 70 wide, narrowing to 25 at the neck, length 760 to 880.
+2. Self-tie: a strip with ends 60 to 70 wide, narrowing to 25 at the neck. Length about neck size + 400 to 450 for a fixed
+   size (760 to 880 fits necks of about 36 to 43 cm); an adjustable tie for necks of 36 to 48 cm needs about 950 to 1000
+   [T, retail listings; confirm on a toile].
 3. Adjustable neckband: 380 to 430 long for adults.
 4. Pinch the middle and wrap it with the knot cover; the folds are tacked.
 

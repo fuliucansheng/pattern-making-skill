@@ -1429,6 +1429,118 @@ def _clo_edge(piece, n1, n2):
     raise SystemExit(f"{piece['name']}: no edge {n1}-{n2}")
 
 
+# ------------------------------------------------------------------ knowledge base
+# references/kb/*.md: one entry per garment, piece or technique ("## Name {#id}", then bullet fields).
+# The technique sheets (references/techniques/*.md) are searched by their headings too.
+
+KB_DIRS = ("kb", "techniques")
+
+
+def _kb_root():
+    return os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "references")
+
+
+def _fold_text(t):
+    import unicodedata
+    return "".join(c for c in unicodedata.normalize("NFKD", t.lower()) if not unicodedata.combining(c))
+
+
+def kb_entries():
+    """List of entries: id, name, file, line, aliases, family, text."""
+    import re
+    out = []
+    for sub in KB_DIRS:
+        folder = os.path.join(_kb_root(), sub)
+        if not os.path.isdir(folder):
+            continue
+        for fn in sorted(os.listdir(folder)):
+            if not fn.endswith(".md") or fn in ("FORMAT.md", "INDEX.md"):
+                continue
+            path = os.path.join(folder, fn)
+            with open(path, encoding="utf-8") as f:
+                lines = f.read().split("\n")
+            cur = None
+            for i, line in enumerate(lines):
+                m = re.match(r"^(#{2,3})\s+(.*?)\s*(\{#([a-z0-9\-]+)\})?\s*$", line)
+                if m and not line.startswith("####"):
+                    if cur:
+                        out.append(cur)
+                    name, eid = m.group(2).strip(), m.group(4)
+                    if name.lower() == "sources":
+                        cur = None
+                        continue
+                    slug = re.sub(r"[^a-z0-9]+", "-", _fold_text(re.sub(r"^[A-Z]?[0-9.]+\s+", "", name))).strip("-")[:48]
+                    cur = {"id": eid or slug, "name": name, "file": f"{sub}/{fn}",
+                           "line": i + 1, "aliases": "", "family": "", "text": [], "kb": eid is not None}
+                    continue
+                if cur is not None:
+                    cur["text"].append(line)
+                    low = line.lower()
+                    if low.startswith("- **aliases**"):
+                        cur["aliases"] = line.split(":", 1)[-1].strip()
+                    elif low.startswith("- **family**"):
+                        cur["family"] = line.split(":", 1)[-1].strip()
+            if cur:
+                out.append(cur)
+    return out
+
+
+def kb_search(query, limit=15):
+    words = [_fold_text(w) for w in query.split() if w.strip()]
+    scored = []
+    for e in kb_entries():
+        head = _fold_text(f"{e['name']} {e['id']} {e['aliases']} {e['family']}")
+        body = _fold_text(" ".join(e["text"]))
+        score = 0
+        for w in words:
+            if w in head:
+                score += 5
+            elif w in body:
+                score += 1
+            else:
+                score -= 3
+        if score > 0:
+            scored.append((score + (1 if e["kb"] else 0), e))
+    scored.sort(key=lambda t: -t[0])
+    return [e for _, e in scored[:limit]]
+
+
+def cmd_kb(args):
+    if args.action == "search":
+        res = kb_search(" ".join(args.words))
+        if not res:
+            print("No entry found. Look up published patterns and books, then add an entry (references/kb/FORMAT.md).")
+            return 1
+        for e in res:
+            print(f"{e['id']:<34} {e['name'][:48]:<48} {e['file']}:{e['line']}")
+        return 0
+    if args.action == "show":
+        target = " ".join(args.words)
+        e = next((x for x in kb_entries() if x["id"] == target), None) or next(iter(kb_search(target, 1)), None)
+        if not e:
+            raise SystemExit(f"No entry: {target}")
+        print(f"## {e['name']}  ({e['file']}:{e['line']})")
+        print("\n".join(e["text"]).strip())
+        return 0
+    entries = [e for e in kb_entries() if e["kb"]]
+    by_file = {}
+    for e in entries:
+        by_file.setdefault(e["file"], []).append(e)
+    lines = ["# Knowledge base index", "", f"{len(entries)} entries. Search: `python scripts/pattern.py kb search <words>`;",
+             "full entry: `python scripts/pattern.py kb show <id>`. Format: `FORMAT.md`.", ""]
+    for fn, es in by_file.items():
+        lines += [f"## {fn}", ""]
+        lines += [f"- `{e['id']}`: {e['name']}" + (f" ({e['aliases'][:80]})" if e["aliases"] else "") for e in es]
+        lines.append("")
+    path = os.path.join(_kb_root(), "kb", "INDEX.md")
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+    ids = [e["id"] for e in entries]
+    dup = sorted({i for i in ids if ids.count(i) > 1})
+    print(f"{len(entries)} entries indexed in {path}" + (f"; duplicate ids: {', '.join(dup)}" if dup else ""))
+    return 0
+
+
 def cmd_clo3d(args):
     d = args.dir or os.environ.get("CLO3D_MCP_DIR") or os.path.join(
         os.environ.get("TEMP", tempfile.gettempdir()), "clo3d_mcp")
@@ -1757,8 +1869,13 @@ def main():
     p.add_argument("--fabric", type=int, help="fabric index for every piece")
     p.add_argument("--mesh", type=float, help="mesh size in mm for every piece (8 fitted knits, 4 to 6 gloves)")
     p.add_argument("--arrange", help="JSON file {piece name: point index or {\"point\": i, \"orientation\": deg}}")
+    p = sp.add_parser("kb", help="knowledge base: search <words>, show <id>, index")
+    p.add_argument("action", choices=("search", "show", "index"))
+    p.add_argument("words", nargs="*")
     sp.add_parser("test")
     args = ap.parse_args()
+    if args.cmd == "kb":
+        return cmd_kb(args)
     if args.cmd == "test":
         return test()
     if args.cmd == "clo3d":
