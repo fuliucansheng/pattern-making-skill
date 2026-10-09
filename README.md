@@ -25,13 +25,22 @@ in CLO3D's Script Editor. See [references/clo3d.md](skills/pattern-making/refere
 
 ## What it covers
 
-- **Blocks**: straight skirt, bodice with bust and waist darts, set-in sleeve fitted to the armhole,
-  trousers. Women's sizes 34 to 48, men's 44 to 58, children's ages 4 to 14, or personal measurements.
-- **Transformations**: dart closing and transfer, slash and spread, flare, curve smoothing. Methods for
-  style lines, collars, sleeves, pockets, closures and lining.
-- **Finishes**: seam allowances per edge, notches, grain lines, pieces cut on the fold.
-- **Grading**: several sizes redrafted from their measurements and nested in one SVG.
-- **Checks**: every draft reports seam matching, sleeve cap ease, finished waist. A `!!` line must be fixed.
+- **Analysis first**: from a photo, the agent identifies every seam, fold, piece and finish with evidence
+  and confidence before drafting; from a fashion sketch, it works out volumes, proportions and cutting,
+  including sculptural and unconventional shapes.
+- **Real pattern construction for every family**: skirts, trousers, bodices and dart manipulation,
+  dresses, shirts, sleeves, collars, tailoring and outerwear, knits, lingerie, swimwear, gloves, hats,
+  bags, and the sewing techniques behind them (seams, hems, facings, closures, pockets, gathers, elastic).
+- **Engine**: proportional blocks (skirt, bodice, sleeve, trousers), a leather glove block drafted like
+  real glove patterns (trank, Bolton thumb, fourchettes), dart pivot, slash and spread, curve smoothing,
+  pieces with holes, seam allowances, notches, grain lines, grading.
+- **Checks**: every draft reports seam matching, ease, finished measurements. A `!!` line must be fixed.
+- **CLO3D**: exact Bezier edges, seam lists, one-command assembly through the clo3d-mcp-extended plug-in,
+  sensible defaults (collision thickness 0, mesh size by fit), and hand-over to the user when a piece is
+  too complex to place automatically.
+
+Values that come from trade practice rather than a cited source are flagged in the technique sheets:
+validate on a toile.
 
 ## Install
 
@@ -73,8 +82,9 @@ Outputs, inputs in cm and files in mm:
 ```
 skills/pattern-making/
   SKILL.md              entry point read by the agent
-  references/           reference analysis, measurements, ease, blocks, transformations, finishes,
-                        piece format, CLO3D
+  references/           reference analysis, design from sketch, measurements, ease, blocks,
+                        transformations, finishes, piece format, CLO3D
+  references/techniques/ one sheet per garment family, accessories and sewing techniques
   scripts/pattern.py    engine and command line, standard library only
 .claude-plugin/         Claude Code plugin and marketplace manifests
 ```
