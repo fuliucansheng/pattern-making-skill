@@ -979,7 +979,7 @@ def block_glove(h, stretch_ease=2.0):
 
     trank = {"name": "Trank", "cut": "1x", "allowance": 0.15, "outline": conv(o),
              "holes": [{"name": "thumb_hole", "outline": conv(hole)}],
-             "grain": [[Wb / 20, -40 / 10], [Wb / 20, y_end / 10 + 4]]}
+             "grain": [[Wb / 20, -4.0], [Wb / 20, -(y_end + 40) / 10]]}   # y down: from the hand towards the cuff
     thumb_p = {"name": "Thumb", "cut": "1x", "allowance": 0.15, "outline": conv(th_o)}   # lobes up, fold on the axis
     arms = [dict(a, outline=conv(a["outline"], flip=False)) for a in arms]
     ref = area(outline({"outline": [{"p": [0, 0]}, {"p": [1, 0]}, {"p": [1, 1]}, {"p": [0, 1]}]}))
@@ -1703,6 +1703,9 @@ def test():
         assert any("right angle at the fold" in k for k in ck), ck
         fails = next(c for k, c in ck.items() if k.startswith("Seams:"))
         assert fails["value"] == 2, fails             # side seams 30.07 vs 30.59 cm: flagged on both sides
+    gr = tr_["grain"]
+    ys_ = [n["p"][1] for n in tr_["outline"]]
+    assert all(min(ys_) <= g[1] <= max(ys_) for g in gr), ("grain line outside the trank", gr)
     print("All tests pass.")
     return 0
 
