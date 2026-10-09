@@ -17,14 +17,18 @@ Universal pattern-making skill. The method is described in `references/`, the ca
 3. **Read the checks.** Each draft prints a report. A line marked `!!` must be fixed before going on:
    seams that do not match, wrong ease, wrong waist.
 4. **A block is a starting point.** Remind that it is validated on a toile before cutting the fabric.
-5. **Stay neutral on the method.** The script's formulas are proportional and independent of any author.
+5. **Analyse the reference before drafting.** From a photo or a drawing, find the construction first:
+   every seam, fold, piece, thumb or sleeve type, finish, with evidence and confidence
+   (`references/reference-analysis.md`). Never draft from the silhouette alone.
+6. **Stay neutral on the method.** The script's formulas are proportional and independent of any author.
    If the person follows a given method (Aldrich, Armstrong, Müller, Esmod, other), use its values by
    passing them through the measurements and ease file.
 
 ## Workflow
 
 1. **Understand the request**: garment, wearer (women, men, children), fabric (woven, knit, stretch),
-   intended fit.
+   intended fit. With a reference image, run the analysis protocol of `references/reference-analysis.md`
+   and write the construction sheet (pieces, seams, folds, finishes, confidence) before step 2.
 2. **Measurements**: `python scripts/pattern.py measurements --body women --size 38` prints every
    measurement used, standard or derived. For personal measurements, write a JSON file (see
    `references/measurements.md`) and pass it with `--measurements`.

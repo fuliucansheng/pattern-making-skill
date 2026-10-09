@@ -73,7 +73,8 @@ Outputs, inputs in cm and files in mm:
 ```
 skills/pattern-making/
   SKILL.md              entry point read by the agent
-  references/           measurements, ease, blocks, transformations, finishes, piece format, CLO3D
+  references/           reference analysis, measurements, ease, blocks, transformations, finishes,
+                        piece format, CLO3D
   scripts/pattern.py    engine and command line, standard library only
 .claude-plugin/         Claude Code plugin and marketplace manifests
 ```
