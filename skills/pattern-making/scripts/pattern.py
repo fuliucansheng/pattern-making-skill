@@ -1191,7 +1191,7 @@ def clo3d_points(piece, off):
     return pts
 
 
-def write_clo3d(pieces, offs, path, size, seams=None):
+def write_clo3d(pieces, offs, path, size, seams=None, holds=None):
     """Net outline (CLO3D adds its own allowances), fold pieces unfolded, y upwards, in mm.
     Each piece keeps its edge names: CLO3D line i is edge i of the `edges` list."""
     out = {"unit": "mm", "size": str(size), "pieces": []}
@@ -1202,6 +1202,10 @@ def write_clo3d(pieces, offs, path, size, seams=None):
                                         for i, n in enumerate(q["outline"])]})
     if seams:
         out["seams"] = seams                 # [piece A, a1, a2, piece B, b1, b2, {"ease": r, "why": ...}]: a1 to b1
+    if holds:                                # overlapping fronts: top edge sewn onto an internal line of the under piece
+        off_by = {p["name"]: o for p, o in zip(pieces, offs)}
+        out["holds"] = [dict(h, at={k: [round(v[0] * 10 + off_by[h["under"]][0], 2), round(-(v[1] * 10 + off_by[h["under"]][1]), 2)]
+                                    for k, v in h["at"].items()}) for h in holds]
     with open(path, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=1)
     return out
@@ -1322,7 +1326,8 @@ def neck_check(piece):
     """A piece pinched between two wide parts (a lining strip left between a facing and a seam) cannot be sewn
     or worn. Flags any chord narrower than MIN_NECK_CM that splits the piece into two parts both larger than
     MIN_SIDE_AREA. Narrow strips (bindings, flies, fourchettes) and narrow protrusions (fingers) pass."""
-    pts = resample(outline(piece, 16))
+    closed = dict(piece, outline=[q for q in piece["outline"] if not q.get("dart")])   # darts are sewn closed
+    pts = resample(outline(closed, 16))
     n = len(pts)
     if n < 8:
         return None
@@ -1349,8 +1354,8 @@ def neck_check(piece):
 
 
 def within_checks(pieces):
-    """Pieces declaring "within": "<piece>" (facings, linings, interfacings) must lie inside that piece, up to
-    the turn of cloth."""
+    """Pieces declaring "within": "<piece>" (facings, interfacings, pocket facings) must lie inside that piece, up
+    to the turn of cloth. Linings are larger than their piece by design (underarm, side ease) and do not declare it."""
     by = {p["name"]: p for p in pieces}
     out = []
     for p in pieces:
@@ -1430,7 +1435,7 @@ def export(sets, out, title, allowance=None):
     offs, _, _ = layout([r["pieces"] for _, r in sets])
     for sz, r in sets:
         write_dxf(r["pieces"], offs, os.path.join(out, f"pattern_{sz}.dxf"), sz)
-        cloj = write_clo3d(r["pieces"], offs, os.path.join(out, f"clo3d_{sz}.json"), sz, r.get("seams"))
+        cloj = write_clo3d(r["pieces"], offs, os.path.join(out, f"clo3d_{sz}.json"), sz, r.get("seams"), r.get("holds"))
         checks = r.setdefault("checks", [])
         for p in r["pieces"]:
             checks += fold_checks(p)
@@ -1674,6 +1679,21 @@ def cmd_clo3d(args):
             except SystemExit as err:
                 failed += 1
                 print("seam failed:", s_, err, flush=True)
+        for h in data.get("holds", []):     # wrap: the top front's edge onto an internal line of the under front
+            if h["top"] not in pieces or h["under"] not in pieces:
+                continue
+            line, fwd = _clo_edge(pieces[h["top"]], h["edge"][0], h["edge"][1])
+            a, b = (h["edge"][0], h["edge"][1]) if fwd else (h["edge"][1], h["edge"][0])
+            ch = clo3d_command(d, "create_internal_shape", {"pattern_index": idx[h["under"]],
+                                                            "points": [h["at"][a], h["at"][b]], "closed": False})
+            try:
+                clo3d_command(d, "sew", {"pattern_a": idx[h["top"]], "line_a": line, "pattern_b": idx[h["under"]],
+                                         "line_b": 0, "child_b": ch["child_index"], "direction_a": True, "direction_b": True})
+                if h.get("layer"):
+                    clo3d_command(d, "set_pattern_state", {"pattern_index": idx[h["top"]], "layer": h["layer"]})
+            except SystemExit as err:
+                failed += 1
+                print("hold failed:", h["top"], err, flush=True)
         print(f"{len(data.get('seams', [])) - failed} seams sewn, {failed} failed. Pieces without an arrangement "
               "point must be placed by hand in CLO3D before simulating.", flush=True)
     if args.stop:
@@ -1914,6 +1934,20 @@ def test():
                                                  box("Wide facing", -8, 20, 0, 100, within="Front")])}
     assert wc["Facing: lies within Front (cm outside)"]["value"] == 0
     assert wc["Wide facing: lies within Front (cm outside)"]["value"] > WITHIN_TOL_CM
+    # whole garments from specs: every check and every 3D seam passes (darts, boxy, princess with a wrap)
+    import garment
+    ex = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "examples")
+    for sp_ in ("notched-lapel-jacket/jacket_fitted.json", "notched-lapel-jacket/jacket_oversize.json",
+                "velvet-coat/coat.json"):
+        with open(os.path.join(ex, sp_), encoding="utf-8") as f:
+            res_ = garment.run(json.load(f))
+        with tempfile.TemporaryDirectory() as d:
+            cut_ = [("t", {"pieces": res_["cut"] + res_["lining"], "checks": list(res_["checks"])})]
+            sh_ = [("t", {"pieces": res_["shell3d"], "seams": res_["seams"], "holds": res_["holds"], "checks": []})]
+            export(cut_, d, "t")
+            export(sh_, os.path.join(d, "3d"), "t")
+            for c in cut_[0][1]["checks"] + sh_[0][1]["checks"]:
+                assert c["expected"] is None or abs(c["value"] - c["expected"]) <= c["tol"], (sp_, c)
     gr = tr_["grain"]
     ys_ = [n["p"][1] for n in tr_["outline"]]
     assert all(min(ys_) <= g[1] <= max(ys_) for g in gr), ("grain line outside the trank", gr)
@@ -1938,6 +1972,9 @@ def main():
         p.add_argument("--body", choices=("women", "men", "children"), default="women")
         p.add_argument("--size", help="standard size (women 34-48, men 44-58, children: age 4-14; glove: 6 to 10)")
         p.add_argument("--measurements", help="JSON file of personal measurements in cm")
+    p = sp.add_parser("garment", help="draft a whole garment from a spec (references/garment-spec.md)")
+    p.add_argument("spec")
+    p.add_argument("--out", default="garment_out")
     p = sp.add_parser("piece")
     p.add_argument("file")
     p.add_argument("--out", default="pattern_out")
@@ -1985,6 +2022,9 @@ def main():
         return cmd_smooth(args)
     if args.cmd == "piece":
         return cmd_piece(args)
+    if args.cmd == "garment":
+        import garment
+        return garment.main([args.spec, "--out", args.out])
     if args.cmd == "measurements":
         body, own, a = load_measurements(args)
         m = complete({**standard_measurements(body, args.size), **own}, body)

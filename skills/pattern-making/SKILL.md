@@ -41,10 +41,19 @@ the calculations are done by `scripts/pattern.py` (Python 3.8 or newer, standard
 4. **Shapes come from real patterns**: complex pieces (thumbs, gussets, collars, sleeve heads) follow the
    shapes of published patterns, scaled to the measurements, never an improvised outline.
 
-Every piece cut from another one (facing, lining, interfacing, pocket facing) declares it with `"within"`, so the
+Every piece cut from another one (facing, interfacing, pocket facing; not linings, which are larger by design) declares it with `"within"`, so the
 engine checks it does not pass its piece; the engine also flags pieces pinched between two wide parts.
 
 A pattern is finished when its report has no `!!` line and its seam table (`seams_<size>.md`) is all OK.
+
+## Whole garments from a spec
+
+Jackets and coats are drafted by `python scripts/pattern.py garment spec.json --out folder`
+(`references/garment-spec.md`): reusable constructions on the bodice block (body ease, extended and padded
+shoulders, darts, boxy or armhole princess with flare, overlap or wrap, notched lapel drafted in place, stand or
+funnel collar, two-piece sleeve matched to the armhole, facings, lining, pockets). It writes the cut pieces and
+the 3D shell for CLO3D with every seam and wrap hold; `python scripts/sheet.py folder/pieces_<size>.json` draws PNG
+sheets (Pillow). Add a construction to `scripts/garment.py` rather than writing a one-off script.
 
 ## Any garment as data
 
@@ -63,8 +72,8 @@ python scripts/pattern.py kb search <words>     # English or French, accents ign
 python scripts/pattern.py kb show <id>
 ```
 
-Worked example of a whole lined garment built from these entries: `examples/notched-lapel-jacket/` (collar drafted
-in place, oversize variant, shoulder pads, two-piece sleeve, lining). Index: `references/kb/INDEX.md`. Format of an entry: `references/kb/FORMAT.md`. A shape marked
+Worked specs: `examples/notched-lapel-jacket/` (fitted and oversize, lined) and `examples/velvet-coat/` (princess,
+flare, 16 cm wrap, funnel collar, lined). Index: `references/kb/INDEX.md`. Format of an entry: `references/kb/FORMAT.md`. A shape marked
 "unverified" must be checked against real drawn patterns before it goes into a pattern.
 
 | Need | Sheet |

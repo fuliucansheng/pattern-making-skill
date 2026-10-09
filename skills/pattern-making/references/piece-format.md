@@ -49,7 +49,7 @@ JSON format read by `python scripts/pattern.py piece file.json` and produced by 
   with named nodes like the outline. SVG and DXF draw them; the CLO3D export opens each one to the nearest
   outline node through a slit 1.5 mm wide, to be sewn back (`node` / `node~` pairs), because the API
   cannot cut a hole.
-- **`within`**: name of the piece this one is cut from (facing, lining, interfacing, pocket facing). The export
+- **`within`**: name of the piece this one is cut from (facing, interfacing, pocket facing; not a lining, larger by design). The export
   checks that it lies inside that piece, up to 0.6 cm (turn of cloth). For mirrored pieces, `L` matches `L`.
 - **`mirror: true`**: the piece is cut as a left and right pair. The export writes `<name> L` and its mirror
   `<name> R` (same node names, same winding).

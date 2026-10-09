@@ -86,8 +86,10 @@ skills/pattern-making/
                         transformations, finishes, piece format, CLO3D
   references/techniques/ one sheet per garment family, accessories and sewing techniques
   references/kb/        knowledge base: 570 entries (garments, pieces, techniques), searchable
-  examples/             worked garments built end to end (notched-lapel jacket, lined; needs Pillow)
+  examples/             garment specs: notched-lapel jacket (fitted, oversize), velvet coat
   scripts/pattern.py    engine and command line, standard library only
+  scripts/garment.py    whole garments from a JSON spec (references/garment-spec.md)
+  scripts/sheet.py      PNG pattern sheets (optional, needs Pillow)
 .claude-plugin/         Claude Code plugin and marketplace manifests
 ```
 
