@@ -327,7 +327,7 @@ How to read the evidence:
 - **Fit faults**: collar stands away from the neck -> raise the neck-edge curve, shorten the undercollar neck edge, increase spring 0.5 to 1; lapel gapes -> shorten the tape 0.8 to 1.0, move B up 1; collar breaks low at the back -> raise the stand 0.3, reduce the fall; collar twists -> undercollar off grain
 - **Variants**: #peak-lapel, #shawl-collar, #suit-jacket-single-breasted, #tailored-coat
 - **CLO3D**: lapel facing and body as separate pieces joined at the front edge; roll line as a fold line with a fold angle; collar sewn at the neckline; stiff fabric property on lapel and undercollar
-- **Confidence**: numbers verified against two own sheets (TO 2.5, SC 2.7), trade practice (Aldrich-type); outline unverified
+- **Confidence**: numbers verified against two own sheets (TO 2.5, SC 2.7), trade practice (Aldrich-type); outline unverified; drafted end to end with all seam lengths checked in examples/notched-lapel-jacket (outline still not compared to a published draft)
 
 ## Peak lapel {#peak-lapel}
 
@@ -386,6 +386,9 @@ How to read the evidence:
   2. Mark the elbow line and move the cuff forward by the pitch p (1.5 to 2.5).
   3. Draw the forearm and hindarm lines (values above).
   4. Separate the pieces: top sleeve centre, under sleeve from the two outer strips, rejoin the strips along the underarm line.
+     The one-piece base must have parallel underarm sides for this: take the taper to the hem in the forearm and hindarm
+     seams, never in the underarm sides, or the two strips of the under sleeve end up on different grains (worked example:
+     examples/notched-lapel-jacket).
   5. Shift the top sleeve front edge 1.5 to 2.5 over the under sleeve (seam lengths stay equal).
   6. Elbow ease by dart or a slash and spread at the elbow line.
   7. Hem allowance 3.5 to 4.0 (coats 5 to 6); vent extension on the top sleeve 3 wide, 10 to 12 long with a mitre.

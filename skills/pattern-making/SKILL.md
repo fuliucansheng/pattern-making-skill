@@ -58,7 +58,8 @@ python scripts/pattern.py kb search <words>     # English or French, accents ign
 python scripts/pattern.py kb show <id>
 ```
 
-Index: `references/kb/INDEX.md`. Format of an entry: `references/kb/FORMAT.md`. A shape marked
+Worked example of a whole lined garment built from these entries: `examples/notched-lapel-jacket/` (collar drafted
+in place, oversize variant, shoulder pads, two-piece sleeve, lining). Index: `references/kb/INDEX.md`. Format of an entry: `references/kb/FORMAT.md`. A shape marked
 "unverified" must be checked against real drawn patterns before it goes into a pattern.
 
 | Need | Sheet |

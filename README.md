@@ -85,6 +85,8 @@ skills/pattern-making/
   references/           reference analysis, design from sketch, measurements, ease, blocks,
                         transformations, finishes, piece format, CLO3D
   references/techniques/ one sheet per garment family, accessories and sewing techniques
+  references/kb/        knowledge base: 570 entries (garments, pieces, techniques), searchable
+  examples/             worked garments built end to end (notched-lapel jacket, lined; needs Pillow)
   scripts/pattern.py    engine and command line, standard library only
 .claude-plugin/         Claude Code plugin and marketplace manifests
 ```
