@@ -715,6 +715,306 @@ def block_trousers(m, a, body):
                              meas["front"]["crotch"] + meas["back"]["crotch"])]}
 
 
+# ------------------------------------------------------------------ glove
+# Leather glove drafted like real glove patterns (references/techniques/accessories.md, part 1):
+# one trank (back and palm side by side, fold below the index crotch, straight parallel fingers separated by
+# slits ending at crotch points, the two index halves sewn on their outer side, one straight side line),
+# a Bolton thumb (heart shape folded on its axis) set into a drop-shaped hole with a V tongue, and one
+# fourchette arm per finger side. Hand measurements in mm, size 7 values as default (sheet, section 1.6).
+
+GLOVE_HAND = {"G": 178, "HL": 175, "h_I": 94, "h_M": 98, "h_R": 94, "h_L": 85, "F_I": 66, "F_M": 77, "F_R": 69,
+              "F_L": 55, "Cf_I": 56, "Cf_M": 58, "Cf_R": 54, "Cf_L": 48, "T_o": 60, "T_p": 45, "T_g": 62,
+              "Web_T": 80, "end_below_wrist": 120, "end_girth": 160}
+FINGERS_ORDER = ("L", "R", "M", "I")              # back half, from the little finger side
+GLOVE_SLIT = 0.5                                  # half width of a slit, mm (a die cut has none; CLO3D needs a gap)
+
+
+def glove_hand(size=7.0, own=None):
+    """Hand measurements in mm: size 7 table graded by half sizes (sheet 1.5), then personal values."""
+    k = (float(size) - 7.0) * 2                   # half sizes away from 7
+    h = dict(GLOVE_HAND)
+    h["G"] += 12.7 * k
+    for key in ("HL", "h_I", "h_M", "h_R", "h_L", "Web_T"):
+        h[key] += 4.5 * k
+    for key in ("F_I", "F_M", "F_R", "F_L", "T_o", "T_p"):
+        h[key] += 1.2 * k
+    for key in ("Cf_I", "Cf_M", "Cf_R", "Cf_L"):
+        h[key] += 3.2 * k
+    h["T_g"] += 2 * k
+    h.update(own or {})
+    return h
+
+
+def _bez_len(p0, c1, c2, p3):
+    return length([p0] + cubic(p0, c1, c2, p3, 200))
+
+
+def block_glove(h, stretch_ease=2.0):
+    """Returns pieces (cm, skill format), seams by node names and checks. Coordinates drafted in mm with y up
+    from the wrist crease, converted at the end."""
+    G = h["G"]
+    W = G + stretch_ease                                   # fine leather: G + 0 to 4
+    Wb, Wp = W / 2 + 4, W / 2 - 4
+    n_arms = {"I": 1, "M": 2, "R": 2, "L": 1}
+    fw = (h["Cf_I"] + h["Cf_M"] + h["Cf_R"] + h["Cf_L"] - W) / 6
+    tot = {f: h["Cf_" + f] - n_arms[f] * fw for f in "IMRL"}
+    back_w = {f: tot[f] * Wb / W for f in "IMRL"}
+    palm_w = {f: tot[f] * Wp / W for f in "IMRL"}
+    tip = {f: h["h_" + f] + h["F_" + f] + 5 for f in "IMRL"}
+    crotch_p = {("I", "M"): min(h["h_I"], h["h_M"]) + 4, ("M", "R"): min(h["h_M"], h["h_R"]) + 4,
+                ("R", "L"): min(h["h_R"], h["h_L"]) + 4}
+    crotch_b = {k: v - 5 for k, v in crotch_p.items()}    # back slits 5 mm deeper
+    C0 = h["Web_T"]
+    y_side = crotch_p[("R", "L")]
+    y_end = -h["end_below_wrist"]
+    flare = (h["end_girth"] + 10 - W) / 2                  # per side, ease 10 at the cuff
+
+    def tip_edge(x0, x1, top, name0, name1):
+        r = 0.4 * (x1 - x0)
+        k = 4 / 3 * r
+        return [{"name": name0, "p": [x0, top - r], "c": [[x0, top - r + k], [x1, top - r + k]]}], {"name": name1, "p": [x1, top - r]}, r
+
+    o, r_tip = [], {}
+    o.append({"name": "cuff_b", "p": [-flare, y_end]})
+    o.append({"name": "side_b", "p": [0.0, y_side]})
+    xb = [0.0]
+    for f in FINGERS_ORDER:
+        xb.append(xb[-1] + back_w[f])
+    for i, f in enumerate(FINGERS_ORDER):               # back half: L R M I, left to right
+        x0 = xb[i] + (GLOVE_SLIT if i > 0 else 0)
+        x1 = xb[i + 1] - GLOVE_SLIT
+        t0, t1, r_tip[f] = tip_edge(x0, x1, tip[f], f"b_{f}_t0", f"b_{f}_t1")
+        o += t0 + [t1]
+        if f != "I":
+            nxt = FINGERS_ORDER[i + 1]
+            key = (nxt, f)                               # crotch keys are (thumb side, little side)
+            o.append({"name": f"b_{nxt}{f}", "p": [xb[i + 1], crotch_b[key]]})
+    o.append({"name": "C0", "p": [Wb, C0]})
+    xp = [Wb]
+    for f in reversed(FINGERS_ORDER):
+        xp.append(xp[-1] + palm_w[f])
+    pal = list(reversed(FINGERS_ORDER))                  # palm half: I M R L, from the fold
+    for i, f in enumerate(pal):
+        x0 = xp[i] + GLOVE_SLIT
+        x1 = xp[i + 1] - (GLOVE_SLIT if i < 3 else 0)
+        t0, t1, _ = tip_edge(x0, x1, tip[f], f"p_{f}_t0", f"p_{f}_t1")
+        o += t0 + [t1]
+        if f != "L":
+            nxt = pal[i + 1]
+            o.append({"name": f"p_{f}{nxt}", "p": [xp[i + 1], crotch_p[(f, nxt)]]})
+    o.append({"name": "side_p", "p": [W, y_side]})
+    o.append({"name": "cuff_p", "p": [W + flare, y_end]})
+
+    # ---- thumb hole in the palm half, next to the fold: drop with a round bottom and a V tongue at the apex
+    Wg, Lg = 0.2 * G, 0.27 * G
+    rr = Wg / 2
+    A = (Wb + 10, C0 - 12)
+    tilt = math.radians(12)
+    d = (math.sin(tilt), -math.cos(tilt))               # down the hole axis, away from the fold
+    Dc = Lg - rr
+    cb = (A[0] + d[0] * Dc, A[1] + d[1] * Dc)
+    th = math.asin(rr / Dc)
+    rot = lambda v, a: (v[0] * math.cos(a) - v[1] * math.sin(a), v[0] * math.sin(a) + v[1] * math.cos(a))
+    side_l, side_r = rot(d, -th), rot(d, th)            # unit directions of the two straight sides from A
+    tl = math.sqrt(Dc ** 2 - rr ** 2)
+    bot = (cb[0] + d[0] * rr, cb[1] + d[1] * rr)
+    L_t = 12.0                                           # tongue edge = thumb slash edge
+    R1 = (A[0] + side_r[0] * L_t, A[1] + side_r[1] * L_t)
+    mid = ((A[0] + R1[0]) / 2, (A[1] + R1[1]) / 2)
+    nrm = (-(R1[1] - A[1]) / L_t, (R1[0] - A[0]) / L_t)  # perpendicular to the tongue base
+    if nrm[0] * d[0] + nrm[1] * d[1] < 0:
+        nrm = (-nrm[0], -nrm[1])                         # pointing into the hole
+    Vt = (mid[0] + nrm[0] * L_t * 0.866, mid[1] + nrm[1] * L_t * 0.866)   # equilateral tongue, 60 degrees
+    TL = (A[0] + side_l[0] * tl, A[1] + side_l[1] * tl)
+    TR = (A[0] + side_r[0] * tl, A[1] + side_r[1] * tl)
+    # dense path of the drop from A round the bottom to R1, cut at half its length (where the thumb lobes meet)
+    a0 = math.atan2(TL[1] - cb[1], TL[0] - cb[0])
+    a1 = math.atan2(TR[1] - cb[1], TR[0] - cb[0])
+    ab = math.atan2(d[1], d[0])                          # bottom of the drop
+    sweep = (a1 - a0) % (2 * math.pi)
+    if not (0 < (ab - a0) % (2 * math.pi) < sweep):
+        sweep -= 2 * math.pi
+    path = [A] + [(cb[0] + rr * math.cos(a0 + sweep * t / 60), cb[1] + rr * math.sin(a0 + sweep * t / 60)) for t in range(61)] + [R1]
+    cum = [0.0]
+    for p0, p1 in zip(path, path[1:]):
+        cum.append(cum[-1] + dist(p0, p1))
+    half = cum[-1] / 2
+    im = next(i for i, c in enumerate(cum) if c >= half)
+    f = (half - cum[im - 1]) / (cum[im] - cum[im - 1])
+    M = (path[im - 1][0] + (path[im][0] - path[im - 1][0]) * f, path[im - 1][1] + (path[im][1] - path[im - 1][1]) * f)
+    tM = ((path[im][0] - path[im - 1][0]) / dist(path[im - 1], path[im]), (path[im][1] - path[im - 1][1]) / dist(path[im - 1], path[im]))
+    tA = side_l
+    tR = ((R1[0] - TR[0]) / dist(TR, R1), (R1[1] - TR[1]) / dist(TR, R1))
+
+    def fit(p0, t0, p3, t3, target):
+        lo_, hi_ = 0.1, target
+        for _ in range(60):
+            k = (lo_ + hi_) / 2
+            ln = _bez_len(p0, (p0[0] + t0[0] * k, p0[1] + t0[1] * k), (p3[0] - t3[0] * k, p3[1] - t3[1] * k), p3)
+            lo_, hi_ = (k, hi_) if ln < target else (lo_, k)
+        k = (lo_ + hi_) / 2
+        return [[p0[0] + t0[0] * k, p0[1] + t0[1] * k], [p3[0] - t3[0] * k, p3[1] - t3[1] * k]]
+
+    hole = [{"name": "h_A", "p": list(A), "c": fit(A, tA, M, tM, half)},
+            {"name": "h_M", "p": list(M), "c": fit(M, tM, R1, tR, half)},
+            {"name": "h_R1", "p": list(R1)},
+            {"name": "h_V", "p": list(Vt)}]
+    hole_piece = {"outline": hole}
+    drop_len = length(edge(hole_piece, 0, 200)) + length(edge(hole_piece, 1, 200))
+
+    # ---- Bolton thumb: heart shape folded on its axis (v down from the tip, x across)
+    w_t, Lt_, Hb = h["T_g"] - 1, h["T_o"] + 5, h["T_o"] - h["T_p"]
+    dtip, cleft = 0.25 * w_t, 8.0
+    c_base = math.sqrt(L_t ** 2 - cleft ** 2)
+    Hl = max(Hb, 0.42 * Lt_)                             # lobes take about 40 % of the heart's height
+    v_ls, half_ls = Lt_ - Hl, w_t / 2 - 1.5
+
+    def thumb(bulge):
+        ls_r, base_r = (half_ls, v_ls), (c_base, Lt_)
+        lobe_r = [[half_ls + bulge, v_ls + Hl * 0.35], [c_base + bulge * 1.1, Lt_ + Hl * 0.25]]
+        return ls_r, base_r, lobe_r
+
+    target = (drop_len + 1.0) / 2                       # each lobe edge, 1 mm of ease in total
+    lo, hi = 0.0, 40.0
+    for _ in range(60):
+        bulge = (lo + hi) / 2
+        ls_r, base_r, lobe_r = thumb(bulge)
+        lo, hi = (bulge, hi) if _bez_len(ls_r, tuple(lobe_r[0]), tuple(lobe_r[1]), base_r) < target else (lo, bulge)
+    ls_r, base_r, lobe_r = thumb((lo + hi) / 2)
+    mir = lambda q: [-q[0], q[1]]
+    th_o = [{"name": "apex", "p": [0.0, 0.0], "c": [[w_t / 2 * 0.55, 0.0], [w_t / 2, dtip * 0.45]]},
+            {"name": "tip_r", "p": [w_t / 2, dtip]},
+            {"name": "ls_r", "p": list(ls_r), "c": lobe_r},
+            {"name": "base_r", "p": list(base_r)},
+            {"name": "C", "p": [0.0, Lt_ - cleft]},
+            {"name": "base_l", "p": mir(base_r), "c": [mir(lobe_r[1]), mir(lobe_r[0])]},
+            {"name": "ls_l", "p": mir(ls_r)},
+            {"name": "tip_l", "p": [-w_t / 2, dtip], "c": [[-w_t / 2, dtip * 0.45], [-w_t / 2 * 0.55, 0.0]]}]
+
+    # ---- fourchette arms: one per finger side, back edge 5 mm longer than the palm edge
+    edges_len = {}
+    tr = {"outline": o}
+
+    def elen(n1, n2):
+        names = [x["name"] for x in o]
+        i, j = names.index(n1), names.index(n2)
+        k = i if (i + 1) % len(o) == j else j
+        return length(edge(tr, k, 100))
+
+    arms, seams = [], []
+    fw_b, fw_t = 1.3 * fw, 0.6 * fw
+    for a_, b_ in (("I", "M"), ("M", "R"), ("R", "L")):   # (thumb side finger, little side finger)
+        for side, f in ((a_, a_), (b_, b_)):
+            if side == a_:                                # the thumb-side finger's little side
+                bb, bt, pb, pt = f"b_{a_}{b_}", f"b_{a_}_t0", f"p_{a_}{b_}", f"p_{a_}_t1"
+            else:                                         # the little-side finger's thumb side
+                bb, bt, pb, pt = f"b_{a_}{b_}", f"b_{b_}_t1", f"p_{a_}{b_}", f"p_{b_}_t0"
+            Lb_, Lp_ = elen(bb, bt), elen(pb, pt)
+            dx = (fw_b - fw_t) / 2
+            name = f"Fourchette {f} ({a_}{b_})"
+            arms.append({"name": name, "cut": "1x", "allowance": 0.15, "outline": [
+                {"name": "base_b", "p": [0.0, 0.0]}, {"name": "tip_b", "p": [dx, Lb_]},
+                {"name": "tip_p", "p": [dx + fw_t, Lb_]},
+                {"name": "base_p", "p": [fw_b, Lb_ - math.sqrt(max(Lp_ ** 2 - (fw_b - dx - fw_t) ** 2, 1))]}]})
+            seams.append(["Trank", bb, bt, name, "base_b", "tip_b"])
+            seams.append(["Trank", pb, pt, name, "base_p", "tip_p"])
+            edges_len[name] = (Lb_, Lp_)
+        seams.append([f"Fourchette {a_} ({a_}{b_})", "base_b", "base_p", f"Fourchette {b_} ({a_}{b_})", "base_b", "base_p"])
+    seams.append(["Trank", "b_I_t1", "C0", "Trank", "p_I_t0", "C0"])          # index outer seam
+    for f in "IMRL":
+        seams.append(["Trank", f"b_{f}_t0", f"b_{f}_t1", "Trank", f"p_{f}_t1", f"p_{f}_t0"])
+    seams.append(["Trank", "side_b", "b_L_t0", "Trank", "side_p", "p_L_t1"])   # little finger outer side
+    seams.append(["Trank", "cuff_b", "side_b", "Trank", "cuff_p", "side_p"])   # side seam
+    seams.append(["Trank", "C0", "h_A", "Trank", "C0~", "h_A~"])               # CLO3D slit opening the hole
+    seams += [["Thumb", "apex", "tip_r", "Thumb", "apex", "tip_l"], ["Thumb", "tip_r", "ls_r", "Thumb", "tip_l", "ls_l"],
+              ["Thumb", "C", "base_l", "Trank", "h_V", "h_A"], ["Thumb", "base_l", "ls_l", "Trank", "h_A", "h_M"],
+              ["Thumb", "ls_r", "base_r", "Trank", "h_M", "h_R1"], ["Thumb", "base_r", "C", "Trank", "h_R1", "h_V"]]
+
+    # ---- to cm, y down (skill axes), trank origin at the wrist line
+    def conv(nodes, flip=True):
+        out = []
+        for n in nodes:
+            q = dict(n)
+            q["p"] = [n["p"][0] / 10, (-n["p"][1] if flip else n["p"][1]) / 10]
+            if "c" in n:
+                q["c"] = [[c[0] / 10, (-c[1] if flip else c[1]) / 10] for c in n["c"]]
+            out.append(q)
+        return out
+
+    trank = {"name": "Trank", "cut": "1x", "allowance": 0.15, "outline": conv(o),
+             "holes": [{"name": "thumb_hole", "outline": conv(hole)}],
+             "grain": [[Wb / 20, -40 / 10], [Wb / 20, y_end / 10 + 4]]}
+    thumb_p = {"name": "Thumb", "cut": "1x", "allowance": 0.15, "outline": conv(th_o, flip=False)}
+    arms = [dict(a, outline=conv(a["outline"], flip=False)) for a in arms]
+    ref = area(outline({"outline": [{"p": [0, 0]}, {"p": [1, 0]}, {"p": [1, 1]}, {"p": [0, 1]}]}))
+    for p in [trank, thumb_p] + arms:                   # same winding as every other piece of the engine
+        if area(outline(p)) * ref < 0:
+            p["outline"] = _reversed_nodes(p["outline"])
+    hole_p = {"outline": conv(hole)}
+    lobe = _bez_len(ls_r, tuple(lobe_r[0]), tuple(lobe_r[1]), base_r)
+    checks = [check("Glove: back finger widths = back half (mm)", sum(back_w.values()), Wb, 0.5),
+              check("Glove: palm finger widths = palm half (mm)", sum(palm_w.values()), Wp, 0.5),
+              check("Glove: thumb lobes = drop of the hole + 1 mm (mm)", 2 * lobe, drop_len + 1.0, 0.5),
+              check("Glove: thumb slash = tongue edge (mm)", math.hypot(c_base, cleft), L_t, 0.3),
+              check("Glove: fourchette width at mid-finger (info, mm)", fw),
+              check("Glove: thumb hole perimeter (info, mm)", 10 * length(outline(hole_p)))]
+    return {"pieces": [trank, thumb_p] + arms, "checks": checks, "seams": seams}
+
+
+def _reversed_nodes(nodes):
+    """Same closed path run backwards, Bezier controls swapped onto the new start nodes."""
+    n = len(nodes)
+    out = [{k: v for k, v in nodes[i].items() if k != "c"} for i in range(n - 1, -1, -1)]
+    for j in range(n):
+        src = nodes[(n - 2 - j) % n]                      # edge out[j] -> out[j+1] is src -> nodes[src+1] reversed
+        if "c" in src:
+            out[j]["c"] = [src["c"][1], src["c"][0]]
+    return out
+
+
+def mirror_piece(p, name):
+    """Left/right mirror (x -> -x) keeping the winding and node names, holes included."""
+    def mir(nodes):
+        q = [dict(n, p=[-n["p"][0], n["p"][1]], **({"c": [[-c[0], c[1]] for c in n["c"]]} if "c" in n else {}))
+             for n in nodes]
+        return _reversed_nodes(q)
+    out = dict(p, name=name, outline=mir(p["outline"]))
+    if p.get("holes"):
+        out["holes"] = [dict(hl, outline=mir(hl["outline"])) for hl in p["holes"]]
+    if p.get("grain"):
+        out["grain"] = [[-g[0], g[1]] for g in p["grain"]]
+    return out
+
+
+def slit_holes(piece, gap=0.15):
+    """CLO3D cannot cut a hole through its API: open each hole to the nearest outline node through a slit
+    `gap` cm wide. The slit edges are sewn back together (seam C0 -> h_A / C0~ -> h_A~ style); the second copy
+    of each split node is named with a trailing '~'."""
+    if not piece.get("holes"):
+        return piece
+    q = {k: v for k, v in piece.items() if k != "holes"}
+    o = [dict(n) for n in piece["outline"]]
+    for hl in piece["holes"]:
+        hn = [dict(n) for n in hl["outline"]]
+        if area(outline({"outline": hn})) * area(outline({"outline": o})) > 0:
+            hn = _reversed_nodes(hn)                     # a hole runs against the outline
+        best = min(((dist(a["p"], b["p"]), i, j) for i, a in enumerate(o) for j, b in enumerate(hn)))
+        _, i, j = best
+        a, b = o[i]["p"], hn[j]["p"]
+        ux, uy = (b[0] - a[0]) / best[0], (b[1] - a[1]) / best[0]
+        nx, ny = -uy * gap / 2, ux * gap / 2
+        ring = hn[j:] + hn[:j]
+        first = dict(ring[0], p=[b[0] + nx, b[1] + ny])
+        last = {k: v for k, v in ring[0].items() if k != "c"}
+        last.update(name=ring[0].get("name", "h") + "~", p=[b[0] - nx, b[1] - ny])
+        o_in = {k: v for k, v in o[i].items() if k != "c"}
+        o_in["p"] = [a[0] + nx, a[1] + ny]
+        o_out = dict(o[i], name=o[i].get("name", "n") + "~", p=[a[0] - nx, a[1] - ny])
+        o = o[:i] + [o_in, first] + ring[1:] + [last, o_out] + o[i + 1:]
+    q["outline"] = o
+    return q
+
+
 BLOCKS = ("skirt", "bodice", "sleeve", "trousers")
 
 
@@ -786,6 +1086,8 @@ def write_svg(sets, path, title):
                      + (' stroke-dasharray="3 1.5"/>' if j == 0 else '/>'))
             if j:
                 continue
+            for hl in p.get("holes", []):
+                o.append(f'<polygon points="{pts_txt(outline(hl), off)}" fill="none" stroke="#000" stroke-width="0.6"/>')
             for e in p.get("fold", []):
                 o.append(f'<polyline points="{pts_txt(edge(p, e), off)}" fill="none" stroke="#000" '
                          'stroke-width="1" stroke-dasharray="8 2 2 2"/>')
@@ -824,6 +1126,9 @@ def write_dxf(pieces, offs, path, size):
     for p, off in zip(pieces, offs):
         closed(cut_line(p), off, "CUT")
         closed(outline(p), off, "SEAM")
+        for hl in p.get("holes", []):
+            closed(outline(hl), off, "CUT")
+            closed(outline(hl), off, "SEAM")
         for a, b in notches(p):
             line(mm(a, off), mm(b, off), "NOTCHES")
         if p.get("grain"):
@@ -850,15 +1155,17 @@ def clo3d_points(piece, off):
     return pts
 
 
-def write_clo3d(pieces, offs, path, size):
+def write_clo3d(pieces, offs, path, size, seams=None):
     """Net outline (CLO3D adds its own allowances), fold pieces unfolded, y upwards, in mm.
     Each piece keeps its edge names: CLO3D line i is edge i of the `edges` list."""
     out = {"unit": "mm", "size": str(size), "pieces": []}
     for p, off in zip(pieces, offs):
-        q = unfold(p)
+        q = slit_holes(unfold(p))
         out["pieces"].append({"name": p["name"], "cut": q.get("cut", ""), "points": clo3d_points(q, off),
                               "edges": [{"line": i, "from": n.get("name", ""), "length_mm": round(length(edge(q, i)) * 10, 1)}
                                         for i, n in enumerate(q["outline"])]})
+    if seams:
+        out["seams"] = seams                 # [piece A, node a1, node a2, piece B, node b1, node b2]: a1 to b1
     with open(path, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=1)
 
@@ -899,7 +1206,7 @@ def export(sets, out, title, allowance=None):
     offs, _, _ = layout([r["pieces"] for _, r in sets])
     for sz, r in sets:
         write_dxf(r["pieces"], offs, os.path.join(out, f"pattern_{sz}.dxf"), sz)
-        write_clo3d(r["pieces"], offs, os.path.join(out, f"clo3d_{sz}.json"), sz)
+        write_clo3d(r["pieces"], offs, os.path.join(out, f"clo3d_{sz}.json"), sz, r.get("seams"))
         write_clo_script(os.path.join(out, f"clo3d_{sz}.json"), os.path.join(out, f"clo3d_{sz}.py"))
         with open(os.path.join(out, f"pieces_{sz}.json"), "w", encoding="utf-8") as f:
             json.dump(rounded({"title": title, "size": sz, "pieces": r["pieces"]}), f, ensure_ascii=False, indent=1)
@@ -910,12 +1217,14 @@ def report(sets):
     for sz, r in sets:
         print(f"\n== Size {sz}")
         for c in r["checks"]:
+            unit = "mm" if "(mm" in c["label"] or "mm)" in c["label"] else "cm"
+            label = c["label"].replace(" (mm)", "").replace(", mm)", ")")
             if c["expected"] is None:
-                print(f"   {c['label']}: {c['value']} cm")
+                print(f"   {label}: {c['value']} {unit}")
                 continue
             good = abs(c["value"] - c["expected"]) <= c["tol"]
             ok &= good
-            print(f" {'OK' if good else '!!'} {c['label']}: {c['value']} cm (expected {c['expected']} ± {c['tol']})")
+            print(f" {'OK' if good else '!!'} {label}: {c['value']} {unit} (expected {c['expected']} ± {c['tol']})")
     return ok
 
 # ------------------------------------------------------------------ direct send to CLO3D
@@ -950,6 +1259,20 @@ def clo3d_command(folder, type_, params, timeout=180):
     raise SystemExit("No answer from CLO3D: is the plugin listening?")
 
 
+def _clo_edge(piece, n1, n2):
+    """Line index and direction of the edge n1-n2; names split by a hole slit may carry a trailing '~'."""
+    e = piece["edges"]
+    for a in (n1, n1 + "~"):
+        for b in (n2, n2 + "~"):
+            for i, x in enumerate(e):
+                nxt = e[(i + 1) % len(e)]["from"]
+                if (x["from"], nxt) == (a, b):
+                    return i, True
+                if (x["from"], nxt) == (b, a):
+                    return i, False
+    raise SystemExit(f"{piece['name']}: no edge {n1}-{n2}")
+
+
 def cmd_clo3d(args):
     d = args.dir or os.environ.get("CLO3D_MCP_DIR") or os.path.join(
         os.environ.get("TEMP", tempfile.gettempdir()), "clo3d_mcp")
@@ -958,11 +1281,46 @@ def cmd_clo3d(args):
     with open(args.file, encoding="utf-8") as f:
         data = json.load(f)
     clo3d_command(d, "ping", {}, 10)
+    arrange = {}
+    if args.arrange:
+        with open(args.arrange, encoding="utf-8") as f:
+            arrange = json.load(f)
     n0 = clo3d_command(d, "get_pattern_count", {}).get("count", 0)
+    idx = {}
     for i, p in enumerate(data["pieces"]):
+        k = n0 + i
         clo3d_command(d, "create_pattern", {"points": p["points"]})
-        clo3d_command(d, "set_pattern_name", {"pattern_index": n0 + i, "name": p["name"]})
-        print(f"{p['name']}: created in CLO3D ({p.get('cut', '')})")
+        clo3d_command(d, "set_pattern_name", {"pattern_index": k, "name": p["name"]})
+        idx[p["name"]] = k
+        if args.assemble:
+            clo3d_command(d, "set_collision_thickness", {"pattern_index": k, "thickness": 0})  # fabrics have one
+            if args.fabric is not None:
+                clo3d_command(d, "set_pattern_fabric", {"pattern_index": k, "fabric_index": args.fabric})
+            if args.mesh is not None:
+                clo3d_command(d, "set_particle_distance", {"pattern_index": k, "distance": args.mesh})
+            if p["name"] in arrange:                       # point index, or {"point": i, "orientation": deg}
+                ar = arrange[p["name"]]
+                ar = ar if isinstance(ar, dict) else {"point": ar}
+                params = {"pattern_index": k, "arrangement_index": ar["point"]}
+                if ar.get("orientation") is not None:
+                    params["orientation"] = ar["orientation"]
+                clo3d_command(d, "arrange_pattern", params)
+        print(f"{p['name']}: created in CLO3D ({p.get('cut', '')})", flush=True)
+    if args.assemble:
+        pieces = {p["name"]: p for p in data["pieces"]}
+        failed = 0
+        for s_ in data.get("seams", []):
+            if s_[0] not in pieces or s_[3] not in pieces:
+                continue
+            (la, sa), (lb, sb) = _clo_edge(pieces[s_[0]], s_[1], s_[2]), _clo_edge(pieces[s_[3]], s_[4], s_[5])
+            try:
+                clo3d_command(d, "sew", {"pattern_a": idx[s_[0]], "line_a": la, "pattern_b": idx[s_[3]], "line_b": lb,
+                                         "direction_a": sa, "direction_b": sb})
+            except SystemExit as err:
+                failed += 1
+                print("seam failed:", s_, err, flush=True)
+        print(f"{len(data.get('seams', [])) - failed} seams sewn, {failed} failed. Pieces without an arrangement "
+              "point must be placed by hand in CLO3D before simulating.", flush=True)
     if args.stop:
         clo3d_command(d, "stop", {}, 10)
     return 0
@@ -979,7 +1337,35 @@ def load_measurements(args):
     return body, own, {**EASE[body], **own.pop("ease", {})}
 
 
+def cmd_glove(args):
+    own = {}
+    if args.measurements:
+        with open(args.measurements, encoding="utf-8") as f:
+            own = json.load(f).get("hand", {})
+    sizes = args.sizes.split(",") if args.sizes else [args.size or "7"]
+    sets = []
+    for sz in sizes:
+        h = glove_hand(float(sz), own if not args.sizes else {})
+        if args.length is not None:
+            h["end_below_wrist"] = args.length * 10
+        if args.end_girth is not None:
+            h["end_girth"] = args.end_girth * 10
+        left = block_glove(h)
+        right = [mirror_piece(p, "Glove R " + p["name"]) for p in left["pieces"]]
+        for p in left["pieces"]:
+            p["name"] = "Glove L " + p["name"]
+        seams = [[f"Glove {side} {a[0]}", a[1], a[2], f"Glove {side} {a[3]}", a[4], a[5]]
+                 for side in ("L", "R") for a in left["seams"]]
+        sets.append((sz, {"pieces": left["pieces"] + right, "checks": left["checks"], "seams": seams}))
+    export(sets, args.out, "glove", args.allowance)
+    ok = report(sets)
+    print(f"\nFiles written to {os.path.abspath(args.out)}")
+    return 0 if ok else 2
+
+
 def cmd_block(args):
+    if args.block == "glove":
+        return cmd_glove(args)
     body, own, a = load_measurements(args)
     default = "8" if body == "children" else str(BASE[body]["ref"])
     sizes = args.sizes.split(",") if args.sizes else [args.size or default]
@@ -1127,6 +1513,24 @@ def test():
             assert all(q[2] in (0, 3) for q in pc["points"])
         with open(os.path.join(d, "clo3d_38.py"), encoding="utf-8") as f:
             compile(f.read(), "clo3d_38.py", "exec")
+    # glove: real-pattern construction, seams that exist and match, hole opened by a slit for CLO3D
+    g = block_glove(glove_hand(7))
+    for c in g["checks"]:
+        assert c["expected"] is None or abs(c["value"] - c["expected"]) <= c["tol"], c
+    tr_ = next(p for p in g["pieces"] if p["name"] == "Trank")
+    xs_ = sorted({round(n["p"][0], 2) for n in tr_["outline"] if n["name"].endswith(("_t0", "_t1"))})
+    assert len(xs_) >= 8, "straight parallel fingers expected"
+    with tempfile.TemporaryDirectory() as d:
+        offs_, _, _ = layout([g["pieces"]])
+        write_clo3d(g["pieces"], offs_, os.path.join(d, "g.json"), "7", g["seams"])
+        with open(os.path.join(d, "g.json"), encoding="utf-8") as f:
+            gj = json.load(f)
+        pcs_ = {p["name"]: p for p in gj["pieces"]}
+        for s_ in gj["seams"]:
+            (la, _), (lb, _) = _clo_edge(pcs_[s_[0]], s_[1], s_[2]), _clo_edge(pcs_[s_[3]], s_[4], s_[5])
+            la_, lb_ = pcs_[s_[0]]["edges"][la]["length_mm"], pcs_[s_[3]]["edges"][lb]["length_mm"]
+            tip = s_[1].endswith("_t0") and s_[2].endswith("_t1")      # back tips are wider by design
+            assert abs(la_ - lb_) <= (4.0 if tip else 1.5), (s_, la_, lb_)
     print("All tests pass.")
     return 0
 
@@ -1139,12 +1543,14 @@ def main():
     for name in ("block", "measurements"):
         p = sp.add_parser(name)
         if name == "block":
-            p.add_argument("block", choices=BLOCKS + ("all",))
+            p.add_argument("block", choices=BLOCKS + ("all", "glove"))
+            p.add_argument("--length", type=float, help="glove: end of the glove below the wrist crease, cm")
+            p.add_argument("--end-girth", type=float, help="glove: arm girth at the end of the glove, cm")
             p.add_argument("--out", default="pattern_out")
             p.add_argument("--sizes", help="list for grading, e.g. 36,38,40")
             p.add_argument("--allowance", type=float, help="default seam allowance in cm (hems unchanged)")
         p.add_argument("--body", choices=("women", "men", "children"), default="women")
-        p.add_argument("--size", help="standard size (women 34-48, men 44-58, children: age 4-14)")
+        p.add_argument("--size", help="standard size (women 34-48, men 44-58, children: age 4-14; glove: 6 to 10)")
         p.add_argument("--measurements", help="JSON file of personal measurements in cm")
     p = sp.add_parser("piece")
     p.add_argument("file")
@@ -1172,6 +1578,10 @@ def main():
     p.add_argument("file")
     p.add_argument("--dir", help="plugin exchange folder (default: %%TEMP%%/clo3d_mcp)")
     p.add_argument("--stop", action="store_true", help="stop the plugin listener after sending")
+    p.add_argument("--assemble", action="store_true", help="also sew the seams of the file, collision thickness 0")
+    p.add_argument("--fabric", type=int, help="fabric index for every piece")
+    p.add_argument("--mesh", type=float, help="mesh size in mm for every piece (8 fitted knits, 4 to 6 gloves)")
+    p.add_argument("--arrange", help="JSON file {piece name: point index or {\"point\": i, \"orientation\": deg}}")
     sp.add_parser("test")
     args = ap.parse_args()
     if args.cmd == "test":

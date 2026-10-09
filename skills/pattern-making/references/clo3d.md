@@ -20,6 +20,14 @@ own for pattern making and the SVG and DXF exports. For CLO3D, it needs the clo3
 2. **Direct send to the plug-in, no MCP server**: `python scripts/pattern.py clo3d folder/clo3d_38.json`
    creates and names the pieces. The exchange folder is changed with `--dir` or `CLO3D_MCP_DIR`.
 3. **MCP tools**: the agent drives CLO3D directly, which allows going as far as the assembled garment.
+4. **Assembly through the plug-in**: `python scripts/pattern.py clo3d folder/clo3d_7.json --assemble
+   --fabric 2 --mesh 5 --arrange arrange.json` creates the pieces, sets collision thickness 0 and the mesh,
+   places the pieces listed in the arrangement file and sews every seam listed in the file's `seams`
+   (written by blocks that know their construction, such as `block glove`). Arrangement file:
+   `{"piece name": point index}` or `{"piece name": {"point": i, "orientation": 0}}`. Pieces drafted with
+   their top towards the end of a limb (a glove, fingers up as on real patterns) need orientation 0 on the
+   arm points, or they land upside down. Pieces with holes are opened by a slit sewn back together,
+   because the API cannot cut a hole.
 
 ## Complete garment with the MCP tools
 
@@ -46,6 +54,22 @@ Absolute rule: before placing anything, read the real position and bounds of the
    has arrangement points, such as those of CLO3D's library.
 6. **Fabric and simulation**: `set_pattern_fabric`, `set_fabric_material`, `simulate`, then
    `set_fit_maps` and `export_view_image` to judge balance and tension.
+
+## Hand over to the user when placement is too complex
+
+Automatic placement only knows the avatar's arrangement points. Some pieces cannot be placed reliably
+that way: glove fingers (avatars rarely have finger points), pieces that must thread through others,
+layered or tucked parts, pieces that start inside the body. When a piece is too complex to place, or
+a simulation leaves it badly placed after one corrected attempt:
+
+1. Stop the automatic attempts. Do not loop on arrangement settings.
+2. Save the project, tell the user which pieces need placing and where they must end up (for example
+   "each glove finger over its finger, thumb over the thumb"), and let them drag the pieces in CLO3D
+   (pause or step the simulation, move, then simulate).
+3. Continue once they confirm: read the new positions back before any further action.
+
+The user is there to correct placement and simulation; spending many runs on a placement they can fix
+in seconds is wasted work.
 
 ## Logos: the sewn patch
 
