@@ -41,6 +41,9 @@ the calculations are done by `scripts/pattern.py` (Python 3.8 or newer, standard
 4. **Shapes come from real patterns**: complex pieces (thumbs, gussets, collars, sleeve heads) follow the
    shapes of published patterns, scaled to the measurements, never an improvised outline.
 
+Every piece cut from another one (facing, lining, interfacing, pocket facing) declares it with `"within"`, so the
+engine checks it does not pass its piece; the engine also flags pieces pinched between two wide parts.
+
 A pattern is finished when its report has no `!!` line and its seam table (`seams_<size>.md`) is all OK.
 
 ## Any garment as data
