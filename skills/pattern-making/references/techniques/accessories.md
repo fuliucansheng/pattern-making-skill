@@ -302,50 +302,46 @@ intermediate point and use two straight segments, never a curve with a wrist kin
 Gloves have no seam allowance larger than 4. Draw net and add the allowance in the die or cutting file. In CLO3D send
 the net outline; CLO3D adds its own allowance.
 
-## 1.8 Thumb hole (gouch) and thumb: drafting
+## 1.8 Thumb hole (gouch) and Bolton thumb: drafting
+
+What real Bolton patterns show (published leather glove patterns, for example The Shapes of Fabric and
+historical glove-making workshops), and what the engine's `block glove` reproduces. Do not improvise this
+shape: an elliptical tip with straight sides, a tulip with horns or a narrow V are all wrong and fit badly.
 
 ### Thumb hole
 
-Place the hole entirely in the palm half, next to the centre fold [S: Shapes of Fabric: hole on the palm side, 35 wide in that draft].
-
-| Parameter | Rule | Example |
+| Feature | Rule | Example, size 7 (G = 178) |
 |---|---|---|
-| Hole width Wg | 0.2 x G [T], within 33 to 40 [S: 35 in the Shapes of Fabric draft] | 35 |
-| Hole length Lg | 0.27 x G (48 for G = 178), within 45 to 55 [T] | 48 |
-| Apex (top) height | C0 y - 12, so at least 10 mm of leather separates the tongue from the index crotch | 68 |
-| Bottom height | apex - Lg | 20 |
-| Inner edge | at least 8 mm to the right of the centre fold | x = Wb + 8 |
-| Shape | Drop shape: round bottom (radius Wg/2), sides straight and converging toward the top, tilted 10 to 15 degrees toward the centre line | |
-| Tongue | V-shaped point at the apex. Opening angle 50 to 70 degrees. Its straight edge is the edge to which the thumb piece's straight slash edge is sewn [S: Koch] | depth 12 to 15 |
+| Position | In the palm half, its inner side running along the fold (1 to 6 mm from it), under the index finger | |
+| Top | About 40 mm under the finger crotch points of the palm | |
+| Size | About 3.5 cm wide and 5.5 to 6 cm long for a size 7, scaled with the hand girth | 35 x 57 |
+| Bottom | Round, towards the wrist, with a notch | |
+| Flap (tongue) | The top edge is a V pointing down into the hole. The triangle of leather above the V is a flap | V depth about 9 |
+| Slit | A curved cut from the top corner of the hole away from the fold, rising to a dot about 10 mm above the top of the hole. The cut frees the flap, which stays attached only on the fold side and can lift | slit about 17 |
 
-The hole is a closed shape. Measure its perimeter P_g with a flexible ruler on the pattern; the thumb piece must match it.
-Mark three notches on the gouch edge: tongue apex (N1), middle of the inner side (N2), bottom of the round (N3).
+Mark the dot of the slit, the V point and the bottom notch.
 
-### Thumb piece (Bolton thumb: heart or tulip shape, folded on its axis)
+### Bolton thumb
 
-Draw half the thumb with an axis AB (the fold), then mirror it about AB. v runs along the axis from the tip (v = 0).
+| Feature | Rule |
+|---|---|
+| Overall shape | A wide oval, about 0.72 times as wide as it is tall, folded on its long axis. Height about 1.7 x the thumb's outer length (about 100 mm for a size 7) |
+| Top | Two rounded lobes separated by a cleft on the fold axis, cleft depth about 15 % of the height. Folded, the two lobes are sewn together: they make the rounded tip of the thumb |
+| Width | The full width at each height is the round of the thumb there; widest around mid-height (thumb plus the fleshy base) |
+| Slit | A cut from one side edge, at about 40 % of the height from the top, curving inward and down to a dot. The flap of the trank goes into this slit: it gives the thumb its movement |
+| Notches | On the other side edge, two notches (single and double) bound the part that is sewn to the two edges of the flap's V. A notch at the bottom of the oval matches the bottom notch of the hole |
 
-| Parameter | Rule [T unless noted] | Example |
-|---|---|---|
-| Flat width of the unfolded piece w_t | T_g (-2 to 0 for stretch leather, +4 for no-stretch). Folded on the axis and the edges joined, the tube circumference is w_t | 62 |
-| Length on the axis Lt | T_o + 5 (ease at the tip) | 65 |
-| Base height Hb | T_o - T_p [S: Shapes of Fabric: thumb base height] | 15 |
-| Tip | Elliptical, half-width w_t/2, depth 0.25 x w_t | 31 / 15 |
-| Straight section | Sides taper by 2 to 4 mm over the length, from v = 15 to v = Lt - Hb | |
-| Lobes (heart) | From v = Lt - Hb the sides swell to a maximum width w_base = 1.25 x w_t at v = Lt - Hb/2, then curve back to the base | w_base 77 |
-| Base of the piece | A V cleft on the axis (depth 6 to 10) and one straight slash edge from the cleft to the first lobe. The cleft corner "C" is the corner that sits in the V of the tongue | |
-| Seam allowance | per 1.7 step 7 | |
+### Matching (sewing correspondence)
 
-Matching rules (the heart of a thumb fitting properly):
+| Thumb edge | Sewn to |
+|---|---|
+| Lobe edges, from the cleft down to the slit (one side) and to the first notch (other side) | Each other: the tip seam |
+| Between the single and the double notch | The two edges of the flap's V |
+| From the double notch round the bottom to the slit | Round the hole, bottom notch to bottom notch |
+| The two lips of the thumb slit | The two lips of the trank slit (body side and flap side) |
 
-1. Sum of the lengths of the base edges of both lobes (the edges that go round the hole) = P_g (+0 to +1.5 mm of ease, leather).
-   Adjust w_base and the lobe curve until it holds.
-2. The straight slash edge of the thumb equals the straight tongue edge, within 0.5 mm.
-3. Corner C of the thumb lands in the V of the tongue. Notch N1 on the thumb at C matches N1 on the gouch.
-4. Transfer N2 and N3 by measuring the same distances along the edge from N1.
-5. The lengths of the sections change when the slashes are cut. Re-measure after cutting and redraw. Expect one or two toiles [S: Shapes of Fabric].
-
-Make a toile in a similar stretch fabric. The Roxbury Mill guide warns that three test gloves are usual before the fit is right [S].
+Thumb edges are 2 to 4 % longer than the hole edges they meet (ease). Re-measure every section after cutting
+the slits; expect one or two toiles before the thumb is right.
 
 ### Quirk thumb variant
 

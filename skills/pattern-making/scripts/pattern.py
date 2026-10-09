@@ -805,91 +805,112 @@ def block_glove(h, stretch_ease=2.0):
     o.append({"name": "side_p", "p": [W, y_side]})
     o.append({"name": "cuff_p", "p": [W + flare, y_end]})
 
-    # ---- thumb hole in the palm half, next to the fold: drop with a round bottom and a V tongue at the apex
-    Wg, Lg = 0.2 * G, 0.27 * G
-    rr = Wg / 2
-    A = (Wb + 10, C0 - 12)
-    tilt = math.radians(12)
-    d = (math.sin(tilt), -math.cos(tilt))               # down the hole axis, away from the fold
-    Dc = Lg - rr
-    cb = (A[0] + d[0] * Dc, A[1] + d[1] * Dc)
-    th = math.asin(rr / Dc)
-    rot = lambda v, a: (v[0] * math.cos(a) - v[1] * math.sin(a), v[0] * math.sin(a) + v[1] * math.cos(a))
-    side_l, side_r = rot(d, -th), rot(d, th)            # unit directions of the two straight sides from A
-    tl = math.sqrt(Dc ** 2 - rr ** 2)
-    bot = (cb[0] + d[0] * rr, cb[1] + d[1] * rr)
-    L_t = 12.0                                           # tongue edge = thumb slash edge
-    R1 = (A[0] + side_r[0] * L_t, A[1] + side_r[1] * L_t)
-    mid = ((A[0] + R1[0]) / 2, (A[1] + R1[1]) / 2)
-    nrm = (-(R1[1] - A[1]) / L_t, (R1[0] - A[0]) / L_t)  # perpendicular to the tongue base
-    if nrm[0] * d[0] + nrm[1] * d[1] < 0:
-        nrm = (-nrm[0], -nrm[1])                         # pointing into the hole
-    Vt = (mid[0] + nrm[0] * L_t * 0.866, mid[1] + nrm[1] * L_t * 0.866)   # equilateral tongue, 60 degrees
-    TL = (A[0] + side_l[0] * tl, A[1] + side_l[1] * tl)
-    TR = (A[0] + side_r[0] * tl, A[1] + side_r[1] * tl)
-    # dense path of the drop from A round the bottom to R1, cut at half its length (where the thumb lobes meet)
-    a0 = math.atan2(TL[1] - cb[1], TL[0] - cb[0])
-    a1 = math.atan2(TR[1] - cb[1], TR[0] - cb[0])
-    ab = math.atan2(d[1], d[0])                          # bottom of the drop
-    sweep = (a1 - a0) % (2 * math.pi)
-    if not (0 < (ab - a0) % (2 * math.pi) < sweep):
-        sweep -= 2 * math.pi
-    path = [A] + [(cb[0] + rr * math.cos(a0 + sweep * t / 60), cb[1] + rr * math.sin(a0 + sweep * t / 60)) for t in range(61)] + [R1]
-    cum = [0.0]
-    for p0, p1 in zip(path, path[1:]):
-        cum.append(cum[-1] + dist(p0, p1))
-    half = cum[-1] / 2
-    im = next(i for i, c in enumerate(cum) if c >= half)
-    f = (half - cum[im - 1]) / (cum[im] - cum[im - 1])
-    M = (path[im - 1][0] + (path[im][0] - path[im - 1][0]) * f, path[im - 1][1] + (path[im][1] - path[im - 1][1]) * f)
-    tM = ((path[im][0] - path[im - 1][0]) / dist(path[im - 1], path[im]), (path[im][1] - path[im - 1][1]) / dist(path[im - 1], path[im]))
-    tA = side_l
-    tR = ((R1[0] - TR[0]) / dist(TR, R1), (R1[1] - TR[1]) / dist(TR, R1))
+    # ---- thumb hole and Bolton thumb, digitised from a published leather glove pattern (The Shapes of Fabric,
+    # size about 7) and scaled to the hand. Hole: along the fold, top about 40 mm under the finger bases, round
+    # bottom with a notch near the wrist, a V flap at the top freed by a curved slit that runs from the top
+    # corner away from the fold up to a dot. Thumb: wide oval (width about 0.72 of the height) with two lobes
+    # at the top and a cleft on the fold axis; folded, the lobes sewn together make the tip; a slit from the
+    # side edge to a dot takes the flap; two notches on the other side bound the part sewn to the flap edges.
+    sc = G / 180.0
+    TLh = (Wb + 2 * sc, crotch_p[("I", "M")] - 40 * sc)
+    hp = lambda x, y: (TLh[0] + x * sc, TLh[1] + y * sc)           # hole template, mm, y up from the top left
+    hTL, hB, hRM, hTR, hV, hD = hp(0, 0), hp(13.6, -54), hp(30.6, -24), hp(27.9, -3.9), hp(14.3, -9.3), hp(19.4, 10)
+    vx, vy = hV[0] - hTR[0], hV[1] - hTR[1]
+    vl = math.hypot(vx, vy)
+    hTR2 = (hTR[0] + vx / vl * 1.0, hTR[1] + vy / vl * 1.0)       # the two lips of the slit, 1 mm apart
+    hc = lambda x, y: [x * sc, y * sc]
+    hole = [{"name": "h_TL", "p": list(hTL), "c": [[hTL[0] - 1 * sc, hTL[1] - 25 * sc], [hB[0] - 10 * sc, hB[1]]]},
+            {"name": "h_B", "p": list(hB), "c": [[hB[0] + 10 * sc, hB[1]], [hRM[0], hRM[1] - 12 * sc]]},
+            {"name": "h_RM", "p": list(hRM), "c": [[hRM[0], hRM[1] + 8 * sc], [hTR[0] + 2 * sc, hTR[1] - 5 * sc]]},
+            {"name": "h_TR", "p": list(hTR), "c": [[hTR[0] - 2 * sc, hTR[1] + 6 * sc], [hD[0] + 5 * sc, hD[1] - 2 * sc]]},
+            {"name": "h_D", "p": list(hD), "c": [[hD[0] + 5 * sc, hD[1] - 2.6 * sc], [hTR2[0] - 2 * sc, hTR2[1] + 6 * sc]]},
+            {"name": "h_TR2", "p": list(hTR2)},
+            {"name": "h_V", "p": list(hV)}]
+    hole_piece = {"outline": hole}
+    hl = {n["name"]: length(edge(hole_piece, i, 200)) for i, n in enumerate(hole)}   # edge length from each node
+    ease = 1.03                                          # thumb edges 3 % longer than the hole edges they meet
+    seg_targets = [hl["h_TR2"] * ease, hl["h_V"] * ease, hl["h_TL"] * ease, hl["h_B"] * ease, hl["h_RM"] * ease]
+    slit_target = hl["h_TR"] * ease
 
-    def fit(p0, t0, p3, t3, target):
-        lo_, hi_ = 0.1, target
+    # thumb template (unit = thumb height, x from the fold axis, y down from the top of the lobes)
+    T = {"C": (0, 0.15), "LL": (-0.14, 0), "a": (-0.29, 0.20), "N1": (-0.32, 0.39), "N2": (-0.38, 0.58),
+         "b": (-0.30, 0.85), "B": (0, 1.0), "c": (0.27, 0.85), "RM": (0.34, 0.48), "Ps": (0.35, 0.39),
+         "d": (0.30, 0.15), "RL": (0.16, 0)}
+    order = ["C", "LL", "a", "N1", "N2", "b", "B", "c", "RM", "Ps", "d", "RL", "C"]
+    pts_ = [T[k] for k in order]
+
+    def catmull(pts, n=40):
+        out = []
+        ext = [pts[0]] + pts + [pts[-1]]                 # open spline: sharp corner at the cleft C
+        for i in range(1, len(ext) - 2):
+            p0, p1, p2, p3 = ext[i - 1], ext[i], ext[i + 1], ext[i + 2]
+            for j in range(n):
+                t = j / n
+                t2, t3 = t * t, t * t * t
+                out.append(tuple(0.5 * ((2 * p1[q]) + (-p0[q] + p2[q]) * t + (2 * p0[q] - 5 * p1[q] + 4 * p2[q] - p3[q]) * t2
+                                        + (-p0[q] + 3 * p1[q] - 3 * p2[q] + p3[q]) * t3) for q in (0, 1)))
+        out.append(pts[-1])
+        return out
+
+    dense = catmull(pts_)
+    knot = {k: order.index(k) * 40 for k in ("C", "LL", "N1", "Ps", "RL")}
+    knot["C_end"] = (len(order) - 1) * 40
+    cum = [0.0]
+    for p0, p1 in zip(dense, dense[1:]):
+        cum.append(cum[-1] + dist(p0, p1))
+    unit_base = cum[knot["Ps"]] - cum[knot["N1"]]
+    ksc = sum(seg_targets) / unit_base                   # mm per template unit
+    D = [(x * ksc, -y * ksc) for x, y in dense]          # thumb in mm, y up (lobes at the top)
+    cumD = [c * ksc for c in cum]
+
+    def at_len(L):                                       # index in the dense outline at arc length L
+        return min(range(len(cumD)), key=lambda i: abs(cumD[i] - L))
+
+    nodes_i = {"t_C": 0, "t_LL": knot["LL"], "t_N1": knot["N1"]}
+    run = cumD[knot["N1"]]
+    for name, L in zip(("t_Nv", "t_N2", "t_B", "t_RM"), seg_targets[:4]):
+        run += L
+        nodes_i[name] = at_len(run)
+    nodes_i["t_Ps"] = knot["Ps"]
+    nodes_i["t_Ps2"] = at_len(cumD[knot["Ps"]] + 1.0)    # upper lip of the thumb slit, 1 mm further
+    nodes_i["t_RL"] = knot["RL"]
+
+    def tangent(i):
+        a, b = D[max(i - 1, 0)], D[min(i + 1, len(D) - 1)]
+        l = dist(a, b) or 1
+        return ((b[0] - a[0]) / l, (b[1] - a[1]) / l)
+
+    def fit_seg(i0, i1):
+        L = cumD[i1] - cumD[i0]
+        p0, p3 = D[i0], D[i1]
+        t0, t3 = tangent(i0 + 1 if i0 == 0 else i0), tangent(i1 - 1 if i1 == len(D) - 1 else i1)
+        lo_, hi_ = 0.05, L
         for _ in range(60):
             k = (lo_ + hi_) / 2
             ln = _bez_len(p0, (p0[0] + t0[0] * k, p0[1] + t0[1] * k), (p3[0] - t3[0] * k, p3[1] - t3[1] * k), p3)
-            lo_, hi_ = (k, hi_) if ln < target else (lo_, k)
+            lo_, hi_ = (k, hi_) if ln < L else (lo_, k)
         k = (lo_ + hi_) / 2
         return [[p0[0] + t0[0] * k, p0[1] + t0[1] * k], [p3[0] - t3[0] * k, p3[1] - t3[1] * k]]
 
-    hole = [{"name": "h_A", "p": list(A), "c": fit(A, tA, M, tM, half)},
-            {"name": "h_M", "p": list(M), "c": fit(M, tM, R1, tR, half)},
-            {"name": "h_R1", "p": list(R1)},
-            {"name": "h_V", "p": list(Vt)}]
-    hole_piece = {"outline": hole}
-    drop_len = length(edge(hole_piece, 0, 200)) + length(edge(hole_piece, 1, 200))
-
-    # ---- Bolton thumb: heart shape folded on its axis (v down from the tip, x across)
-    w_t, Lt_, Hb = h["T_g"] - 1, h["T_o"] + 5, h["T_o"] - h["T_p"]
-    dtip, cleft = 0.25 * w_t, 8.0
-    c_base = math.sqrt(L_t ** 2 - cleft ** 2)
-    Hl = max(Hb, 0.42 * Lt_)                             # lobes take about 40 % of the heart's height
-    v_ls, half_ls = Lt_ - Hl, w_t / 2 - 1.5
-
-    def thumb(bulge):
-        ls_r, base_r = (half_ls, v_ls), (c_base, Lt_)
-        lobe_r = [[half_ls + bulge, v_ls + Hl * 0.35], [c_base + bulge * 1.1, Lt_ + Hl * 0.25]]
-        return ls_r, base_r, lobe_r
-
-    target = (drop_len + 1.0) / 2                       # each lobe edge, 1 mm of ease in total
-    lo, hi = 0.0, 40.0
-    for _ in range(60):
-        bulge = (lo + hi) / 2
-        ls_r, base_r, lobe_r = thumb(bulge)
-        lo, hi = (bulge, hi) if _bez_len(ls_r, tuple(lobe_r[0]), tuple(lobe_r[1]), base_r) < target else (lo, bulge)
-    ls_r, base_r, lobe_r = thumb((lo + hi) / 2)
-    mir = lambda q: [-q[0], q[1]]
-    th_o = [{"name": "apex", "p": [0.0, 0.0], "c": [[w_t / 2 * 0.55, 0.0], [w_t / 2, dtip * 0.45]]},
-            {"name": "tip_r", "p": [w_t / 2, dtip]},
-            {"name": "ls_r", "p": list(ls_r), "c": lobe_r},
-            {"name": "base_r", "p": list(base_r)},
-            {"name": "C", "p": [0.0, Lt_ - cleft]},
-            {"name": "base_l", "p": mir(base_r), "c": [mir(lobe_r[1]), mir(lobe_r[0])]},
-            {"name": "ls_l", "p": mir(ls_r)},
-            {"name": "tip_l", "p": [-w_t / 2, dtip], "c": [[-w_t / 2, dtip * 0.45], [-w_t / 2 * 0.55, 0.0]]}]
+    seq = ["t_C", "t_LL", "t_N1", "t_Nv", "t_N2", "t_B", "t_RM", "t_Ps"]
+    th_o = []
+    for a, b in zip(seq, seq[1:]):
+        th_o.append({"name": a, "p": list(D[nodes_i[a]]), "c": fit_seg(nodes_i[a], nodes_i[b])})
+    # thumb slit: from the lower lip at Ps inward to the dot, back to the upper lip
+    Ps, Ps2 = D[nodes_i["t_Ps"]], D[nodes_i["t_Ps2"]]
+    dtpl = (0.19 * ksc, -0.54 * ksc)                     # dot of the template
+    vdx, vdy = dtpl[0] - Ps[0], dtpl[1] - Ps[1]
+    lsl = math.hypot(vdx, vdy)
+    Dt = (Ps[0] + vdx / lsl * slit_target, Ps[1] + vdy / lsl * slit_target)
+    th_o.append({"name": "t_Ps", "p": list(Ps)})
+    th_o.append({"name": "t_D", "p": list(Dt)})
+    th_o.append({"name": "t_Ps2", "p": list(Ps2), "c": fit_seg(nodes_i["t_Ps2"], nodes_i["t_RL"])})
+    th_o.append({"name": "t_RL", "p": list(D[nodes_i["t_RL"]]), "c": fit_seg(nodes_i["t_RL"], knot["C_end"])})
+    tip_pair = (cumD[knot["LL"]] - cumD[0], cumD[knot["C_end"]] - cumD[knot["RL"]],
+                cumD[knot["N1"]] - cumD[knot["LL"]], cumD[knot["RL"]] - cumD[nodes_i["t_Ps2"]])
+    drop_len = sum(hl[k] for k in ("h_TR2", "h_V", "h_TL", "h_B", "h_RM"))
+    e_A = e_R = 0.0
+    thumb_base_len = cumD[knot["Ps"]] - cumD[knot["N1"]]
 
     # ---- fourchette arms: one per finger side, back edge 5 mm longer than the palm edge
     edges_len = {}
@@ -925,10 +946,18 @@ def block_glove(h, stretch_ease=2.0):
         seams.append(["Trank", f"b_{f}_t0", f"b_{f}_t1", "Trank", f"p_{f}_t1", f"p_{f}_t0"])
     seams.append(["Trank", "side_b", "b_L_t0", "Trank", "side_p", "p_L_t1"])   # little finger outer side
     seams.append(["Trank", "cuff_b", "side_b", "Trank", "cuff_p", "side_p"])   # side seam
-    seams.append(["Trank", "C0", "h_A", "Trank", "C0~", "h_A~"])               # CLO3D slit opening the hole
-    seams += [["Thumb", "apex", "tip_r", "Thumb", "apex", "tip_l"], ["Thumb", "tip_r", "ls_r", "Thumb", "tip_l", "ls_l"],
-              ["Thumb", "C", "base_l", "Trank", "h_V", "h_A"], ["Thumb", "base_l", "ls_l", "Trank", "h_A", "h_M"],
-              ["Thumb", "ls_r", "base_r", "Trank", "h_M", "h_R1"], ["Thumb", "base_r", "C", "Trank", "h_R1", "h_V"]]
+    # CLO3D opening of the hole: slit from the nearest outline node (see slit_holes), sewn back together
+    near = min(((dist(n["p"], hn["p"]), n["name"], hn["name"]) for n in o for hn in hole))
+    seams.append(["Trank", near[1], near[2], "Trank", near[1] + "~", near[2] + "~"])
+    seams += [["Thumb", "t_C", "t_LL", "Thumb", "t_C", "t_RL"],          # tip: the two lobes sewn together
+              ["Thumb", "t_LL", "t_N1", "Thumb", "t_RL", "t_Ps2"],
+              ["Thumb", "t_N1", "t_Nv", "Trank", "h_TR2", "h_V"],          # between the notches: the flap edges
+              ["Thumb", "t_Nv", "t_N2", "Trank", "h_V", "h_TL"],
+              ["Thumb", "t_N2", "t_B", "Trank", "h_TL", "h_B"],            # round the hole, notch B to notch B
+              ["Thumb", "t_B", "t_RM", "Trank", "h_B", "h_RM"],
+              ["Thumb", "t_RM", "t_Ps", "Trank", "h_RM", "h_TR"],
+              ["Thumb", "t_Ps", "t_D", "Trank", "h_TR", "h_D"],            # thumb slit takes the flap
+              ["Thumb", "t_D", "t_Ps2", "Trank", "h_D", "h_TR2"]]
 
     # ---- to cm, y down (skill axes), trank origin at the wrist line
     def conv(nodes, flip=True):
@@ -944,18 +973,18 @@ def block_glove(h, stretch_ease=2.0):
     trank = {"name": "Trank", "cut": "1x", "allowance": 0.15, "outline": conv(o),
              "holes": [{"name": "thumb_hole", "outline": conv(hole)}],
              "grain": [[Wb / 20, -40 / 10], [Wb / 20, y_end / 10 + 4]]}
-    thumb_p = {"name": "Thumb", "cut": "1x", "allowance": 0.15, "outline": conv(th_o, flip=False)}
+    thumb_p = {"name": "Thumb", "cut": "1x", "allowance": 0.15, "outline": conv(th_o)}   # lobes up, fold on the axis
     arms = [dict(a, outline=conv(a["outline"], flip=False)) for a in arms]
     ref = area(outline({"outline": [{"p": [0, 0]}, {"p": [1, 0]}, {"p": [1, 1]}, {"p": [0, 1]}]}))
     for p in [trank, thumb_p] + arms:                   # same winding as every other piece of the engine
         if area(outline(p)) * ref < 0:
             p["outline"] = _reversed_nodes(p["outline"])
     hole_p = {"outline": conv(hole)}
-    lobe = _bez_len(ls_r, tuple(lobe_r[0]), tuple(lobe_r[1]), base_r)
     checks = [check("Glove: back finger widths = back half (mm)", sum(back_w.values()), Wb, 0.5),
               check("Glove: palm finger widths = palm half (mm)", sum(palm_w.values()), Wp, 0.5),
-              check("Glove: thumb lobes = drop of the hole + 1 mm (mm)", 2 * lobe, drop_len + 1.0, 0.5),
-              check("Glove: thumb slash = tongue edge (mm)", math.hypot(c_base, cleft), L_t, 0.3),
+              check("Glove: thumb edges round the hole = hole edges + 3 % (mm)", thumb_base_len, drop_len * ease, 0.5),
+              check("Glove: thumb tip seam, lobe edges differ by (mm)", abs(tip_pair[0] - tip_pair[1]), 0.0, 4.0),
+              check("Glove: thumb tip seam, side edges differ by (mm)", abs(tip_pair[2] - tip_pair[3]), 0.0, 6.0),
               check("Glove: fourchette width at mid-finger (info, mm)", fw),
               check("Glove: thumb hole perimeter (info, mm)", 10 * length(outline(hole_p)))]
     return {"pieces": [trank, thumb_p] + arms, "checks": checks, "seams": seams}
@@ -1530,7 +1559,9 @@ def test():
             (la, _), (lb, _) = _clo_edge(pcs_[s_[0]], s_[1], s_[2]), _clo_edge(pcs_[s_[3]], s_[4], s_[5])
             la_, lb_ = pcs_[s_[0]]["edges"][la]["length_mm"], pcs_[s_[3]]["edges"][lb]["length_mm"]
             tip = s_[1].endswith("_t0") and s_[2].endswith("_t1")      # back tips are wider by design
-            assert abs(la_ - lb_) <= (4.0 if tip else 1.5), (s_, la_, lb_)
+            eased = s_[0] == "Thumb" and s_[3] == "Trank"                # thumb edges carry 3 % ease
+            tol = 4.0 if tip else (max(1.5, 0.04 * lb_) if eased else 1.5)
+            assert abs(la_ - lb_) <= tol, (s_, la_, lb_)
     print("All tests pass.")
     return 0
 
