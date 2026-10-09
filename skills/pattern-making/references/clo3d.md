@@ -35,6 +35,10 @@ Absolute rule: before placing anything, read the real position and bounds of the
    an added collision thickness pushes the cloth away from the body and from other layers, which breaks
    close-fitting garments, gloves above all. Raise it only for a specific, stated reason (for example a
    thick lining layer that sinks into the garment), on the pieces concerned.
+   Set the **mesh size** (`set_particle_distance`) to the fit: CLO3D's default of 20 mm is too coarse for
+   close-fitting pieces, and the skin pokes through between particles. Use about 8 mm for a fitted knit,
+   4 to 6 mm for gloves, fingers and small pieces, and keep the default for loose garments. A finer mesh
+   is the fix for skin showing through, not an added collision thickness.
 2. **Check the lines**: `get_line_lengths` must give back the lengths of the pattern edges.
 3. **Seams**: `sew_lines` between edges that join. If a seam crosses itself, invert `direction_b`.
 4. **Darts**: draw them as internal lines (`create_internal_shape`), or sew the two legs together.
