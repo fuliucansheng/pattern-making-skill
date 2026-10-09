@@ -30,6 +30,11 @@ Absolute rule: before placing anything, read the real position and bounds of the
 1. **Pieces**: `create_pattern` with the points of the `clo3d_<size>.json` file (millimetres, y upwards,
    `[x, y, type]`). Type 3 points are Bezier controls: a curved edge becomes one exact line in CLO3D.
    Lines are numbered in point order, from 0. The `edges` list of the file names each line.
+   Right after creating each piece, set its **added collision thickness to 0**
+   (`set_collision_thickness` with `thickness: 0`). CLO3D fabrics already carry their own thickness:
+   an added collision thickness pushes the cloth away from the body and from other layers, which breaks
+   close-fitting garments, gloves above all. Raise it only for a specific, stated reason (for example a
+   thick lining layer that sinks into the garment), on the pieces concerned.
 2. **Check the lines**: `get_line_lengths` must give back the lengths of the pattern edges.
 3. **Seams**: `sew_lines` between edges that join. If a seam crosses itself, invert `direction_b`.
 4. **Darts**: draw them as internal lines (`create_internal_shape`), or sew the two legs together.

@@ -48,6 +48,7 @@ Universal pattern-making skill. The method is described in `references/`, the ca
    - `clo3d_<size>.py` and `clo3d_<size>.json`: for CLO3D, with the plugin and MCP server of
      [clo3d-mcp-extended](https://github.com/adriendelmas/clo3d-mcp-extended). Exact curves, one CLO3D
      line per pattern edge. Full workflow, seams, patches and notches: `references/clo3d.md`.
+     Default for every piece sent to CLO3D: added collision thickness 0, changed only for a stated reason.
    - `pieces_<size>.json`: the skill's editable format, in cm.
 
 ## Conventions
