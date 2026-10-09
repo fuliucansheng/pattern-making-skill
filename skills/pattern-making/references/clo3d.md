@@ -55,6 +55,14 @@ Absolute rule: before placing anything, read the real position and bounds of the
 6. **Fabric and simulation**: `set_pattern_fabric`, `set_fabric_material`, `simulate`, then
    `set_fit_maps` and `export_view_image` to judge balance and tension.
 
+## Overlapping fronts and collars (wraps, double breasted, concealed fly)
+
+Never sew the two fronts together at the centre: that turns a coat into a closed dress. Keep each front's
+extension. Create an internal line on the under front where the top front's edge lies (extension past the
+centre, `create_internal_shape`), and sew the top front's edge onto it along the fastened part only
+(`sew` with `child_b`); below the last fastening the fronts stay free. Same for overlapping collar ends. Put the
+top front and its collar half on layer 1. Women: right over left; men: left over right.
+
 ## Hand over to the user when placement is too complex
 
 Automatic placement only knows the avatar's arrangement points. Some pieces cannot be placed reliably

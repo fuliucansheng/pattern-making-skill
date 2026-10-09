@@ -12,7 +12,9 @@ the calculations are done by `scripts/pattern.py` (Python 3.8 or newer, standard
 ## Rules
 
 1. **Know the construction before drafting.** From a photo or a drawing, run the analysis protocol
-   (`references/reference-analysis.md`): every seam, fold, piece, finish, with evidence and confidence.
+   (`references/reference-analysis.md`): every seam, fold, piece, finish, with evidence and confidence,
+   dimensions measured at scale on the photo, and its checklist answered line by line (front edge and
+   overlap, closure, symmetry, collar, shoulders, volume, pockets...). A blank line is a misread garment.
    From a fashion sketch, follow `references/design-from-sketch.md`. Write the construction sheet first.
 2. **Draft like real patterns.** For every garment type, follow the technique sheet of its family in
    `references/techniques/`. If the construction is not covered there, look up how published patterns

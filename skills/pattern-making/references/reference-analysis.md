@@ -22,11 +22,38 @@ glove, a gored skirt is not a circle skirt. Do this analysis every time, write i
 5. **Decide each ambiguous point with an evidence table**: for each candidate construction, write what
    it would show in each view, then what the photos actually show. Keep the candidate whose predictions
    match. Give a confidence. If it stays low and the choice changes the pattern, ask the person.
-6. **Cross-check with the worn photos**: length relative to the body, ease, where the garment wrinkles,
-   which parts are stretched.
-7. **Write the construction sheet** before drafting: pieces with how many to cut, seams (which edge to
-   which edge), folds, grain, finishes (hems, topstitching, elastic), closures, materials, estimated
-   dimensions with what they were estimated from, and the confidence of each conclusion.
+6. **Measure at scale.** Never estimate a dimension by eye: choose a reference on the body (head height
+   22 to 23 cm, shoulder width, hand length 18 to 19 cm, or the person's measurements), measure it in
+   pixels on the same photo and convert every dimension the checklist asks for.
+7. **Answer the checklist below, line by line.** Each line gets what is seen, the evidence (zone, crop),
+   the measurement when there is one, and a confidence; or "not visible, assumed ...". A line left
+   blank is how a garment gets misread: a coat whose front wraps 16 cm was drafted as a closed dress
+   because nobody asked where its front edge sat.
+8. **Cross-check with the worn photos**: length relative to the body, ease, where the garment wrinkles,
+   which parts are stretched. Then ask the reverse question: which features of the photo would the
+   deduced construction *not* produce (an off-centre edge, volume at the back, a collar standing away)?
+9. **Write the construction sheet** before drafting: the checklist answers, pieces with how many to cut,
+   seams (which edge to which edge), folds, grain, finishes (hems, topstitching, elastic), closures,
+   materials, measured dimensions with their reference, and the confidence of each conclusion.
+
+## Checklist (answer every line for every garment)
+
+| # | Question | What to look at |
+|---|---|---|
+| 1 | **Scale** | Reference used and its size in pixels; every measurement below derives from it |
+| 2 | **Length** | Hem against body landmarks (hip, knee, ankle, floor), how much lies on the floor, heels or flat |
+| 3 | **Opening** | Where it opens: centre front, off centre, side, back, shoulder, or pulled over the head |
+| 4 | **Front edge and overlap** | Is the front edge on the centre line (midpoint of the neck and chin) or off it? Off: overlap or wrap. Measure edge to centre: that is the extension of each front, the overlap is twice it. Which side is on top (women: right over left; men: left over right). Does the overlap run into the collar, stop at a point, run to the hem? Does the front swing open below the last fastening? |
+| 5 | **Closure** | Visible buttons (count, rows: single or double breasted), concealed fly (a plain edge, no buttons, flat), zip (exposed or invisible), hooks, snaps, ties, belt, nothing (wrap held by the body or a belt) |
+| 6 | **Symmetry** | Are left and right identical? Asymmetric closure, collar, hem, pocket, drape |
+| 7 | **Neck and collar** | Neckline shape and depth; collar type; height at the back and at the front (measured); hugging or standing away; ends meeting, overlapping or open; lapel width, break point, notch |
+| 8 | **Shoulders and sleeves** | Shoulder point natural, extended or dropped (measure the extension); pads (square sharp corner); sleeve type (set-in, raglan, kimono, dropped), one or two pieces; length against the wrist (longer ruches); width; cuffs, vents |
+| 9 | **Body shaping** | Darts, princess lines (from shoulder or armhole), panels, waist seam, yokes; where it is close and where there is ease |
+| 10 | **Volume** | Where fullness starts (waist, hip, yoke, under bust), how it is made (flare in the seams, gores, godets, gathers, pleats, circle), hem sweep against hip width (measured), side view: fullness at the back? |
+| 11 | **Pockets and small details** | Patch, welt, flap, in seam (hands vanishing into a seam), position and size; tabs, belts, loops, vents, slits. If a detail is too small or dark to read, say so instead of guessing |
+| 12 | **Edges and finishes** | Hem depth and stitching, facings, binding, topstitching rows, piping, raw edges |
+| 13 | **Fabric** | Weight, drape, pile and its direction, stretch, stiffness (a standing collar is interfaced), lining visible at the opening |
+| 14 | **Hidden views** | What cannot be seen (back, inside) and what is assumed for it |
 
 ## Catalogues
 
@@ -71,7 +98,7 @@ kind of table for it before drafting.
 | Body | Side panels, princess lines, back seam, side seams | Count the vertical seams on front, side and back views |
 | Sleeve | One-piece, two-piece (seams at the front and back of the arm), raglan | A two-piece sleeve shows a seam on the back of the arm towards the elbow |
 | Collar | Notched lapel, shawl, stand, hood | The notch where collar meets lapel; a shawl collar has no notch |
-| Closure | Single or double breasted, zip, toggles, hidden placket | Button rows and overlap width |
+| Closure | Edge to edge, single or double breasted, wrap, zip, toggles, concealed fly | Front edge on or off the centre line (checklist line 4); button rows; measure the overlap. A plain edge off centre with no button is a wrap on a concealed fly |
 | Inside | Lined, half lined, unlined (bound seams) | Visible at the opening on flat views |
 
 ### Knits
@@ -114,3 +141,18 @@ What the flat and worn photos of a pair of long black leather gloves showed, and
 - **Opening**: turned hem, topstitched about 1 cm from the edge.
 - **Length**: opera, about 60 cm. Worn, it ruches on the forearm and reaches above the elbow.
 - **Pieces**: trank, Bolton thumb, fourchettes: **3 piece types** per glove.
+
+## Example: long velvet coat (one front runway photo)
+
+A first analysis listed the princess seams, the flare, the collar and the pockets, but skipped the front edge.
+The coat was drafted with a 4 cm fly and sewn closed at the centre in 3D: a closed dress. The checklist would
+have caught it:
+
+- **Line 4, front edge**: the edge runs from the collar to the hem on the wearer's left of the neck midpoint.
+  Measured against the shoulder width, it sits 8 cm past the centre: each front extends 8 cm, a **16 cm wrap**,
+  right over left; the collar ends overlap the same way; below the hip the fronts swing apart.
+- **Line 5, closure**: a plain edge with no button: **concealed fly** on the right front, to the hip.
+- **Line 10, volume**: hem sweep about 2.5 times the hip width, spreading on the floor: about 6 m all round.
+- **Line 7, collar**: 13 cm at the back, standing away from the neck: a funnel, top edge 8 cm longer than the
+  neck edge, interfaced.
+- **Line 8, sleeves**: longer than the arm by about 14 cm, ruching on the forearm.
