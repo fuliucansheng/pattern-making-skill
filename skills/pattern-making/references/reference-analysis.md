@@ -22,9 +22,11 @@ glove, a gored skirt is not a circle skirt. Do this analysis every time, write i
 5. **Decide each ambiguous point with an evidence table**: for each candidate construction, write what
    it would show in each view, then what the photos actually show. Keep the candidate whose predictions
    match. Give a confidence. If it stays low and the choice changes the pattern, ask the person.
-6. **Measure at scale.** Never estimate a dimension by eye: choose a reference on the body (head height
-   22 to 23 cm, shoulder width, hand length 18 to 19 cm, or the person's measurements), measure it in
-   pixels on the same photo and convert every dimension the checklist asks for.
+6. **Separate calibration from proportion estimates.** Convert pixels to absolute dimensions only
+   with a known measured reference in the same plane as the feature, accounting for perspective.
+   Otherwise record ratios/ranges and derive design targets from the current body measurements.
+   Typical head/hand sizes and uncalibrated worn views are assumptions, not scale proof; label every
+   resulting estimate and its uncertainty.
 7. **Answer the checklist below, line by line.** Each line gets what is seen, the evidence (zone, crop),
    the measurement when there is one, and a confidence; or "not visible, assumed ...". A line left
    blank is how a garment gets misread: a coat whose front wraps 16 cm was drafted as a closed dress
@@ -40,7 +42,7 @@ glove, a gored skirt is not a circle skirt. Do this analysis every time, write i
 
 | # | Question | What to look at |
 |---|---|---|
-| 1 | **Scale** | Reference used and its size in pixels; every measurement below derives from it |
+| 1 | **Scale** | Known reference, units, pixel size and plane/perspective limits; otherwise ratios/ranges with labelled assumptions |
 | 2 | **Length** | Hem against body landmarks (hip, knee, ankle, floor), how much lies on the floor, heels or flat |
 | 3 | **Opening** | Where it opens: centre front, off centre, side, back, shoulder, or pulled over the head |
 | 4 | **Front edge and overlap** | Is the front edge on the centre line (midpoint of the neck and chin) or off it? Off: overlap or wrap. Measure edge to centre: that is the extension of each front, the overlap is twice it. Which side is on top (women: right over left; men: left over right). Does the overlap run into the collar, stop at a point, run to the hem? Does the front swing open below the last fastening? |
