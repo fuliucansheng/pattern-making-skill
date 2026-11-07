@@ -19,7 +19,9 @@ Conventions used below:
   (see `finishes.md`).
 
 Cross references: block and ease values in `blocks.md` and `ease.md`, slash-and-spread in
-`transformations.md`, CLO3D export and fabric setup in `clo3d.md`.
+`transformations.md`, CLO3D export and fabric setup in `clo3d.md`. Before accepting the curves,
+apply [curves and seam connections](../curves-and-seam-connections.md); its assembled host,
+endpoint and interval checks govern the starting values below.
 
 ---
 
@@ -48,12 +50,12 @@ Cap height decides the trade-off between fit and mobility:
 | 0.52 to 0.60 | 11 to 13 | Shirt sleeve. Wider bicep, more lift, more folds under the arm. |
 | 0.35 to 0.50 | 7 to 10.5 | Drop shoulder, sportswear, oversized, many knits. |
 
-Cap height can also be computed as about 1/3 of AH (43 cm gives 14.3 cm); both rules give the same result on
-a normal block. Freesewing-type parametric drafts expose it as 40 to 60 percent of a reference depth.
+Some block methods initialize cap height near AH/3. Such proportions are method-specific starting
+choices; they do not establish biceps room, mobility, pitch or cap compatibility.
 
 Relationships to remember (all approximate, verify by measuring):
-- Raising CH by 1 cm lengthens the cap curve by 0.6 to 0.7 cm if the bicep width stays the same.
-- Widening BW by 1 cm on one side lengthens the cap by 0.6 to 0.7 cm.
+- Changing CH or BW changes the cap length according to the current curve geometry; remeasure it.
+  There is no fixed centimetre-to-arc-length conversion shared by sleeve families.
 - A higher cap with the same cap length needs a narrower bicep. A lower cap needs a wider bicep.
 - Bicep width: `BW >= bicep circumference + ease`. Ease at the bicep: 4 to 5 fitted, 6 to 8 jacket in woven,
   10+ shirt, 2 to 3 stretch knit.
@@ -94,24 +96,23 @@ Inputs: AH_f, AH_b, AD, SL, bicep and wrist measurements, planned ease E (table 
    (sleeve length measured from the shoulder point).
 2. **Bicep line.** Draw a horizontal line through B.
 3. **Elbow line.** Draw a horizontal line at `SL/2 + 2.5 to 3` below A. Mark it.
-4. **Cap width points.** From A, swing an arc to the bicep line on the front side: point F with
-   `A-F = AH_f + e_f`. On the back side: point K with `A-K = AH_b + e_b`.
-   - Typical split of E: `e_f = 0.3 E`, `e_b = 0.7 E`, or `e_f = 0 to 0.5` and `e_b = 1 to 1.5` for small E.
-   - These are straight chords. The curve will be longer. Keep E small in the chord stage (about half of the
-     final E) and correct after step 6.
-5. **Check width.** `F-K >= bicep + ease`. If narrower, the chord stage gave too little: raise the ease share
-   rather than lowering the cap.
+4. **Cap width points.** Place F and K on the bicep line using the selected block method, required
+   biceps width and front/back allocation. Their chords to A are not the armhole arc lengths.
+   Allocate E independently to front/back balance intervals for the chosen material and construction.
+5. **Check width.** `F-K >= bicep + ease` for this woven construction. Solve width, CH, pitch and
+   cap intervals together; adding cap ease does not supply missing biceps circumference.
 6. **Cap curve.** Draw the curve through guide points, front half first.
    - Front chord A-F: divide into 4. At the first quarter from A, square out **1.8 to 2.0**. At the midpoint
      the curve crosses the chord (front notch zone). At the third quarter, square in **1.0 to 1.3**. The curve
-     meets F tangent to a line square to the grain at the underarm (no angle at F).
+     meets F with the tangent required by the assembled underarm construction; inspect the joined seam.
    - Back chord A-K: divide into 3 parts. At the first third from A, square out **1.2 to 1.5**. At the end of
      the second third, square in **0.5 to 1.0**. Curve meets K the same way.
-   - Draw with a French curve or a hip curve; keep a flat spot of 4 to 5 cm at the top (not a point).
+   - Draw a rounded crown with a continuous tangent, not a prescribed straight plateau or point.
 7. **Measure.** Measure the curve with a tape on edge. Required: `cap = AH + E`.
-   - If cap is too long: reduce CH by `delta / 0.65`, or narrow F and K equally.
-   - If cap is too short: increase the same way.
-   - Do not correct by flattening the curve guide points beyond +/- 0.5 cm.
+   - Walk front/back and lower/upper balance intervals, not just the total. Adjust the appropriate
+     curve spans while retaining the required biceps width, cap-height target and pitch.
+   - If these constraints conflict, revise the construction target explicitly and test it; do not
+     narrow both sides or flatten the crown merely to obtain the desired total length.
 8. **Underarm seam lines.** Join F to the front wrist corner and K to the back wrist corner.
    - Hem width: `WW = wrist + 3 to 4` (fitted), `+5 to 6` (hand must pass if no opening, check hand circumference 21 to 24).
    - Hem is symmetrical about the axis: `H-F' = H-K' = WW/2` in a straight sleeve.
@@ -120,12 +121,21 @@ Inputs: AH_f, AH_b, AD, SL, bicep and wrist measurements, planned ease E (table 
    - Front notch single, where the sleeve cap meets the front bodice balance notch. Transfer by distance along
      the curve from F: `armhole distance underarm-to-front-notch`.
    - Back notches double, same method from K.
-   - Mark the **no-ease zone**: the lowest 5 to 6 cm of each side from F and K. Ease only between the
-     notches. Test with a measure: bodice notch distance vs sleeve notch distance, front and back, difference
-     within 0.3 cm.
-10. **Pitch.** To rotate the sleeve forward (more arm-forward posture, typical for tailored sleeves),
-    move the top notch 1 to 1.5 cm toward the front of the shoulder seam when setting, and add the same to
-    the hem front wrist. Match with the pitch of the shoulder.
+   - Derive the **no-ease zone endpoints** from the selected construction's actual front/back underarm
+     and balance landmarks on the assembled armhole and sleeve. Record the corresponding stations from
+     F and K; their distances depend on the construction and material. Allocate ease only to the named
+     intervals authorized by that contract.
+   - Walk **every named interval**: front underarm to front balance, front balance to shoulder balance,
+     shoulder balance to back balance, and back balance to back underarm, subdividing at any additional
+     landmark or notch. After declared take-up and signed ease, each interval and the total must meet the
+     frozen seam tolerance: ordinarily **1 mm (0.1 cm)** unless a different limit is independently justified
+     and recorded before measurement. Intended ease is a separate budget, not extra tolerance.
+10. **Pitch.** Treat forward rotation for an arm-forward posture as a deliberate fitted pitch alteration.
+    Establish the change in a toile with the intended shoulder position; preserve the grain direction
+    and front/back balance of the selected construction. Redraft the underarm/hem relationship if needed
+    to retain the intended sleeve hang and wrist position, then rewalk all cap intervals against their
+    declared ease budgets and frozen tolerance. Transfer notches from the verified correspondence;
+    moving a notch alone cannot validate pitch or correct a length mismatch.
 11. **Grain.** Along the axis. Add SA after verification.
 
 ### Sewing order (set-in)
@@ -151,7 +161,7 @@ Inputs: AH_f, AH_b, AD, SL, bicep and wrist measurements, planned ease E (table 
 |---|---|---|
 | Horizontal drag lines across the cap | Cap too low or too narrow | Raise CH by 1 cm, add width at F and K. |
 | Puckers around the cap | Too much ease or uneven distribution | Reduce E, shift ease to the upper 2/3, shrink the cap with steam. |
-| Diagonal folds from the cap to the front | Pitch too far back | Rotate the sleeve forward, move the notches. |
+| Diagonal folds from the cap to the front | Pitch too far back | Fit a forward pitch alteration and rewalk all cap intervals as in step 10. |
 | Fold at the front armhole | Front cap too long | Take 0.5 cm off the front chord, add to back. |
 | Wrinkle above the bicep when the arm is lowered | Cap too high or bicep too wide | Lower the cap 1 cm, narrow the bicep. |
 | Sleeve rolls back | Pitch too forward | Rotate back 1 cm. |
@@ -714,11 +724,12 @@ fabric layers and the buttonhole function; test the closure on the avatar wrist.
 | Break point | The point on the front edge where the lapel folds (first button). |
 | Gorge line | Seam joining collar to lapel. |
 | Spring / swing | The curvature of the neck edge: more curve means the collar lies flatter against the neck and the fall is bigger. |
-| Shoulder overlap | Overlap of front and back shoulder seams at the neck point when drafting a flat collar. |
+| Shoulder overlap | Method-specific overlap of front/back outer shoulders, pivoting at coincident neck points, when developing a flat collar's roll. |
 
-The general law: the more curved the neck edge, the flatter the collar lies; the straighter the edge, the
-more the collar stands. The outer edge of a collar is always longer than the neck edge. Curving the neck
-edge increases the outer edge length by roughly `curve angle (radians) x collar width`.
+Neck-edge curvature influences roll within a chosen collar construction, together with stand, fall,
+grain and material. A flat collar's outer sweep is usually longer than its neck edge; an upright or
+tapered stand may have a shorter upper edge. There is no universal outer-edge ordering for all collars.
+For a constant-width circular offset only, the arc-length difference is angle in radians times width.
 
 Typical numbers: for a half collar with a neck edge of 20 cm, a neck edge sagitta of 2.5 cm and a width of 4.5 cm,
 the outer edge is about **4 cm longer** than the neck edge.
@@ -737,25 +748,26 @@ bias binding.
 
 ### Shoulder overlap rule
 
-Draft on the front and back pieces: trace the neckline of the bodice; lay front on back with the shoulders
-overlapping at the neck point. The overlap determines the roll (stand) of the collar.
+Draft on the front and back pieces: trace the neckline with the shoulder neck points coincident.
+Pivot at those neck points and arrange the overlap at the outer shoulder ends according to the
+chosen method and intended roll. Rewalk the neck attachment after developing the collar.
 
-| Overlap at the neck point | Result |
+| Method-specific overlap at the outer shoulder | Intended starting effect |
 |---|---|
 | 0 | Dead flat collar; may lift at the shoulder; looks stiff; for thin fabrics and sailor collars. |
 | 0.5 to 1 | Flat with a slight roll at the back |
 | 1.5 to 2 | Standard Peter Pan: small stand of about 1 cm at the neck, soft roll |
 | 2.5 to 3.5 | A visible stand of 1.5 to 2 cm, collar rises at the neck (rolled collar) |
 
-The overlap shrinks the neck edge of the collar relative to the outer edge. Overlap at the shoulder tip is
-zero (pivot at the armhole side).
+This arrangement changes the collar development and roll; it does not authorize an unexplained
+shortening of the attachment seam. Verify both the curve and the intended roll on the current design.
 
 ### Peter Pan (draft)
 
-1. Trace the front neckline from SNP to CF and the back neckline from SNP to CB. Overlap the shoulders at the
-   neck point by 1.5 to 2 (see table), pivot at the shoulder tip.
-2. The traced neck edge now has a different curve and length. Check: `neck edge = N - overlap effect`; this is
-   fine; it is the correct collar neck edge length.
+1. Trace the front neckline from SNP to CF and the back neckline from SNP to CB. Keep the shoulder neck
+   points coincident and use the selected outer-shoulder overlap to develop the collar.
+2. Rewalk the collar attachment against N by CB, shoulder and front stations. Any difference requires
+   a separately declared sewing-ease budget; shoulder overlap alone is not that budget.
 3. Measure the collar width from the neck edge: **6 to 8 cm** (children 4 to 5). Draw the outer edge parallel
    at that distance, round the front tip with a radius 3 to 4; ends at CF can meet (0 gap) or leave a gap of
    up to 1 cm.
@@ -809,8 +821,8 @@ adjust "Fold Angle" at the roll if needed.
 
 ### Mandarin / band collar (woven)
 
-1. Neckline length N (per half, CB to CF). If the opening is at CF with an overlap, add the button extension
-   (1.5 to 2).
+1. Neckline length N (per half, CB to CF). Define the button extension separately; add it only where
+   the actual attachment requires it and it is not already included in the measured host chain.
 2. Draw a horizontal line of length N. Mark CB at one end.
 3. At the CF end, curve the lower edge **upward 1.5 to 2.5 cm** (stand collars that fit the neck).
    - Straight rectangle (rise 0) = loose cylindrical stand; the more rise, the more the collar cups the neck.

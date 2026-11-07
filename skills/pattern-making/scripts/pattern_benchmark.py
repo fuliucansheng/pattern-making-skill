@@ -593,6 +593,69 @@ def validate_fractions(fractions):
             "curve samples must strictly increase from exact 0 to exact 1")
 
 
+def check_edge_shape(edge, landmarks):
+    """Explicit construction targets on saved vertices; no inferred garment roles."""
+    contract, points = edge["shape_contract"], edge["points"]
+    failures, unknown, angles, straightness = [], [], [], None
+    if not contract["independent_authorization"] or not contract["authority"]:
+        unknown.append("EDGE_CONTRACT_AUTHORITY_UNKNOWN")
+    spend_work(len(points) * (3 + 2 * len(contract["endpoint_angles"])))
+    limits = contract["straightness"]
+    if limits is not None:
+        chord = sub(points[-1], points[0])
+        if not norm(chord):
+            failures.append("EDGE_STRAIGHT_CHORD")
+        else:
+            axis = unit(chord)
+            projections = [dot(sub(p, points[0]), axis) for p in points]
+            deviation = max(abs(cross(axis, sub(p, points[0]))) for p in points)
+            backtrack = sum_finite(max(0, finite_number(a - b)) for a, b in zip(projections, projections[1:]))
+            straightness = {"max_deviation": deviation, "backtrack": backtrack, "limits": limits}
+            if deviation > limits["max_deviation"]:
+                failures.append("EDGE_STRAIGHTNESS")
+            if backtrack > limits["max_backtrack"]:
+                failures.append("EDGE_BACKTRACK")
+    total = lengths(points)[-1]
+    for constraint in contract["endpoint_angles"]:
+        window = constraint["window"]
+        tangent = (sub(at_station(points, window), points[0]) if constraint["at"] == "start" else
+                   sub(points[-1], at_station(points, total - window)))
+        measured, residual = None, None
+        if not norm(tangent):
+            unknown.append("EDGE_ENDPOINT_DIRECTION_UNKNOWN")
+        else:
+            axis = sub(landmarks[constraint["axis_end"]], landmarks[constraint["axis_start"]])
+            measured = math.degrees(turn(unit(axis), unit(tangent)))
+            residual = (measured - constraint["target_degrees"] + 180) % 360 - 180
+            if abs(residual) > constraint["tolerance_degrees"]:
+                failures.append("EDGE_ENDPOINT_ANGLE")
+        angles.append({**constraint, "measured_degrees": measured, "signed_residual_degrees": residual})
+    return result(failures, unknown, straightness=straightness, endpoint_angles=angles,
+                  authority=contract["authority"])
+
+
+def check_walk_intervals(stations, tolerance, epsilon):
+    """Walk measured notch stations after orientation/take-up, with frozen budgets."""
+    ordered = sorted(stations, key=lambda s: (s["a_station"], s["b_station"], canonical(s["names"])))
+    failures, intervals = [], []
+    for start, end in zip(ordered, ordered[1:]):
+        a = finite_number(end["a_station"] - start["a_station"])
+        b = finite_number(end["b_station"] - start["b_station"])
+        excess = finite_number(end["authorized_cumulative_excess"] - start["authorized_cumulative_excess"])
+        residual = finite_number(finite_number(a - b) - excess)
+        if a < -epsilon or b < -epsilon or (a <= epsilon < b) or (b <= epsilon < a):
+            failures.append("SEAM_INTERVAL_ORDER")
+        if abs(residual) > tolerance:
+            failures.append("SEAM_INTERVAL_RESIDUAL")
+        # Co-located endpoint/duplicate glyph stations introduce no sewn interval.
+        if a <= epsilon and abs(b) <= epsilon:
+            continue
+        intervals.append({"from": start["names"], "to": end["names"],
+                          "a_span": a, "b_span": b, "authorized_excess": excess,
+                          "signed_residual": residual, "tolerance": tolerance})
+    return result(failures, walk_intervals=intervals)
+
+
 def check_shaping(data):
     failures, unknown, deductions, intervals = [], [], [], []
     spend_work(len(data["operations"]) ** 2)
@@ -907,6 +970,16 @@ def validate_manifest(manifest):
                         distance(edge["points"][-1], piece["landmarks"][edge["end"]]) <= epsilon,
                         "edge endpoints disagree with named landmarks")
                 require(lengths(edge["points"])[-1] > epsilon, "degenerate named edge")
+                if "shape_contract" in edge:
+                    contract = edge["shape_contract"]
+                    angles = contract["endpoint_angles"]
+                    require(contract["straightness"] is not None or angles, "empty edge shape contract")
+                    require(len({a["at"] for a in angles}) == len(angles), "duplicate endpoint angle contract")
+                    for angle in angles:
+                        require(angle["axis_start"] in piece["landmarks"] and angle["axis_end"] in piece["landmarks"],
+                                "endpoint angle references missing axis landmark")
+                        unit(sub(piece["landmarks"][angle["axis_end"]], piece["landmarks"][angle["axis_start"]]))
+                        require(angle["window"] <= lengths(edge["points"])[-1], "endpoint window exceeds saved edge")
             edges = {e["id"]: e for e in piece["edges"]}
             operations = {o["id"]: o for o in piece["shaping"]}
             for mark in piece["notches"]:
@@ -1305,6 +1378,8 @@ def _compare(manifest):
                 boundary = piece["cut"] if edge["kind"] == "cutting" else piece["seam"]
                 if edge["kind"] in ("cutting", "sewing", "free_boundary"):
                     emit(label + "/edge/" + edge["id"], result([] if boundary and edge_on_boundary(edge["points"], boundary, epsilon) else ["EDGE_BOUNDARY_OWNERSHIP"]), conditions=conditions)
+                if "shape_contract" in edge:
+                    emit(label + "/edge/" + edge["id"] + "/shape", check_edge_shape(edge, piece["landmarks"]), conditions=conditions)
             for op in piece["shaping"]:
                 if op["kind"] in ("dart", "fish_dart"):
                     for number, apex in enumerate([op["apex"]] + ([op["second_apex"]] if op["second_apex"] is not None else [])):
@@ -1423,6 +1498,10 @@ def _compare(manifest):
                     checked = result(checked["failure_codes"] + ["INVALID_GATHER_INTERVAL"], checked["unresolved_codes"], **checked["measurements"])
                 if checked["outcome"] == "pass":
                     pairing_failures, pairing_unknowns = [], []
+                    stations = [{"a_station": 0, "b_station": 0, "authorized_cumulative_excess": 0,
+                                 "names": {"a": seam["a"] + ":start", "b": seam["b"] + ":start"}},
+                                {"a_station": la, "b_station": lb, "authorized_cumulative_excess": seam["authorized_excess"],
+                                 "names": {"a": seam["a"] + ":end", "b": seam["b"] + ":end"}}]
                     for pair in seam["notch_pairs"]:
                         ma, sa, ea = chain_notch(pair["a"], a, idx, epsilon)
                         mb, sb, eb = chain_notch(pair["b"], b, idx, epsilon)
@@ -1436,7 +1515,11 @@ def _compare(manifest):
                             if not mapping[0][0] <= sa <= mapping[-1][0]:
                                 failures.append("NOTCH_STATION")
                             else:
-                                residual = finite_number(station_value(mapping, sa) - sb)
+                                expected_b = station_value(mapping, sa)
+                                residual = finite_number(expected_b - sb)
+                                stations.append({"a_station": sa, "b_station": sb,
+                                                 "authorized_cumulative_excess": finite_number(sa - expected_b),
+                                                 "names": {side: pair[side]["piece"] + "/" + pair[side]["notch"] for side in ("a", "b")}})
                                 if abs(residual) > seam["tolerance"]:
                                     failures.append("NOTCH_STATION")
                         emit(patid + "/notch/" + seam["id"] + "/" + ma["id"] + "/" + mb["id"], result(failures, unknown, a_station=sa, b_station=sb, residual=residual), conditions=seam_conditions)
@@ -1445,7 +1528,9 @@ def _compare(manifest):
                         if not failures and not unknown and sa is not None and sb is not None:
                             for ref, mark in ((pair["a"], ma), (pair["b"], mb)):
                                 paired_marks.add((ref["piece"], *logical_mark_key(mark)))
-                    checked = result(pairing_failures, pairing_unknowns, **checked["measurements"])
+                    intervals = check_walk_intervals(stations, seam["tolerance"], epsilon)
+                    checked = result(pairing_failures + intervals["failure_codes"], pairing_unknowns,
+                                     **checked["measurements"], **intervals["measurements"])
             seam_results[seam["id"]] = checked
             emit(patid + "/seam/" + seam["id"], checked, conditions=seam_conditions)
         for pieceid, piece in idx["pieces"].items():

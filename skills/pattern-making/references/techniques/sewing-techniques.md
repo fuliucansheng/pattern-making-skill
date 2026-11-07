@@ -305,7 +305,7 @@ let it cool before moving. Grain of interfacing follows the grain of the piece u
 
 | Type | Recognise | Pattern needs | Steps and rules |
 |---|---|---|---|
-| Invisible (concealed) zip | A seam without visible zip, pull at the top | Seam allowance 1.5 cm minimum (2 cm for heavy fabric); zip stops 1 to 1.5 cm under the waist seam; opening length = zip length minus 1 cm | Install before stitching the lower seam; press tape flat; stitch with an invisible zip foot; close the seam below the zip stop; zip tape and fabric should have notches at the zip end |
+| Invisible (concealed) zip | A seam without visible zip, pull at the top | Allowance to suit the tape/foot (often 1.5 to 2 cm); locate the top stop from the finished waist/neck edge and facing, and the bottom stop from the usable chain length | Install before stitching the lower seam; press tape flat; stitch with an invisible zip foot; close the seam below the zip stop; zip tape and fabric should have notches at the zip end |
 | Centred zip | Zip under a seam; two rows of topstitching at equal distance | 1.5 to 2 cm; opening notches | Baste the seam closed, press open, stitch the zip behind the seam, topstitch 6 to 8 mm each side |
 | Lapped zip | One side overlaps the other; one row of topstitching visible | 2 cm on both sides (1.5 cm is a minimum); lapping side 1.5 cm | Stitch the zip to one side, fold the other over, topstitch at 1 cm; stop at the zip end with a bar tack |
 | Fly zip (trouser fly) | J-shaped topstitching curve on the front of trousers | Left front extension (fly facing) 3.5 to 4 cm wide beyond the centre front; right front: fly shield, a separate piece 4 x 18 cm, cut double; zip 11 to 15 cm (women), 15 to 18 cm (men); crotch curve notched | Join the front crotch seam below the fly; attach zip to the facing; add the shield; topstitch the J curve through the left front, facing and zip; the fly lap goes on the right-hand side of the wearer for women's wear (the left over right is conventional for men; verify per pattern) |
@@ -313,10 +313,12 @@ let it cool before moving. Grain of interfacing follows the grain of the piece u
 | Exposed zip | The zip teeth are visible as a decorative feature | A slit with no seam; seam allowance 1.5 cm; a facing behind the zip tape | Stitch the zip on the right side with a topstitch or a welt, finishing the ends with a bartack |
 | Zip in a placket | Zip hidden under a front band (anoraks, polos) | Placket width = zip tape width + 1 cm each side; separate band or grown-on extension | Sew the zip to the band edges, then the band to the opening; topstitch |
 
-Zip length: the opening must be long enough to put the garment on: skirt 18 to 22 cm; dress back from the
-neck to below the hip (waist to hip is 20 cm for a fitted dress), trousers fly 11 to 18 cm; neckline zip
-(roll over the head) 18 to 25 cm; sleeves 8 to 10 cm. A zip is always longer than the opening by the zip
-stop (1 cm top, 1 cm bottom). Zip end tapes should extend into the waistband or facing allowance.
+Zip length: the opening must be long enough for the actual donning route. Typical starting lengths
+include skirt 18 to 22 cm, trouser fly 11 to 18 cm, neckline opening 18 to 25 cm and sleeve 8 to 10 cm;
+check the wearer, garment and hardware rather than treating these as required lengths. Distinguish
+usable chain length between stops from total tape length. Set tape extensions, slider/stop clearance
+and waistband/facing/hem continuation from the selected zipper and assembly; do not add a universal
+1 cm at each end. Use the [closure and curve checks](../curves-and-seam-connections.md#6-zippers-plackets-slits-and-closure-continuations).
 
 ### 5.2 Buttons and buttonholes
 
