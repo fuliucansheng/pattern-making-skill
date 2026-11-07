@@ -102,6 +102,14 @@ the comparison procedure; the requirements below apply even when that reference 
     portable rules, and rerun generation/validation on the current design. Never copy proprietary
     coordinates from a comparison: derive new geometry from the current target measurements/design.
 
+For executable comparison, author the internal
+[semantic manifest](references/schemas/pattern-benchmark-v1.schema.json) from saved readback and independent
+construction contracts; the comparator does not infer arbitrary raw-DXF semantics. Run
+`python scripts/pattern_benchmark.py comparison.json --json report.json --markdown report.md`. Review raw
+measurements, local registration, shaping closure, seam/fullness intervals, notch ownership, companion
+coverage and retained source defects before editing. The executable and its synthetic regressions improve
+geometry diagnostics and error rejection; they do not establish physical fit or replace export/toile checks.
+
 ## Construction laws and engine checks
 
 1. **Reciprocal lengths**: edges sewn together have the same length within 1 mm. Every intended difference
@@ -165,7 +173,7 @@ flare, 16 cm wrap, funnel collar, lined). Index: `references/kb/INDEX.md`. Forma
 | Need | Sheet |
 |---|---|
 | Analyse a photo, recognise constructions | `references/reference-analysis.md` |
-| Validate construction or compare AI/human patterns | `references/construction-validation.md` |
+| Validate construction or compare AI/human patterns | `references/construction-validation.md`, `references/human-pattern-benchmarks.md`, `scripts/pattern_benchmark.py` |
 | Develop a sketch, sculptural volumes, unconventional cutting | `references/design-from-sketch.md` |
 | Skirts, trousers, shorts, jumpsuits | `references/techniques/skirts-trousers.md` |
 | Bodices, dart manipulation, dresses, tops, shirts | `references/techniques/bodices-dresses-tops.md` |

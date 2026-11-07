@@ -1,0 +1,1440 @@
+{
+  "comparisons": [
+    {
+      "evidence": {
+        "basis": "invented attachment coupon",
+        "class": "measured_proven",
+        "conditions": []
+      },
+      "id": "panel-frame",
+      "kind": "registration",
+      "landmarks": [
+        [
+          "origin",
+          "origin"
+        ],
+        [
+          "axis",
+          "axis"
+        ],
+        [
+          "end",
+          "end"
+        ]
+      ],
+      "mode": "rigid",
+      "reflected": false,
+      "reflection_license": null,
+      "regional_tolerance": 1e-08,
+      "regions": [
+        {
+          "id": "height",
+          "source": [
+            "origin",
+            "axis"
+          ],
+          "target": [
+            "origin",
+            "axis"
+          ]
+        },
+        {
+          "id": "width",
+          "source": [
+            "origin",
+            "end"
+          ],
+          "target": [
+            "origin",
+            "end"
+          ]
+        }
+      ],
+      "source": {
+        "pattern": "reference",
+        "piece": "panel"
+      },
+      "target": {
+        "pattern": "draft",
+        "piece": "panel"
+      },
+      "tolerance": 1e-08,
+      "unresolved": []
+    },
+    {
+      "evidence": {
+        "basis": "invented attachment coupon",
+        "class": "measured_proven",
+        "conditions": []
+      },
+      "id": "opening-shape",
+      "kind": "curve",
+      "sample_fractions": [
+        0,
+        0.25,
+        0.5,
+        0.75,
+        1
+      ],
+      "source": {
+        "direction": 1,
+        "edge": "top",
+        "pattern": "reference",
+        "piece": "panel"
+      },
+      "target": {
+        "direction": 1,
+        "edge": "top",
+        "pattern": "draft",
+        "piece": "panel"
+      },
+      "tolerance": 1e-08,
+      "unresolved": []
+    }
+  ],
+  "correspondence": [
+    {
+      "basis": "roles_and_ports",
+      "evidence": {
+        "basis": "invented attachment coupon",
+        "class": "measured_proven",
+        "conditions": []
+      },
+      "id": "panel-match",
+      "ports": [
+        {
+          "role": "opening",
+          "source": [
+            {
+              "edge": "top",
+              "instance": "panel-one",
+              "pattern": "reference",
+              "piece": "panel"
+            }
+          ],
+          "target": [
+            {
+              "edge": "top",
+              "instance": "panel-one",
+              "pattern": "draft",
+              "piece": "panel"
+            }
+          ]
+        }
+      ],
+      "role": "body_panel",
+      "source": [
+        {
+          "instance": "panel-one",
+          "pattern": "reference",
+          "piece": "panel"
+        }
+      ],
+      "status": "matched",
+      "target": [
+        {
+          "instance": "panel-one",
+          "pattern": "draft",
+          "piece": "panel"
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "basis": "roles_and_ports",
+      "evidence": {
+        "basis": "invented attachment coupon",
+        "class": "measured_proven",
+        "conditions": []
+      },
+      "id": "finish-match",
+      "ports": [
+        {
+          "role": "opening",
+          "source": [
+            {
+              "edge": "top",
+              "instance": "finish-one",
+              "pattern": "reference",
+              "piece": "finish"
+            }
+          ],
+          "target": [
+            {
+              "edge": "top",
+              "instance": "finish-one",
+              "pattern": "draft",
+              "piece": "finish"
+            }
+          ]
+        }
+      ],
+      "role": "opening_finish",
+      "source": [
+        {
+          "instance": "finish-one",
+          "pattern": "reference",
+          "piece": "finish"
+        }
+      ],
+      "status": "matched",
+      "target": [
+        {
+          "instance": "finish-one",
+          "pattern": "draft",
+          "piece": "finish"
+        }
+      ],
+      "unresolved": []
+    }
+  ],
+  "patterns": [
+    {
+      "chains": [
+        {
+          "closed_circuit": false,
+          "id": "opening",
+          "operations": [],
+          "required_ports": [
+            {
+              "edge": "top",
+              "end": 12,
+              "instance": "panel-one",
+              "piece": "panel",
+              "start": 0
+            }
+          ],
+          "segments": [
+            {
+              "direction": 1,
+              "edge": "top",
+              "end": 12,
+              "instance": "panel-one",
+              "piece": "panel",
+              "reflection_license": null,
+              "start": 0,
+              "transform": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ],
+          "state": "closed",
+          "target_effective": 12,
+          "tolerance": 1e-08
+        },
+        {
+          "closed_circuit": false,
+          "id": "attachment",
+          "operations": [],
+          "required_ports": [
+            {
+              "edge": "top",
+              "end": 12,
+              "instance": "finish-one",
+              "piece": "finish",
+              "start": 0
+            }
+          ],
+          "segments": [
+            {
+              "direction": 1,
+              "edge": "top",
+              "end": 12,
+              "instance": "finish-one",
+              "piece": "finish",
+              "reflection_license": null,
+              "start": 0,
+              "transform": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ],
+          "state": "closed",
+          "target_effective": 12,
+          "tolerance": 1e-08
+        }
+      ],
+      "claims": [
+        {
+          "class": "fit_material_unverified",
+          "conditions": [],
+          "depends_on": [],
+          "id": "fit",
+          "kind": "physical_fit",
+          "physical_test_records": [],
+          "status": "unresolved"
+        }
+      ],
+      "closures": [],
+      "companions": [
+        {
+          "accepted_modes": [
+            "separate"
+          ],
+          "attachment": "attachment",
+          "coverage": null,
+          "family": "facing_opening",
+          "id": "opening-demand",
+          "material": "shell",
+          "providers": [
+            {
+              "instances": [
+                "finish-one"
+              ],
+              "mode": "separate",
+              "piece": "finish"
+            }
+          ],
+          "quantity": 1,
+          "receiver": "opening",
+          "required_ports": [
+            {
+              "edge": "top",
+              "end": 12,
+              "instance": "panel-one",
+              "piece": "panel",
+              "start": 0
+            }
+          ],
+          "required_state": "closed",
+          "role": "opening_finish",
+          "scope_known": true,
+          "seam": "finish-join",
+          "side": "central"
+        }
+      ],
+      "dependencies": [
+        {
+          "depends": {},
+          "id": "opening",
+          "revision": 1
+        },
+        {
+          "depends": {
+            "opening": 1
+          },
+          "id": "attachment",
+          "revision": 1
+        },
+        {
+          "depends": {
+            "attachment": 1
+          },
+          "id": "marks",
+          "revision": 1
+        }
+      ],
+      "evidence": {
+        "basis": "invented attachment coupon",
+        "class": "measured_proven",
+        "conditions": []
+      },
+      "id": "reference",
+      "junctions": [],
+      "kind": "benchmark",
+      "pieces": [
+        {
+          "allowances": [
+            {
+              "authority": "synthetic net coupon",
+              "cut_edge": "cut-top",
+              "edge": "top",
+              "fractions": [
+                0.25,
+                0.5,
+                0.75
+              ],
+              "id": "top-finish",
+              "kind": "net_support",
+              "normal_side": -1,
+              "offsets": [
+                0,
+                0,
+                0
+              ],
+              "tolerance": 1e-08
+            }
+          ],
+          "cut": [
+            [
+              0,
+              0
+            ],
+            [
+              12,
+              0
+            ],
+            [
+              12,
+              8
+            ],
+            [
+              0,
+              8
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "edges": [
+            {
+              "end": "end",
+              "id": "top",
+              "kind": "sewing",
+              "points": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  12,
+                  0
+                ]
+              ],
+              "role": "opening",
+              "start": "origin"
+            },
+            {
+              "end": "cut-end",
+              "id": "cut-top",
+              "kind": "cutting",
+              "points": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  12,
+                  0
+                ]
+              ],
+              "role": "cut_opening",
+              "start": "cut-start"
+            }
+          ],
+          "evidence": {
+            "basis": "invented attachment coupon",
+            "class": "measured_proven",
+            "conditions": []
+          },
+          "fold_axis": null,
+          "fold_license": null,
+          "grain": {
+            "actual": [
+              0,
+              1
+            ],
+            "angle_limit": 0.01,
+            "declared": [
+              0,
+              1
+            ],
+            "directional": true
+          },
+          "id": "panel",
+          "instances": [
+            {
+              "closure_roles": [],
+              "face": "up",
+              "id": "panel-one",
+              "material": "shell",
+              "reflected": false,
+              "reflection_license": null,
+              "side": "central"
+            }
+          ],
+          "landmarks": {
+            "axis": [
+              0,
+              8
+            ],
+            "cut-end": [
+              12,
+              0
+            ],
+            "cut-start": [
+              0,
+              0
+            ],
+            "end": [
+              12,
+              0
+            ],
+            "origin": [
+              0,
+              0
+            ]
+          },
+          "notches": [
+            {
+              "edge": "top",
+              "id": "balance",
+              "instance": "panel-one",
+              "logical_id": "balance",
+              "ray": [
+                0,
+                1
+              ],
+              "representation": "physical",
+              "role": "balance",
+              "side": "central",
+              "tip": [
+                3,
+                -2
+              ],
+              "unresolved": []
+            }
+          ],
+          "profiles": [
+            {
+              "axis": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  8
+                ]
+              ],
+              "boundary": "seam",
+              "id": "longitudinal",
+              "metric": "material_width",
+              "operations": [],
+              "stations": [
+                2.0,
+                4.0,
+                6.0
+              ],
+              "targets": [
+                12,
+                12,
+                12
+              ],
+              "tolerance": 1e-08
+            }
+          ],
+          "quantity": {
+            "shell": 1
+          },
+          "quantity_basis": "synthetic material instance",
+          "raw_quantity": "1",
+          "representation": "full",
+          "role": "body_panel",
+          "seam": [
+            [
+              0,
+              0
+            ],
+            [
+              12,
+              0
+            ],
+            [
+              12,
+              8
+            ],
+            [
+              0,
+              8
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "shaping": [],
+          "unresolved": []
+        },
+        {
+          "allowances": [
+            {
+              "authority": "synthetic net coupon",
+              "cut_edge": "cut-top",
+              "edge": "top",
+              "fractions": [
+                0.25,
+                0.5,
+                0.75
+              ],
+              "id": "top-finish",
+              "kind": "net_support",
+              "normal_side": -1,
+              "offsets": [
+                0,
+                0,
+                0
+              ],
+              "tolerance": 1e-08
+            }
+          ],
+          "cut": [
+            [
+              0,
+              0
+            ],
+            [
+              12,
+              0
+            ],
+            [
+              12,
+              2
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "edges": [
+            {
+              "end": "end",
+              "id": "top",
+              "kind": "sewing",
+              "points": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  12,
+                  0
+                ]
+              ],
+              "role": "opening",
+              "start": "origin"
+            },
+            {
+              "end": "cut-end",
+              "id": "cut-top",
+              "kind": "cutting",
+              "points": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  12,
+                  0
+                ]
+              ],
+              "role": "cut_opening",
+              "start": "cut-start"
+            }
+          ],
+          "evidence": {
+            "basis": "invented attachment coupon",
+            "class": "measured_proven",
+            "conditions": []
+          },
+          "fold_axis": null,
+          "fold_license": null,
+          "grain": {
+            "actual": [
+              0,
+              1
+            ],
+            "angle_limit": 0.01,
+            "declared": [
+              0,
+              1
+            ],
+            "directional": true
+          },
+          "id": "finish",
+          "instances": [
+            {
+              "closure_roles": [],
+              "face": "up",
+              "id": "finish-one",
+              "material": "shell",
+              "reflected": false,
+              "reflection_license": null,
+              "side": "central"
+            }
+          ],
+          "landmarks": {
+            "axis": [
+              0,
+              2
+            ],
+            "cut-end": [
+              12,
+              0
+            ],
+            "cut-start": [
+              0,
+              0
+            ],
+            "end": [
+              12,
+              0
+            ],
+            "origin": [
+              0,
+              0
+            ]
+          },
+          "notches": [
+            {
+              "edge": "top",
+              "id": "balance",
+              "instance": "finish-one",
+              "logical_id": "balance",
+              "ray": [
+                0,
+                1
+              ],
+              "representation": "physical",
+              "role": "balance",
+              "side": "central",
+              "tip": [
+                3,
+                -2
+              ],
+              "unresolved": []
+            }
+          ],
+          "profiles": [
+            {
+              "axis": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  2
+                ]
+              ],
+              "boundary": "seam",
+              "id": "longitudinal",
+              "metric": "material_width",
+              "operations": [],
+              "stations": [
+                0.5,
+                1.0,
+                1.5
+              ],
+              "targets": [
+                12,
+                12,
+                12
+              ],
+              "tolerance": 1e-08
+            }
+          ],
+          "quantity": {
+            "shell": 1
+          },
+          "quantity_basis": "synthetic material instance",
+          "raw_quantity": "1",
+          "representation": "full",
+          "role": "opening_finish",
+          "seam": [
+            [
+              0,
+              0
+            ],
+            [
+              12,
+              0
+            ],
+            [
+              12,
+              2
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "shaping": [],
+          "unresolved": []
+        }
+      ],
+      "seams": [
+        {
+          "a": "opening",
+          "authority": "predeclared synthetic zero budget",
+          "authorized_excess": 0,
+          "b": "attachment",
+          "id": "finish-join",
+          "independent_authorization": true,
+          "kind": "equal",
+          "no_gather_intervals": [],
+          "notch_pairs": [
+            {
+              "a": {
+                "notch": "balance",
+                "piece": "panel"
+              },
+              "b": {
+                "notch": "balance",
+                "piece": "finish"
+              }
+            }
+          ],
+          "station_map": null,
+          "tolerance": 1e-08
+        }
+      ],
+      "source_defects": [],
+      "unit_contract": {
+        "calibration_length": 12,
+        "conversion": 1,
+        "raw_length": 12,
+        "tolerance": 1e-08,
+        "unit_authority": "invented calibration"
+      },
+      "unresolved": []
+    },
+    {
+      "chains": [
+        {
+          "closed_circuit": false,
+          "id": "opening",
+          "operations": [],
+          "required_ports": [
+            {
+              "edge": "top",
+              "end": 12,
+              "instance": "panel-one",
+              "piece": "panel",
+              "start": 0
+            }
+          ],
+          "segments": [
+            {
+              "direction": 1,
+              "edge": "top",
+              "end": 12,
+              "instance": "panel-one",
+              "piece": "panel",
+              "reflection_license": null,
+              "start": 0,
+              "transform": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ],
+          "state": "closed",
+          "target_effective": 12,
+          "tolerance": 1e-08
+        },
+        {
+          "closed_circuit": false,
+          "id": "attachment",
+          "operations": [],
+          "required_ports": [
+            {
+              "edge": "top",
+              "end": 12,
+              "instance": "finish-one",
+              "piece": "finish",
+              "start": 0
+            }
+          ],
+          "segments": [
+            {
+              "direction": 1,
+              "edge": "top",
+              "end": 12,
+              "instance": "finish-one",
+              "piece": "finish",
+              "reflection_license": null,
+              "start": 0,
+              "transform": [
+                1,
+                0,
+                0,
+                1,
+                0,
+                0
+              ]
+            }
+          ],
+          "state": "closed",
+          "target_effective": 12,
+          "tolerance": 1e-08
+        }
+      ],
+      "claims": [
+        {
+          "class": "fit_material_unverified",
+          "conditions": [],
+          "depends_on": [],
+          "id": "fit",
+          "kind": "physical_fit",
+          "physical_test_records": [],
+          "status": "unresolved"
+        }
+      ],
+      "closures": [],
+      "companions": [
+        {
+          "accepted_modes": [
+            "separate"
+          ],
+          "attachment": "attachment",
+          "coverage": null,
+          "family": "facing_opening",
+          "id": "opening-demand",
+          "material": "shell",
+          "providers": [
+            {
+              "instances": [
+                "finish-one"
+              ],
+              "mode": "separate",
+              "piece": "finish"
+            }
+          ],
+          "quantity": 1,
+          "receiver": "opening",
+          "required_ports": [
+            {
+              "edge": "top",
+              "end": 12,
+              "instance": "panel-one",
+              "piece": "panel",
+              "start": 0
+            }
+          ],
+          "required_state": "closed",
+          "role": "opening_finish",
+          "scope_known": true,
+          "seam": "finish-join",
+          "side": "central"
+        }
+      ],
+      "dependencies": [
+        {
+          "depends": {},
+          "id": "opening",
+          "revision": 1
+        },
+        {
+          "depends": {
+            "opening": 1
+          },
+          "id": "attachment",
+          "revision": 1
+        },
+        {
+          "depends": {
+            "attachment": 1
+          },
+          "id": "marks",
+          "revision": 1
+        }
+      ],
+      "evidence": {
+        "basis": "invented attachment coupon",
+        "class": "measured_proven",
+        "conditions": []
+      },
+      "id": "draft",
+      "junctions": [],
+      "kind": "candidate",
+      "pieces": [
+        {
+          "allowances": [
+            {
+              "authority": "synthetic net coupon",
+              "cut_edge": "cut-top",
+              "edge": "top",
+              "fractions": [
+                0.25,
+                0.5,
+                0.75
+              ],
+              "id": "top-finish",
+              "kind": "net_support",
+              "normal_side": -1,
+              "offsets": [
+                0,
+                0,
+                0
+              ],
+              "tolerance": 1e-08
+            }
+          ],
+          "cut": [
+            [
+              0,
+              0
+            ],
+            [
+              12,
+              0
+            ],
+            [
+              12,
+              8
+            ],
+            [
+              0,
+              8
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "edges": [
+            {
+              "end": "end",
+              "id": "top",
+              "kind": "sewing",
+              "points": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  12,
+                  0
+                ]
+              ],
+              "role": "opening",
+              "start": "origin"
+            },
+            {
+              "end": "cut-end",
+              "id": "cut-top",
+              "kind": "cutting",
+              "points": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  12,
+                  0
+                ]
+              ],
+              "role": "cut_opening",
+              "start": "cut-start"
+            }
+          ],
+          "evidence": {
+            "basis": "invented attachment coupon",
+            "class": "measured_proven",
+            "conditions": []
+          },
+          "fold_axis": null,
+          "fold_license": null,
+          "grain": {
+            "actual": [
+              0,
+              1
+            ],
+            "angle_limit": 0.01,
+            "declared": [
+              0,
+              1
+            ],
+            "directional": true
+          },
+          "id": "panel",
+          "instances": [
+            {
+              "closure_roles": [],
+              "face": "up",
+              "id": "panel-one",
+              "material": "shell",
+              "reflected": false,
+              "reflection_license": null,
+              "side": "central"
+            }
+          ],
+          "landmarks": {
+            "axis": [
+              0,
+              8
+            ],
+            "cut-end": [
+              12,
+              0
+            ],
+            "cut-start": [
+              0,
+              0
+            ],
+            "end": [
+              12,
+              0
+            ],
+            "origin": [
+              0,
+              0
+            ]
+          },
+          "notches": [
+            {
+              "edge": "top",
+              "id": "balance",
+              "instance": "panel-one",
+              "logical_id": "balance",
+              "ray": [
+                0,
+                1
+              ],
+              "representation": "physical",
+              "role": "balance",
+              "side": "central",
+              "tip": [
+                3,
+                -2
+              ],
+              "unresolved": []
+            }
+          ],
+          "profiles": [
+            {
+              "axis": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  8
+                ]
+              ],
+              "boundary": "seam",
+              "id": "longitudinal",
+              "metric": "material_width",
+              "operations": [],
+              "stations": [
+                2.0,
+                4.0,
+                6.0
+              ],
+              "targets": [
+                12,
+                12,
+                12
+              ],
+              "tolerance": 1e-08
+            }
+          ],
+          "quantity": {
+            "shell": 1
+          },
+          "quantity_basis": "synthetic material instance",
+          "raw_quantity": "1",
+          "representation": "full",
+          "role": "body_panel",
+          "seam": [
+            [
+              0,
+              0
+            ],
+            [
+              12,
+              0
+            ],
+            [
+              12,
+              8
+            ],
+            [
+              0,
+              8
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "shaping": [],
+          "unresolved": []
+        },
+        {
+          "allowances": [
+            {
+              "authority": "synthetic net coupon",
+              "cut_edge": "cut-top",
+              "edge": "top",
+              "fractions": [
+                0.25,
+                0.5,
+                0.75
+              ],
+              "id": "top-finish",
+              "kind": "net_support",
+              "normal_side": -1,
+              "offsets": [
+                0,
+                0,
+                0
+              ],
+              "tolerance": 1e-08
+            }
+          ],
+          "cut": [
+            [
+              0,
+              0
+            ],
+            [
+              12,
+              0
+            ],
+            [
+              12,
+              2
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "edges": [
+            {
+              "end": "end",
+              "id": "top",
+              "kind": "sewing",
+              "points": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  12,
+                  0
+                ]
+              ],
+              "role": "opening",
+              "start": "origin"
+            },
+            {
+              "end": "cut-end",
+              "id": "cut-top",
+              "kind": "cutting",
+              "points": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  12,
+                  0
+                ]
+              ],
+              "role": "cut_opening",
+              "start": "cut-start"
+            }
+          ],
+          "evidence": {
+            "basis": "invented attachment coupon",
+            "class": "measured_proven",
+            "conditions": []
+          },
+          "fold_axis": null,
+          "fold_license": null,
+          "grain": {
+            "actual": [
+              0,
+              1
+            ],
+            "angle_limit": 0.01,
+            "declared": [
+              0,
+              1
+            ],
+            "directional": true
+          },
+          "id": "finish",
+          "instances": [
+            {
+              "closure_roles": [],
+              "face": "up",
+              "id": "finish-one",
+              "material": "shell",
+              "reflected": false,
+              "reflection_license": null,
+              "side": "central"
+            }
+          ],
+          "landmarks": {
+            "axis": [
+              0,
+              2
+            ],
+            "cut-end": [
+              12,
+              0
+            ],
+            "cut-start": [
+              0,
+              0
+            ],
+            "end": [
+              12,
+              0
+            ],
+            "origin": [
+              0,
+              0
+            ]
+          },
+          "notches": [
+            {
+              "edge": "top",
+              "id": "balance",
+              "instance": "finish-one",
+              "logical_id": "balance",
+              "ray": [
+                0,
+                1
+              ],
+              "representation": "physical",
+              "role": "balance",
+              "side": "central",
+              "tip": [
+                3,
+                -2
+              ],
+              "unresolved": []
+            }
+          ],
+          "profiles": [
+            {
+              "axis": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  2
+                ]
+              ],
+              "boundary": "seam",
+              "id": "longitudinal",
+              "metric": "material_width",
+              "operations": [],
+              "stations": [
+                0.5,
+                1.0,
+                1.5
+              ],
+              "targets": [
+                12,
+                12,
+                12
+              ],
+              "tolerance": 1e-08
+            }
+          ],
+          "quantity": {
+            "shell": 1
+          },
+          "quantity_basis": "synthetic material instance",
+          "raw_quantity": "1",
+          "representation": "full",
+          "role": "opening_finish",
+          "seam": [
+            [
+              0,
+              0
+            ],
+            [
+              12,
+              0
+            ],
+            [
+              12,
+              2
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "shaping": [],
+          "unresolved": []
+        }
+      ],
+      "seams": [
+        {
+          "a": "opening",
+          "authority": "predeclared synthetic zero budget",
+          "authorized_excess": 0,
+          "b": "attachment",
+          "id": "finish-join",
+          "independent_authorization": true,
+          "kind": "equal",
+          "no_gather_intervals": [],
+          "notch_pairs": [
+            {
+              "a": {
+                "notch": "balance",
+                "piece": "panel"
+              },
+              "b": {
+                "notch": "balance",
+                "piece": "finish"
+              }
+            }
+          ],
+          "station_map": null,
+          "tolerance": 1e-08
+        }
+      ],
+      "source_defects": [],
+      "unit_contract": {
+        "calibration_length": 12,
+        "conversion": 1,
+        "raw_length": 12,
+        "tolerance": 1e-08,
+        "unit_authority": "invented calibration"
+      },
+      "unresolved": []
+    }
+  ],
+  "settings": {
+    "curvature_window": 0.5,
+    "epsilon": 1e-09,
+    "sample_step": 0.5,
+    "tangent_window": 0.5
+  },
+  "units": "synthetic",
+  "unresolved": [],
+  "version": "pattern-benchmark/v1"
+}

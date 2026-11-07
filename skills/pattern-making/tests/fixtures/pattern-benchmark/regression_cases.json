@@ -1,0 +1,3213 @@
+{
+  "cases": [
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-UNIT-POS",
+      "input": {
+        "calibration_length": 24,
+        "conversion": 3,
+        "raw_length": 8,
+        "tolerance": 1e-09,
+        "unit_authority": "declared_test_unit",
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V01"
+    },
+    {
+      "expected_codes": [
+        "UNIT_CALIBRATION"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-UNIT-NEG",
+      "input": {
+        "calibration_length": 24,
+        "conversion": 1,
+        "raw_length": 8,
+        "tolerance": 1e-09,
+        "unit_authority": "declared_test_unit",
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V01"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-FOLD-QUANTITY-POS",
+      "input": {
+        "instances": [
+          {
+            "id": "B-full",
+            "material": "shell",
+            "template": "B"
+          }
+        ],
+        "represented_roles": [
+          "back"
+        ],
+        "required_roles": [
+          "back"
+        ],
+        "templates": [
+          {
+            "cut_quantity": 1,
+            "id": "B",
+            "material": "shell",
+            "representation": "on_fold"
+          }
+        ],
+        "units": "arbitrary_synthetic_units",
+        "unresolved_ids": []
+      },
+      "synthetic": true,
+      "validator_id": "V02"
+    },
+    {
+      "expected_codes": [
+        "CUT_QUANTITY"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-FOLD-QUANTITY-NEG",
+      "input": {
+        "instances": [
+          {
+            "id": "B-full",
+            "material": "shell",
+            "template": "B"
+          },
+          {
+            "id": "B-extra",
+            "material": "shell",
+            "template": "B"
+          }
+        ],
+        "represented_roles": [
+          "back"
+        ],
+        "required_roles": [
+          "back"
+        ],
+        "templates": [
+          {
+            "cut_quantity": 1,
+            "id": "B",
+            "material": "shell",
+            "representation": "on_fold"
+          }
+        ],
+        "units": "arbitrary_synthetic_units",
+        "unresolved_ids": []
+      },
+      "synthetic": true,
+      "validator_id": "V02"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-INVENTORY-POS",
+      "input": {
+        "instances": [
+          {
+            "id": "B-full",
+            "material": "shell",
+            "template": "B"
+          }
+        ],
+        "represented_roles": [
+          "back"
+        ],
+        "required_roles": [
+          "back"
+        ],
+        "templates": [
+          {
+            "cut_quantity": 1,
+            "id": "B",
+            "material": "shell",
+            "representation": "on_fold"
+          }
+        ],
+        "units": "arbitrary_synthetic_units",
+        "unresolved_ids": []
+      },
+      "synthetic": true,
+      "validator_id": "V02"
+    },
+    {
+      "expected_codes": [
+        "INVENTORY_ROLE"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-INVENTORY-NEG",
+      "input": {
+        "instances": [
+          {
+            "id": "B-full",
+            "material": "shell",
+            "template": "B"
+          }
+        ],
+        "represented_roles": [],
+        "required_roles": [
+          "back"
+        ],
+        "templates": [
+          {
+            "cut_quantity": 1,
+            "id": "B",
+            "material": "shell",
+            "representation": "on_fold"
+          }
+        ],
+        "units": "arbitrary_synthetic_units",
+        "unresolved_ids": []
+      },
+      "synthetic": true,
+      "validator_id": "V02"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-NEAREST-BOX-POS",
+      "input": {
+        "candidates": [
+          {
+            "box": [
+              0,
+              0,
+              4,
+              2
+            ],
+            "id": "near",
+            "ports": [
+              "back_neck"
+            ],
+            "role": "neck_facing"
+          },
+          {
+            "box": [
+              30,
+              25,
+              34,
+              27
+            ],
+            "id": "far",
+            "ports": [
+              "closed_back_waist",
+              "back_lower_attachment"
+            ],
+            "role": "back_waist_insert"
+          }
+        ],
+        "selected": "far",
+        "source": {
+          "box": [
+            0,
+            0,
+            4,
+            2
+          ],
+          "ports": [
+            "closed_back_waist",
+            "back_lower_attachment"
+          ],
+          "role": "back_waist_insert"
+        },
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V03"
+    },
+    {
+      "expected_codes": [
+        "ROLE_PORT_MISMATCH"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-NEAREST-BOX-NEG",
+      "input": {
+        "candidates": [
+          {
+            "box": [
+              0,
+              0,
+              4,
+              2
+            ],
+            "id": "near",
+            "ports": [
+              "back_neck"
+            ],
+            "role": "neck_facing"
+          },
+          {
+            "box": [
+              30,
+              25,
+              34,
+              27
+            ],
+            "id": "far",
+            "ports": [
+              "closed_back_waist",
+              "back_lower_attachment"
+            ],
+            "role": "back_waist_insert"
+          }
+        ],
+        "selected": "near",
+        "source": {
+          "box": [
+            0,
+            0,
+            4,
+            2
+          ],
+          "ports": [
+            "closed_back_waist",
+            "back_lower_attachment"
+          ],
+          "role": "back_waist_insert"
+        },
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V03"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-NAMED-EDGE-POS",
+      "input": {
+        "candidates": [
+          {
+            "id": "bag",
+            "ports": [
+              "pocket_entry"
+            ],
+            "role": "pocket_bag"
+          }
+        ],
+        "selected": "bag",
+        "source": {
+          "ports": [
+            "pocket_entry"
+          ],
+          "role": "pocket_bag"
+        },
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V03"
+    },
+    {
+      "expected_codes": [
+        "ROLE_PORT_MISMATCH"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-NAMED-EDGE-NEG",
+      "input": {
+        "candidates": [
+          {
+            "id": "bag",
+            "ports": [
+              "bag_outer_perimeter"
+            ],
+            "role": "pocket_bag"
+          }
+        ],
+        "selected": "bag",
+        "source": {
+          "ports": [
+            "pocket_entry"
+          ],
+          "role": "pocket_bag"
+        },
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V03"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-GLOBAL-SCALE-POS",
+      "input": {
+        "candidate": [
+          24,
+          16,
+          20,
+          12
+        ],
+        "declared_scale": 2,
+        "mode": "regions",
+        "raw_dimensions_retained": true,
+        "reference": [
+          12,
+          8,
+          10,
+          6
+        ],
+        "reflected": false,
+        "reflection_authorized": false,
+        "region_ids": [
+          "height",
+          "waist",
+          "hip",
+          "upper"
+        ],
+        "relative_tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V04"
+    },
+    {
+      "expected_codes": [
+        "REGIONAL_SHAPE"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-GLOBAL-SCALE-NEG",
+      "input": {
+        "candidate": [
+          24,
+          20,
+          20,
+          10
+        ],
+        "declared_scale": 2,
+        "mode": "regions",
+        "raw_dimensions_retained": true,
+        "reference": [
+          12,
+          8,
+          10,
+          6
+        ],
+        "reflected": false,
+        "reflection_authorized": false,
+        "region_ids": [
+          "height",
+          "waist",
+          "hip",
+          "upper"
+        ],
+        "relative_tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V04"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-LOCAL-FRAME-POS",
+      "input": {
+        "declared_scale": 1,
+        "mode": "landmarks",
+        "raw_dimensions_retained": true,
+        "reflected": false,
+        "reflection_authorized": false,
+        "source": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "target": [
+          [
+            7,
+            3
+          ],
+          [
+            3,
+            3
+          ],
+          [
+            6,
+            5
+          ]
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V04"
+    },
+    {
+      "expected_codes": [
+        "UNLICENSED_REFLECTION"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-LOCAL-FRAME-NEG",
+      "input": {
+        "declared_scale": 1,
+        "mode": "landmarks",
+        "raw_dimensions_retained": true,
+        "reflected": true,
+        "reflection_authorized": false,
+        "source": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "target": [
+          [
+            7,
+            3
+          ],
+          [
+            3,
+            3
+          ],
+          [
+            6,
+            1
+          ]
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V04"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-SLEEVE-VOLUME-POS",
+      "input": {
+        "metric": "material_width",
+        "polygon": [
+          [
+            -1,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            3,
+            4
+          ],
+          [
+            5,
+            8
+          ],
+          [
+            -5,
+            8
+          ],
+          [
+            -3,
+            4
+          ],
+          [
+            -2,
+            2
+          ],
+          [
+            -1,
+            0
+          ]
+        ],
+        "stations": [
+          2,
+          4,
+          7
+        ],
+        "target_widths": [
+          4,
+          6,
+          9
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V05"
+    },
+    {
+      "expected_codes": [
+        "WIDTH_PROFILE"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-SLEEVE-VOLUME-NEG",
+      "input": {
+        "metric": "material_width",
+        "polygon": [
+          [
+            -1,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            5,
+            4
+          ],
+          [
+            3,
+            8
+          ],
+          [
+            -3,
+            8
+          ],
+          [
+            -5,
+            4
+          ],
+          [
+            -2,
+            2
+          ],
+          [
+            -1,
+            0
+          ]
+        ],
+        "stations": [
+          2,
+          4,
+          7
+        ],
+        "target_widths": [
+          4,
+          6,
+          9
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V05"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-SPLIT-WIDTH-POS",
+      "input": {
+        "metric": "material_width",
+        "polygon": [
+          [
+            0,
+            0
+          ],
+          [
+            10,
+            0
+          ],
+          [
+            10,
+            8
+          ],
+          [
+            8,
+            8
+          ],
+          [
+            8,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            8
+          ],
+          [
+            0,
+            8
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "stations": [
+          5
+        ],
+        "target_widths": [
+          4
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V05"
+    },
+    {
+      "expected_codes": [
+        "WIDTH_PROFILE"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-SPLIT-WIDTH-NEG",
+      "input": {
+        "metric": "material_width",
+        "polygon": [
+          [
+            0,
+            0
+          ],
+          [
+            10,
+            0
+          ],
+          [
+            10,
+            8
+          ],
+          [
+            8,
+            8
+          ],
+          [
+            8,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            8
+          ],
+          [
+            0,
+            8
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "stations": [
+          5
+        ],
+        "target_widths": [
+          10
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V05"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-CURVATURE-POS",
+      "input": {
+        "candidate": [
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            4,
+            0
+          ]
+        ],
+        "mode": "curve",
+        "reference": [
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            4,
+            0
+          ]
+        ],
+        "sample_fractions": [
+          0,
+          0.25,
+          0.5,
+          0.75,
+          1
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V06"
+    },
+    {
+      "expected_codes": [
+        "SIGNED_CURVE_SHAPE"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-CURVATURE-NEG",
+      "input": {
+        "candidate": [
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            -1
+          ],
+          [
+            4,
+            0
+          ]
+        ],
+        "mode": "curve",
+        "reference": [
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            4,
+            0
+          ]
+        ],
+        "sample_fractions": [
+          0,
+          0.25,
+          0.5,
+          0.75,
+          1
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V06"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-TANGENT-POS",
+      "input": {
+        "angle_limit": 2,
+        "equal_seam_lengths": true,
+        "gap": 0,
+        "gap_limit": 1e-08,
+        "incoming": [
+          1,
+          0
+        ],
+        "intent": "smooth",
+        "mode": "junction",
+        "outgoing": [
+          1,
+          0
+        ],
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V06"
+    },
+    {
+      "expected_codes": [
+        "JUNCTION_TANGENT"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-TANGENT-NEG",
+      "input": {
+        "angle_limit": 2,
+        "equal_seam_lengths": true,
+        "gap": 0,
+        "gap_limit": 1e-08,
+        "incoming": [
+          1,
+          0
+        ],
+        "intent": "smooth",
+        "mode": "junction",
+        "outgoing": [
+          1,
+          1
+        ],
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V06"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-INTENDED-CORNER-POS",
+      "input": {
+        "angle_limit": 2,
+        "equal_seam_lengths": true,
+        "gap": 0,
+        "gap_limit": 1e-08,
+        "incoming": [
+          1,
+          0
+        ],
+        "intent": "corner",
+        "mode": "junction",
+        "outgoing": [
+          1,
+          1
+        ],
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V06"
+    },
+    {
+      "expected_codes": [
+        "ANGLE_LIMIT_UNKNOWN"
+      ],
+      "expected_outcome": "unresolved",
+      "expected_pass": false,
+      "id": "FX-UNKNOWN-ANGLE-NEG",
+      "input": {
+        "angle_limit": null,
+        "equal_seam_lengths": true,
+        "gap": 0,
+        "gap_limit": 1e-08,
+        "incoming": [
+          1,
+          0
+        ],
+        "intent": "smooth",
+        "mode": "junction",
+        "outgoing": [
+          1,
+          1
+        ],
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V06"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-MISSING-DART-POS",
+      "input": {
+        "operations": [
+          {
+            "affects_chain": true,
+            "apex": [
+              0,
+              5
+            ],
+            "boundary_interval": [
+              8,
+              10.5
+            ],
+            "id": "D",
+            "kind": "dart",
+            "mouth_a": [
+              -1,
+              0
+            ],
+            "mouth_b": [
+              1,
+              0
+            ],
+            "representation": "intact_mouth_cap"
+          }
+        ],
+        "raw_length": 30,
+        "target_effective": 27.5,
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V07"
+    },
+    {
+      "expected_codes": [
+        "SHAPING_BUDGET"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-MISSING-DART-NEG",
+      "input": {
+        "operations": [],
+        "raw_length": 30,
+        "target_effective": 27.5,
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V07"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-DART-LEGS-POS",
+      "input": {
+        "operations": [
+          {
+            "affects_chain": true,
+            "apex": [
+              0,
+              5
+            ],
+            "boundary_interval": [
+              8,
+              10.5
+            ],
+            "id": "D",
+            "kind": "dart",
+            "mouth_a": [
+              -1,
+              0
+            ],
+            "mouth_b": [
+              1,
+              0
+            ],
+            "representation": "intact_mouth_cap"
+          }
+        ],
+        "raw_length": 30,
+        "target_effective": 27.5,
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V07"
+    },
+    {
+      "expected_codes": [
+        "DART_LEG_MISMATCH"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-DART-LEGS-NEG",
+      "input": {
+        "operations": [
+          {
+            "affects_chain": true,
+            "apex": [
+              0,
+              5
+            ],
+            "boundary_interval": [
+              8,
+              10.5
+            ],
+            "id": "D",
+            "kind": "dart",
+            "mouth_a": [
+              -1,
+              0
+            ],
+            "mouth_b": [
+              2,
+              0
+            ],
+            "representation": "intact_mouth_cap"
+          }
+        ],
+        "raw_length": 30,
+        "target_effective": 27.5,
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V07"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-REMOTE-DART-POS",
+      "input": {
+        "operations": [
+          {
+            "affects_chain": false,
+            "id": "I",
+            "kind": "fish_dart",
+            "reported_chain_deduction": 0,
+            "representation": "interior",
+            "section_intake": 3
+          }
+        ],
+        "raw_length": 18,
+        "target_effective": 18,
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V07"
+    },
+    {
+      "expected_codes": [
+        "REMOTE_INTAKE"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-REMOTE-DART-NEG",
+      "input": {
+        "operations": [
+          {
+            "affects_chain": false,
+            "id": "I",
+            "kind": "fish_dart",
+            "reported_chain_deduction": 3,
+            "representation": "interior",
+            "section_intake": 3
+          }
+        ],
+        "raw_length": 18,
+        "target_effective": 18,
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V07"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-V-DART-POS",
+      "input": {
+        "operations": [
+          {
+            "affects_chain": true,
+            "apex": [
+              0,
+              5
+            ],
+            "id": "D",
+            "kind": "dart",
+            "mouth_a": [
+              -1,
+              0
+            ],
+            "mouth_b": [
+              1,
+              0
+            ],
+            "representation": "boundary_v"
+          }
+        ],
+        "raw_length": 30.19803902718557,
+        "reported_effective": 20,
+        "target_effective": 20,
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V07"
+    },
+    {
+      "expected_codes": [
+        "REPORTED_EFFECTIVE_LENGTH"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-V-DART-NEG",
+      "input": {
+        "operations": [
+          {
+            "affects_chain": true,
+            "apex": [
+              0,
+              5
+            ],
+            "id": "D",
+            "kind": "dart",
+            "mouth_a": [
+              -1,
+              0
+            ],
+            "mouth_b": [
+              1,
+              0
+            ],
+            "representation": "boundary_v"
+          }
+        ],
+        "raw_length": 30.19803902718557,
+        "reported_effective": 28.19803902718557,
+        "target_effective": 20,
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V07"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-TUCK-POS",
+      "input": {
+        "operations": [
+          {
+            "affects_chain": true,
+            "boundary_interval": [
+              2,
+              4
+            ],
+            "id": "T",
+            "kind": "tuck",
+            "paired": true,
+            "representation": "folded_strips",
+            "sequence_known": true,
+            "stitch_pair": [
+              [
+                2,
+                0
+              ],
+              [
+                4,
+                0
+              ]
+            ]
+          }
+        ],
+        "raw_length": 20,
+        "target_effective": 18,
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V07"
+    },
+    {
+      "expected_codes": [
+        "FOLD_SEMANTICS_UNKNOWN"
+      ],
+      "expected_outcome": "unresolved",
+      "expected_pass": false,
+      "id": "FX-TUCK-NEG",
+      "input": {
+        "operations": [
+          {
+            "affects_chain": true,
+            "boundary_interval": [
+              2,
+              4
+            ],
+            "id": "T",
+            "kind": "tuck",
+            "paired": false,
+            "representation": "folded_strips",
+            "sequence_known": true,
+            "stitch_pair": [
+              [
+                2,
+                0
+              ],
+              [
+                4,
+                0
+              ]
+            ]
+          }
+        ],
+        "raw_length": 20,
+        "target_effective": 18,
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V07"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-PLEAT-OVERLAP-POS",
+      "input": {
+        "operations": [
+          {
+            "affects_chain": true,
+            "boundary_interval": [
+              2,
+              4
+            ],
+            "id": "P",
+            "kind": "pleat",
+            "paired": true,
+            "representation": "folded_strips",
+            "sequence_known": true,
+            "stitch_pair": [
+              [
+                2,
+                0
+              ],
+              [
+                4,
+                0
+              ]
+            ]
+          }
+        ],
+        "raw_length": 20,
+        "target_effective": 18,
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V07"
+    },
+    {
+      "expected_codes": [
+        "OVERLAPPING_TAKEUP"
+      ],
+      "expected_outcome": "unresolved",
+      "expected_pass": false,
+      "id": "FX-PLEAT-OVERLAP-NEG",
+      "input": {
+        "operations": [
+          {
+            "affects_chain": true,
+            "boundary_interval": [
+              2,
+              4
+            ],
+            "id": "P",
+            "kind": "pleat",
+            "paired": true,
+            "representation": "folded_strips",
+            "sequence_known": true,
+            "stitch_pair": [
+              [
+                2,
+                0
+              ],
+              [
+                4,
+                0
+              ]
+            ]
+          },
+          {
+            "affects_chain": true,
+            "boundary_interval": [
+              3,
+              5
+            ],
+            "id": "P2",
+            "kind": "pleat",
+            "paired": true,
+            "representation": "folded_strips",
+            "sequence_known": true,
+            "stitch_pair": [
+              [
+                3,
+                0
+              ],
+              [
+                5,
+                0
+              ]
+            ]
+          }
+        ],
+        "raw_length": 20,
+        "target_effective": 18,
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V07"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-COMPLETE-CHAIN-POS",
+      "input": {
+        "authorized_ease": 0,
+        "mode": "chain",
+        "receiver_length": 15,
+        "required_ports": [
+          "front_neck",
+          "back_neck",
+          "opening_extension"
+        ],
+        "segments": [
+          {
+            "length": 7,
+            "port": "front_neck"
+          },
+          {
+            "length": 5,
+            "port": "back_neck"
+          },
+          {
+            "length": 3,
+            "port": "opening_extension"
+          }
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V08"
+    },
+    {
+      "expected_codes": [
+        "CHAIN_COVERAGE"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-COMPLETE-CHAIN-NEG",
+      "input": {
+        "authorized_ease": 0,
+        "mode": "chain",
+        "receiver_length": 12,
+        "required_ports": [
+          "front_neck",
+          "back_neck",
+          "opening_extension"
+        ],
+        "segments": [
+          {
+            "length": 7,
+            "port": "front_neck"
+          },
+          {
+            "length": 5,
+            "port": "back_neck"
+          }
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V08"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-SEAM-EQUALITY-POS",
+      "input": {
+        "authorized_ease": 0,
+        "mode": "chain",
+        "receiver_length": 15,
+        "required_ports": [
+          "front_neck",
+          "back_neck",
+          "opening_extension"
+        ],
+        "segments": [
+          {
+            "length": 7,
+            "port": "front_neck"
+          },
+          {
+            "length": 5,
+            "port": "back_neck"
+          },
+          {
+            "length": 3,
+            "port": "opening_extension"
+          }
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V08"
+    },
+    {
+      "expected_codes": [
+        "SEAM_MISMATCH"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-SEAM-EQUALITY-NEG",
+      "input": {
+        "authorized_ease": 0,
+        "mode": "chain",
+        "receiver_length": 14,
+        "required_ports": [
+          "front_neck",
+          "back_neck",
+          "opening_extension"
+        ],
+        "segments": [
+          {
+            "length": 7,
+            "port": "front_neck"
+          },
+          {
+            "length": 5,
+            "port": "back_neck"
+          },
+          {
+            "length": 3,
+            "port": "opening_extension"
+          }
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V08"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-STALE-COMPANION-POS",
+      "input": {
+        "assembly_cycle": [
+          "front",
+          "back",
+          "front"
+        ],
+        "mode": "dependencies",
+        "nodes": [
+          {
+            "depends": {},
+            "id": "neck",
+            "revision": 2
+          },
+          {
+            "depends": {
+              "neck": 2
+            },
+            "id": "facing",
+            "revision": 4
+          },
+          {
+            "depends": {
+              "facing": 4
+            },
+            "id": "marks",
+            "revision": 3
+          }
+        ],
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V08"
+    },
+    {
+      "expected_codes": [
+        "STALE_DEPENDENCY"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-STALE-COMPANION-NEG",
+      "input": {
+        "assembly_cycle": [
+          "front",
+          "back",
+          "front"
+        ],
+        "mode": "dependencies",
+        "nodes": [
+          {
+            "depends": {},
+            "id": "neck",
+            "revision": 2
+          },
+          {
+            "depends": {
+              "neck": 1
+            },
+            "id": "facing",
+            "revision": 4
+          },
+          {
+            "depends": {
+              "facing": 4
+            },
+            "id": "marks",
+            "revision": 3
+          }
+        ],
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V08"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-INVENTED-EASE-POS",
+      "input": {
+        "a_length": 15,
+        "authorized_excess": 3,
+        "b_length": 12,
+        "independent_authorization": true,
+        "map": [
+          [
+            0,
+            0
+          ],
+          [
+            4,
+            4
+          ],
+          [
+            15,
+            12
+          ]
+        ],
+        "no_gather_intervals": [
+          [
+            0,
+            4
+          ]
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V09"
+    },
+    {
+      "expected_codes": [
+        "UNAUTHORIZED_TAKEUP"
+      ],
+      "expected_outcome": "unresolved",
+      "expected_pass": false,
+      "id": "FX-INVENTED-EASE-NEG",
+      "input": {
+        "a_length": 15,
+        "authorized_excess": 3,
+        "b_length": 12,
+        "independent_authorization": false,
+        "map": [
+          [
+            0,
+            0
+          ],
+          [
+            4,
+            4
+          ],
+          [
+            15,
+            12
+          ]
+        ],
+        "no_gather_intervals": [
+          [
+            0,
+            4
+          ]
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V09"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-GATHER-ZONE-POS",
+      "input": {
+        "a_length": 15,
+        "authorized_excess": 3,
+        "b_length": 12,
+        "independent_authorization": true,
+        "map": [
+          [
+            0,
+            0
+          ],
+          [
+            4,
+            4
+          ],
+          [
+            15,
+            12
+          ]
+        ],
+        "no_gather_intervals": [
+          [
+            0,
+            4
+          ]
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V09"
+    },
+    {
+      "expected_codes": [
+        "NO_GATHER_INTERVAL"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-GATHER-ZONE-NEG",
+      "input": {
+        "a_length": 15,
+        "authorized_excess": 3,
+        "b_length": 12,
+        "independent_authorization": true,
+        "map": [
+          [
+            0,
+            0
+          ],
+          [
+            4,
+            3
+          ],
+          [
+            15,
+            12
+          ]
+        ],
+        "no_gather_intervals": [
+          [
+            0,
+            4
+          ]
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V09"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-NOTCH-MISPAIR-POS",
+      "input": {
+        "a_edge": {
+          "id": "armhole",
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              10,
+              0
+            ]
+          ]
+        },
+        "a_marks": [
+          {
+            "id": "A",
+            "parent": "armhole",
+            "ray": [
+              0,
+              1
+            ],
+            "role": "front_balance",
+            "side": "left",
+            "tip": [
+              3,
+              -2
+            ]
+          }
+        ],
+        "b_edge": {
+          "id": "cap",
+          "points": [
+            [
+              20,
+              0
+            ],
+            [
+              30,
+              0
+            ]
+          ]
+        },
+        "b_marks": [
+          {
+            "id": "B",
+            "parent": "cap",
+            "ray": [
+              0,
+              1
+            ],
+            "role": "front_balance",
+            "side": "left",
+            "tip": [
+              23,
+              -2
+            ]
+          }
+        ],
+        "b_reverse": false,
+        "pairs": [
+          [
+            "A",
+            "B"
+          ]
+        ],
+        "station_map": [
+          [
+            0,
+            0
+          ],
+          [
+            10,
+            10
+          ]
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V10"
+    },
+    {
+      "expected_codes": [
+        "NOTCH_ROLE"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-NOTCH-MISPAIR-NEG",
+      "input": {
+        "a_edge": {
+          "id": "armhole",
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              10,
+              0
+            ]
+          ]
+        },
+        "a_marks": [
+          {
+            "id": "A",
+            "parent": "armhole",
+            "ray": [
+              0,
+              1
+            ],
+            "role": "front_balance",
+            "side": "left",
+            "tip": [
+              3,
+              -2
+            ]
+          }
+        ],
+        "b_edge": {
+          "id": "cap",
+          "points": [
+            [
+              20,
+              0
+            ],
+            [
+              30,
+              0
+            ]
+          ]
+        },
+        "b_marks": [
+          {
+            "id": "B",
+            "parent": "cap",
+            "ray": [
+              0,
+              1
+            ],
+            "role": "back_balance",
+            "side": "left",
+            "tip": [
+              23,
+              -2
+            ]
+          }
+        ],
+        "b_reverse": false,
+        "pairs": [
+          [
+            "A",
+            "B"
+          ]
+        ],
+        "station_map": [
+          [
+            0,
+            0
+          ],
+          [
+            10,
+            10
+          ]
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V10"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-NOTCH-STATION-POS",
+      "input": {
+        "a_edge": {
+          "id": "armhole",
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              10,
+              0
+            ]
+          ]
+        },
+        "a_marks": [
+          {
+            "id": "A",
+            "parent": "armhole",
+            "ray": [
+              0,
+              1
+            ],
+            "role": "front_balance",
+            "side": "left",
+            "tip": [
+              3,
+              -2
+            ]
+          }
+        ],
+        "b_edge": {
+          "id": "cap",
+          "points": [
+            [
+              20,
+              0
+            ],
+            [
+              30,
+              0
+            ]
+          ]
+        },
+        "b_marks": [
+          {
+            "id": "B",
+            "parent": "cap",
+            "ray": [
+              0,
+              1
+            ],
+            "role": "front_balance",
+            "side": "left",
+            "tip": [
+              23,
+              -2
+            ]
+          }
+        ],
+        "b_reverse": false,
+        "pairs": [
+          [
+            "A",
+            "B"
+          ]
+        ],
+        "station_map": [
+          [
+            0,
+            0
+          ],
+          [
+            10,
+            10
+          ]
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V10"
+    },
+    {
+      "expected_codes": [
+        "NOTCH_STATION"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-NOTCH-STATION-NEG",
+      "input": {
+        "a_edge": {
+          "id": "armhole",
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              10,
+              0
+            ]
+          ]
+        },
+        "a_marks": [
+          {
+            "id": "A",
+            "parent": "armhole",
+            "ray": [
+              0,
+              1
+            ],
+            "role": "front_balance",
+            "side": "left",
+            "tip": [
+              3,
+              -2
+            ]
+          }
+        ],
+        "b_edge": {
+          "id": "cap",
+          "points": [
+            [
+              20,
+              0
+            ],
+            [
+              30,
+              0
+            ]
+          ]
+        },
+        "b_marks": [
+          {
+            "id": "B",
+            "parent": "cap",
+            "ray": [
+              0,
+              1
+            ],
+            "role": "front_balance",
+            "side": "left",
+            "tip": [
+              24,
+              -2
+            ]
+          }
+        ],
+        "b_reverse": false,
+        "pairs": [
+          [
+            "A",
+            "B"
+          ]
+        ],
+        "station_map": [
+          [
+            0,
+            0
+          ],
+          [
+            10,
+            10
+          ]
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V10"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-NOTCH-PARENT-POS",
+      "input": {
+        "a_edge": {
+          "id": "armhole",
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              10,
+              0
+            ]
+          ]
+        },
+        "a_marks": [
+          {
+            "id": "A",
+            "parent": "armhole",
+            "ray": [
+              0,
+              1
+            ],
+            "role": "front_balance",
+            "side": "left",
+            "tip": [
+              3,
+              -2
+            ]
+          }
+        ],
+        "b_edge": {
+          "id": "cap",
+          "points": [
+            [
+              20,
+              0
+            ],
+            [
+              30,
+              0
+            ]
+          ]
+        },
+        "b_marks": [
+          {
+            "id": "B",
+            "parent": "cap",
+            "ray": [
+              0,
+              1
+            ],
+            "role": "front_balance",
+            "side": "left",
+            "tip": [
+              23,
+              -2
+            ]
+          }
+        ],
+        "b_reverse": false,
+        "pairs": [
+          [
+            "A",
+            "B"
+          ]
+        ],
+        "station_map": [
+          [
+            0,
+            0
+          ],
+          [
+            10,
+            10
+          ]
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V10"
+    },
+    {
+      "expected_codes": [
+        "NOTCH_PARENT"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-NOTCH-PARENT-NEG",
+      "input": {
+        "a_edge": {
+          "id": "armhole",
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              10,
+              0
+            ]
+          ]
+        },
+        "a_marks": [
+          {
+            "id": "A",
+            "parent": "armhole",
+            "ray": [
+              0,
+              1
+            ],
+            "role": "front_balance",
+            "side": "left",
+            "tip": [
+              3,
+              -2
+            ]
+          }
+        ],
+        "b_edge": {
+          "id": "cap",
+          "points": [
+            [
+              20,
+              0
+            ],
+            [
+              30,
+              0
+            ]
+          ]
+        },
+        "b_marks": [
+          {
+            "id": "B",
+            "parent": "cuff",
+            "ray": [
+              0,
+              1
+            ],
+            "role": "front_balance",
+            "side": "left",
+            "tip": [
+              23,
+              -2
+            ]
+          }
+        ],
+        "b_reverse": false,
+        "pairs": [
+          [
+            "A",
+            "B"
+          ]
+        ],
+        "station_map": [
+          [
+            0,
+            0
+          ],
+          [
+            10,
+            10
+          ]
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V10"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-NOTCH-REVERSED-POS",
+      "input": {
+        "a_edge": {
+          "id": "armhole",
+          "points": [
+            [
+              0,
+              0
+            ],
+            [
+              10,
+              0
+            ]
+          ]
+        },
+        "a_marks": [
+          {
+            "id": "A",
+            "parent": "armhole",
+            "ray": [
+              0,
+              1
+            ],
+            "role": "front_balance",
+            "side": "left",
+            "tip": [
+              3,
+              -2
+            ]
+          }
+        ],
+        "b_edge": {
+          "id": "cap",
+          "points": [
+            [
+              30,
+              0
+            ],
+            [
+              20,
+              0
+            ]
+          ]
+        },
+        "b_marks": [
+          {
+            "id": "B",
+            "parent": "cap",
+            "ray": [
+              0,
+              1
+            ],
+            "role": "front_balance",
+            "side": "left",
+            "tip": [
+              23,
+              -2
+            ]
+          }
+        ],
+        "b_reverse": true,
+        "pairs": [
+          [
+            "A",
+            "B"
+          ]
+        ],
+        "station_map": [
+          [
+            0,
+            0
+          ],
+          [
+            10,
+            10
+          ]
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V10"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-COMPANIONS-POS",
+      "input": {
+        "attachments": [],
+        "demands": [
+          {
+            "accepted_modes": [
+              "separate"
+            ],
+            "quantity": 2,
+            "role": "pocket_half"
+          }
+        ],
+        "layers": [],
+        "providers": [
+          {
+            "mode": "separate",
+            "quantity": 2,
+            "role": "pocket_half"
+          }
+        ],
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V11"
+    },
+    {
+      "expected_codes": [
+        "MISSING_COMPANION"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-COMPANIONS-NEG",
+      "input": {
+        "attachments": [],
+        "demands": [
+          {
+            "accepted_modes": [
+              "separate"
+            ],
+            "quantity": 2,
+            "role": "pocket_half"
+          }
+        ],
+        "layers": [],
+        "providers": [
+          {
+            "mode": "separate",
+            "quantity": 1,
+            "role": "pocket_half"
+          }
+        ],
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V11"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-INTEGRATED-FINISH-POS",
+      "input": {
+        "attachments": [],
+        "demands": [
+          {
+            "accepted_modes": [
+              "integrated",
+              "separate"
+            ],
+            "quantity": 1,
+            "role": "neck_finish"
+          }
+        ],
+        "layers": [],
+        "providers": [
+          {
+            "mode": "integrated",
+            "quantity": 1,
+            "role": "neck_finish"
+          }
+        ],
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V11"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-LAYER-HEM-POS",
+      "input": {
+        "attachments": [],
+        "demands": [],
+        "layers": [
+          {
+            "a": 12,
+            "b": 14,
+            "id": "shell_lining_hem",
+            "reveal_authorized": true,
+            "role": "free",
+            "tolerance": 1e-08
+          }
+        ],
+        "providers": [],
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V11"
+    },
+    {
+      "expected_codes": [
+        "LAYER_TERMINATION"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-LAYER-HEM-NEG",
+      "input": {
+        "attachments": [],
+        "demands": [],
+        "layers": [
+          {
+            "a": 12,
+            "b": 14,
+            "id": "shell_lining_hem",
+            "reveal_authorized": true,
+            "role": "joined",
+            "tolerance": 1e-08
+          }
+        ],
+        "providers": [],
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V11"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-CUFF-SCOPE-POS",
+      "input": {
+        "attachments": [
+          {
+            "closed_circumference": 10,
+            "id": "cuff_wrist",
+            "provider": 12,
+            "required": 12,
+            "scope_known": true,
+            "tolerance": 1e-08
+          }
+        ],
+        "demands": [],
+        "layers": [],
+        "providers": [],
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V11"
+    },
+    {
+      "expected_codes": [
+        "COMPANION_ATTACHMENT"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-CUFF-SCOPE-NEG",
+      "input": {
+        "attachments": [
+          {
+            "closed_circumference": 10,
+            "id": "cuff_wrist",
+            "provider": 10,
+            "required": 12,
+            "scope_known": true,
+            "tolerance": 1e-08
+          }
+        ],
+        "demands": [],
+        "layers": [],
+        "providers": [],
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V11"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-MIRRORED-CLOSURE-POS",
+      "input": {
+        "allowed_closure_sides": [
+          "left"
+        ],
+        "instances": [
+          {
+            "closure_mark": true,
+            "id": "L",
+            "side": "left"
+          },
+          {
+            "closure_mark": false,
+            "id": "R",
+            "side": "right"
+          }
+        ],
+        "mode": "handedness",
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V12"
+    },
+    {
+      "expected_codes": [
+        "HANDED_CLOSURE"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-MIRRORED-CLOSURE-NEG",
+      "input": {
+        "allowed_closure_sides": [
+          "left"
+        ],
+        "instances": [
+          {
+            "closure_mark": true,
+            "id": "L",
+            "side": "left"
+          },
+          {
+            "closure_mark": true,
+            "id": "R",
+            "side": "right"
+          }
+        ],
+        "mode": "handedness",
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V12"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-BILATERAL-CLOSURE-POS",
+      "input": {
+        "allowed_closure_sides": [
+          "left",
+          "right"
+        ],
+        "instances": [
+          {
+            "closure_mark": true,
+            "id": "L",
+            "side": "left"
+          },
+          {
+            "closure_mark": true,
+            "id": "R",
+            "side": "right"
+          }
+        ],
+        "mode": "handedness",
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V12"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-ALLOWANCE-POS",
+      "input": {
+        "cut": [
+          [
+            0,
+            2
+          ],
+          [
+            10,
+            2
+          ]
+        ],
+        "expected_offset": 2,
+        "kind": "seam_allowance",
+        "mode": "allowance",
+        "normal": [
+          0,
+          1
+        ],
+        "seam": [
+          [
+            0,
+            0
+          ],
+          [
+            10,
+            0
+          ]
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V12"
+    },
+    {
+      "expected_codes": [
+        "ALLOWANCE_OFFSET"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-ALLOWANCE-NEG",
+      "input": {
+        "cut": [
+          [
+            0,
+            3
+          ],
+          [
+            10,
+            3
+          ]
+        ],
+        "expected_offset": 2,
+        "kind": "seam_allowance",
+        "mode": "allowance",
+        "normal": [
+          0,
+          1
+        ],
+        "seam": [
+          [
+            0,
+            0
+          ],
+          [
+            10,
+            0
+          ]
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V12"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-CUTTING-FOLD-POS",
+      "input": {
+        "cut": [
+          [
+            0,
+            0
+          ],
+          [
+            10,
+            0
+          ]
+        ],
+        "expected_offset": 0,
+        "kind": "cutting_fold",
+        "mode": "allowance",
+        "normal": [
+          0,
+          1
+        ],
+        "seam": [
+          [
+            0,
+            0
+          ],
+          [
+            10,
+            0
+          ]
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V12"
+    },
+    {
+      "expected_codes": [
+        "ALLOWANCE_OFFSET"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-CUTTING-FOLD-NEG",
+      "input": {
+        "cut": [
+          [
+            0,
+            2
+          ],
+          [
+            10,
+            2
+          ]
+        ],
+        "expected_offset": 0,
+        "kind": "cutting_fold",
+        "mode": "allowance",
+        "normal": [
+          0,
+          1
+        ],
+        "seam": [
+          [
+            0,
+            0
+          ],
+          [
+            10,
+            0
+          ]
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V12"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-HEM-FOLD-POS",
+      "input": {
+        "cut": [
+          [
+            0,
+            2
+          ],
+          [
+            10,
+            2
+          ]
+        ],
+        "expected_offset": 2,
+        "kind": "hem_turn",
+        "mode": "allowance",
+        "normal": [
+          0,
+          1
+        ],
+        "seam": [
+          [
+            0,
+            0
+          ],
+          [
+            10,
+            0
+          ]
+        ],
+        "tolerance": 1e-08,
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V12"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-GRAIN-POS",
+      "input": {
+        "actual": [
+          0,
+          1
+        ],
+        "angle_limit": 1,
+        "declared": [
+          0,
+          1
+        ],
+        "directional": true,
+        "mode": "grain",
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V12"
+    },
+    {
+      "expected_codes": [
+        "GRAIN_DIRECTION"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-GRAIN-NEG",
+      "input": {
+        "actual": [
+          1,
+          0
+        ],
+        "angle_limit": 1,
+        "declared": [
+          0,
+          1
+        ],
+        "directional": true,
+        "mode": "grain",
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V12"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-FIT-UNCERTAINTY-POS",
+      "input": {
+        "claim": {
+          "class": "fit_material_unverified",
+          "kind": "physical_fit",
+          "status": "unresolved"
+        },
+        "conditions_retained": true,
+        "dependencies": [
+          {
+            "id": "body",
+            "status": "unresolved"
+          }
+        ],
+        "physical_test_records": [],
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V13"
+    },
+    {
+      "expected_codes": [
+        "UNSUPPORTED_FIT_CLAIM"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-FIT-UNCERTAINTY-NEG",
+      "input": {
+        "claim": {
+          "class": "measured_proven",
+          "kind": "physical_fit",
+          "status": "pass"
+        },
+        "conditions_retained": true,
+        "dependencies": [
+          {
+            "id": "body",
+            "status": "unresolved"
+          }
+        ],
+        "physical_test_records": [],
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V13"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-HYPOTHESIS-POS",
+      "input": {
+        "claim": {
+          "class": "construction_inference",
+          "kind": "construction",
+          "status": "unresolved"
+        },
+        "conditions_retained": true,
+        "dependencies": [
+          {
+            "id": "fold",
+            "status": "unresolved"
+          }
+        ],
+        "physical_test_records": [],
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V13"
+    },
+    {
+      "expected_codes": [
+        "UNCERTAINTY_LAUNDERING"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-HYPOTHESIS-NEG",
+      "input": {
+        "claim": {
+          "class": "construction_inference",
+          "kind": "construction",
+          "status": "pass"
+        },
+        "conditions_retained": false,
+        "dependencies": [
+          {
+            "id": "fold",
+            "status": "unresolved"
+          }
+        ],
+        "physical_test_records": [],
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V13"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-SOURCE-CROSSING-POS",
+      "input": {
+        "epsilon": 1e-09,
+        "file_audit_errors": 0,
+        "mode": "geometry",
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            4,
+            0
+          ],
+          [
+            4,
+            4
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "role": "fabric_cut",
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V14"
+    },
+    {
+      "expected_codes": [
+        "CUT_TOPOLOGY"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-SOURCE-CROSSING-NEG",
+      "input": {
+        "epsilon": 1e-09,
+        "file_audit_errors": 0,
+        "mode": "geometry",
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            4,
+            4
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            4,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "role": "fabric_cut",
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V14"
+    },
+    {
+      "expected_codes": [
+        "CUT_TOPOLOGY"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-SOURCE-RETRACE-NEG",
+      "input": {
+        "epsilon": 1e-09,
+        "file_audit_errors": 0,
+        "mode": "geometry",
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            4,
+            0
+          ],
+          [
+            3,
+            0
+          ],
+          [
+            4,
+            4
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "role": "fabric_cut",
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V14"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-SOURCE-DEFECT-LEDGER-POS",
+      "input": {
+        "claimed_pattern_pass": false,
+        "epsilon": 1e-09,
+        "file_audit_errors": 0,
+        "mode": "ledger",
+        "original_retained": true,
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            4,
+            4
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            4,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "recorded_defects": [
+          "CUT_TOPOLOGY"
+        ],
+        "repair_applied": false,
+        "role": "fabric_cut",
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V14"
+    },
+    {
+      "expected_codes": [
+        "SOURCE_DEFECT_HIDDEN"
+      ],
+      "expected_outcome": "fail",
+      "expected_pass": false,
+      "id": "FX-SOURCE-DEFECT-LEDGER-NEG",
+      "input": {
+        "claimed_pattern_pass": true,
+        "epsilon": 1e-09,
+        "file_audit_errors": 0,
+        "mode": "ledger",
+        "original_retained": true,
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            4,
+            4
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            4,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "recorded_defects": [],
+        "repair_applied": false,
+        "role": "fabric_cut",
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V14"
+    },
+    {
+      "expected_codes": [],
+      "expected_outcome": "pass",
+      "expected_pass": true,
+      "id": "FX-OPEN-TOOL-POS",
+      "input": {
+        "epsilon": 1e-09,
+        "file_audit_errors": 0,
+        "mode": "geometry",
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            4,
+            0
+          ],
+          [
+            4,
+            4
+          ]
+        ],
+        "role": "tool",
+        "units": "arbitrary_synthetic_units"
+      },
+      "synthetic": true,
+      "validator_id": "V14"
+    }
+  ],
+  "synthetic": true
+}
