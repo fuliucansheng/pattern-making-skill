@@ -20,6 +20,11 @@ the calculations are done by `scripts/pattern.py` (Python 3.8 or newer, standard
    `references/techniques/`. If the construction is not covered there, look up how published patterns
    and pattern-making books draft it (web search, pattern images the person gives), study their pieces,
    and draft the same way. Never invent a construction a pattern maker would not recognise.
+   Before accepting connected curves or components, **read
+   [curves and seam connections](references/curves-and-seam-connections.md)**, including for drafts
+   without a photo. Construct from assembled hosts, true endpoints in the sewing/fold state and walk
+   saved geometry by named, oriented intervals with predeclared ease/take-up and tolerances.
+   Outline plausibility and equal total seam lengths do not establish physical usability.
 3. **Always start from measurements.** Ask for the measurements needed (`references/measurements.md`). If
    they are missing, start from a standard size and say clearly which values are estimated.
 4. **Never calculate in your head.** Coordinates go through the script. An error of a few millimetres is
@@ -112,17 +117,21 @@ geometry diagnostics and error rejection; they do not establish physical fit or 
 
 ## Construction laws and engine checks
 
-1. **Reciprocal lengths**: edges sewn together have the same length within 1 mm. Every intended difference
-   (cap ease, gathers, easing) is declared on the seam with its ratio and reason.
-2. **Right angles at the fold**: a half piece meets its fold at 90 degrees (neckline, waist, hem), so the
-   unfolded piece has no point or dip.
+1. **Reciprocal intervals**: effective sewing lengths reconcile within the frozen tolerance (ordinary
+   default 1 mm), after declared take-up and signed ease. Walk every landmark/notch interval as well as
+   the total; a surplus measured afterwards cannot authorize itself as cap ease or gathering.
+2. **Smooth folds**: a boundary intended to continue smoothly across a fold meets it at 90 degrees
+   (neckline, waist, hem). Reflect and true it; preserve deliberately pointed/cornered constructions.
 3. **Volume needs shaping**: the body is not developable. Curvature is taken by darts, seams, ease or
    stretch; joints with large movement get inserted pieces (gussets, set-in thumbs, crotch extensions).
-4. **Shapes come from real patterns**: complex pieces (thumbs, gussets, collars, sleeve heads) follow the
-   shapes of published patterns, scaled to the measurements, never an improvised outline.
+4. **Shapes follow their construction**: study established topology for thumbs, gussets, collars and
+   sleeve heads, then derive fresh geometry from the current measurements and complete host chains.
+   A source pattern's normalized proportions are not universal drafting formulas.
 
-Every piece cut from another one (facing, interfacing, pocket facing; not linings, which are larger by design) declares it with `"within"`, so the
-engine checks it does not pass its piece; the engine also flags pieces pinched between two wide parts.
+Declare `"within"` for pieces whose construction requires containment in a host (such as an inset
+interfacing or pocket facing). Facings, linings and turned layers also need explicit attachment and
+adjustment contracts; they are not all uniformly smaller or larger. The engine also flags pieces
+pinched between two wide parts.
 
 The engine checks declared seam pairs, folds, outlines, narrow passages and `within` relationships.
 No `!!` lines and an all-OK seam table (`seams_<size>.md`) are necessary, not sufficient: missing seams
@@ -174,6 +183,7 @@ flare, 16 cm wrap, funnel collar, lined). Index: `references/kb/INDEX.md`. Forma
 |---|---|
 | Analyse a photo, recognise constructions | `references/reference-analysis.md` |
 | Validate construction or compare AI/human patterns | `references/construction-validation.md`, `references/human-pattern-benchmarks.md`, `scripts/pattern_benchmark.py` |
+| Construct and accept connected curves/components (mandatory) | `references/curves-and-seam-connections.md` |
 | Develop a sketch, sculptural volumes, unconventional cutting | `references/design-from-sketch.md` |
 | Skirts, trousers, shorts, jumpsuits | `references/techniques/skirts-trousers.md` |
 | Bodices, dart manipulation, dresses, tops, shirts | `references/techniques/bodices-dresses-tops.md` |

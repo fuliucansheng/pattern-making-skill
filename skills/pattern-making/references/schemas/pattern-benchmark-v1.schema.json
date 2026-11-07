@@ -723,6 +723,9 @@
           "minLength": 1,
           "type": "string"
         },
+        "shape_contract": {
+          "$ref": "#/$defs/EdgeShapeContract"
+        },
         "start": {
           "$ref": "#/$defs/ID"
         }
@@ -738,6 +741,101 @@
         "points",
         "start",
         "end"
+      ],
+      "type": "object"
+    },
+    "EdgeShapeContract": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "authority": {
+          "oneOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "endpoint_angles": {
+          "items": {
+            "$ref": "#/$defs/EndpointAngle"
+          },
+          "maxItems": 2,
+          "minItems": 0,
+          "type": "array"
+        },
+        "independent_authorization": {
+          "type": "boolean"
+        },
+        "straightness": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Straightness"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "authority",
+        "independent_authorization",
+        "straightness",
+        "endpoint_angles"
+      ],
+      "type": "object"
+    },
+    "EndpointAngle": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "at": {
+          "enum": [
+            "start",
+            "end"
+          ]
+        },
+        "axis_end": {
+          "$ref": "#/$defs/ID"
+        },
+        "axis_start": {
+          "$ref": "#/$defs/ID"
+        },
+        "target_degrees": {
+          "maximum": 180,
+          "minimum": -180,
+          "type": "number"
+        },
+        "tolerance_degrees": {
+          "maximum": 180,
+          "minimum": 0,
+          "type": "number"
+        },
+        "window": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "at",
+        "axis_start",
+        "axis_end",
+        "target_degrees",
+        "tolerance_degrees",
+        "window"
       ],
       "type": "object"
     },
@@ -2318,6 +2416,29 @@
         "conditions",
         "original_retained",
         "repair_applied"
+      ],
+      "type": "object"
+    },
+    "Straightness": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "max_backtrack": {
+          "minimum": 0,
+          "type": "number"
+        },
+        "max_deviation": {
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "max_deviation",
+        "max_backtrack"
       ],
       "type": "object"
     },

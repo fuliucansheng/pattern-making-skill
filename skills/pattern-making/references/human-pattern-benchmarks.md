@@ -134,6 +134,39 @@ exact `1`. Thus neither `[0,0]` nor an endpoint-only schedule can hide a saved b
 The report records the actual combined fractions. This compares the declared
 polylines, not an inferred smooth curve between unrecorded CAD samples.
 
+An edge may additionally carry an optional `shape_contract` in v1. Existing manifests
+remain valid. This synthetic example assumes manifest units of mm; its limits are
+illustrative, not garment defaults:
+
+```json
+"shape_contract": {
+  "authority": "construction sheet revision 1, fixed before measurement",
+  "independent_authorization": true,
+  "straightness": {"max_deviation": 0.1, "max_backtrack": 0.01},
+  "endpoint_angles": [{
+    "at": "start", "axis_start": "fold_bottom", "axis_end": "fold_top",
+    "target_degrees": -90, "tolerance_degrees": 1, "window": 3
+  }]
+}
+```
+
+Straightness measures every saved vertex's perpendicular deviation from the endpoint
+chord line and sums backward travel projected along that chord. A bow between metric
+sampling stations or a collinear retrace cannot hide. A zero chord fails this contract.
+Set `straightness` to `null` for an edge with endpoint constraints only. Angles use
+named landmarks on the same piece as a **directed** axis, and the edge's forward
+direction at both start and end. The measured direction is a secant over the declared
+arc-length `window`; it is not a native analytic tangent. Reported angle residuals wrap
+to `[-180,180)`. Reverse/reflect the intended angle when the local edge/axis relationship
+requires it. A zero axis, oversized window, duplicate endpoint or empty contract is
+invalid; a zero secant is unresolved. Missing independent authority leaves acceptance
+unresolved. The checker cannot prove when the caller selected a tolerance.
+
+Use these contracts for a selected construction's straight closure path or fold/hem
+endpoint constraint. They do not infer which edges need constraints, certify general
+curve fairness or replace the assembled G0/G1 and intentional-corner checks in
+[curves and seam connections](curves-and-seam-connections.md).
+
 Dart leg equality is independent of seam totals. Local closure rotates the moving
 leg about its apex and checks the resulting mouth gap and incident tangent change.
 An intact mouth cap removes its actual saved arc interval; a boundary V removes
@@ -153,6 +186,18 @@ prove when a caller chose a number. For nonuniform fullness, supply the independ
 selected piecewise-linear map of A station to B station, including both endpoints.
 Every interval and every no-gather zone is checked. A required ratio computed from
 surplus is only a diagnostic. A total with an unknown distribution stays unresolved.
+
+When seam prerequisites and the fullness map pass, `walk_intervals` orders the paired
+physical notches by their measured effective A stations, with named chain start/end
+stations included. Each interval reports A/B spans, the independently authorized excess,
+signed residual `A - B - excess`, names and tolerance. Interior cumulative budgets come
+from the station map; endpoint budgets are zero and the declared total excess. Reversed
+order fails; co-located duplicate/endpoint stations add no sewn interval. An interval
+outside tolerance fails even when both endpoint notch residuals separately fall within
+tolerance. Chain direction and closed shaping are applied before this walk. Missing or
+ambiguous notch semantics remain unresolved; the checker does not invent omitted
+structural landmarks. Split the chains into named seam contracts where a landmark
+cannot be represented by a physical notch pair.
 
 Notch rays intersect only their named saved edge. Multiple intersections remain
 unresolved; an unrelated nearby edge cannot win by distance. Stations then follow
@@ -253,7 +298,7 @@ is needed.
 ```sh
 python3 -B /path/to/skill/scripts/pattern_benchmark.py /path/to/comparison.json --json /path/to/report.json --markdown /path/to/report.md
 python3 -B /path/to/skill/scripts/pattern_benchmark.py --identity
-python3 -I -S -B -m unittest discover -s /path/to/skill/tests -p test_pattern_benchmark.py
+python3 -I -S -B -m unittest discover -s /path/to/skill/tests
 ```
 
 Exit codes are `0` for scoped diagnostic pass, `1` for contradicted constraints,
