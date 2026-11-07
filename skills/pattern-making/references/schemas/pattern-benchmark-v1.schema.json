@@ -1,0 +1,2457 @@
+{
+  "$defs": {
+    "Allowance": {
+      "additionalProperties": false,
+      "description": "cutting_fold also requires a licensed on_fold piece whose fold axis and this named CUT edge cover the same saved boundary extent.",
+      "maxProperties": 256,
+      "properties": {
+        "authority": {
+          "oneOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cut_edge": {
+          "$ref": "#/$defs/ID"
+        },
+        "edge": {
+          "$ref": "#/$defs/ID"
+        },
+        "fractions": {
+          "items": {
+            "exclusiveMaximum": 1,
+            "exclusiveMinimum": 0,
+            "type": "number"
+          },
+          "maxItems": 256,
+          "minItems": 1,
+          "type": "array"
+        },
+        "id": {
+          "$ref": "#/$defs/ID"
+        },
+        "kind": {
+          "enum": [
+            "seam_allowance",
+            "cutting_fold",
+            "hem_turn",
+            "turnback",
+            "net_support"
+          ]
+        },
+        "normal_side": {
+          "enum": [
+            -1,
+            1
+          ]
+        },
+        "offsets": {
+          "items": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "maxItems": 256,
+          "minItems": 1,
+          "type": "array"
+        },
+        "tolerance": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "id",
+        "edge",
+        "cut_edge",
+        "kind",
+        "fractions",
+        "offsets",
+        "normal_side",
+        "tolerance",
+        "authority"
+      ],
+      "type": "object"
+    },
+    "Axis": {
+      "items": {
+        "$ref": "#/$defs/Point"
+      },
+      "maxItems": 2,
+      "minItems": 2,
+      "type": "array"
+    },
+    "Chain": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "closed_circuit": {
+          "type": "boolean"
+        },
+        "id": {
+          "$ref": "#/$defs/ID"
+        },
+        "operations": {
+          "items": {
+            "$ref": "#/$defs/OperationRef"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "required_ports": {
+          "items": {
+            "$ref": "#/$defs/Port"
+          },
+          "maxItems": 256,
+          "minItems": 1,
+          "type": "array"
+        },
+        "segments": {
+          "items": {
+            "$ref": "#/$defs/Segment"
+          },
+          "maxItems": 256,
+          "minItems": 1,
+          "type": "array"
+        },
+        "state": {
+          "enum": [
+            "raw",
+            "closed"
+          ]
+        },
+        "target_effective": {
+          "oneOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tolerance": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "id",
+        "segments",
+        "required_ports",
+        "state",
+        "closed_circuit",
+        "operations",
+        "target_effective",
+        "tolerance"
+      ],
+      "type": "object"
+    },
+    "Claim": {
+      "additionalProperties": false,
+      "description": "physical_fit is always unresolved in this comparator; caller status/class and physical-test references are retained only as unverified evidence.",
+      "maxProperties": 256,
+      "properties": {
+        "class": {
+          "enum": [
+            "measured_proven",
+            "construction_inference",
+            "fit_material_unverified"
+          ]
+        },
+        "conditions": {
+          "items": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "depends_on": {
+          "items": {
+            "$ref": "#/$defs/ID"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "id": {
+          "$ref": "#/$defs/ID"
+        },
+        "kind": {
+          "enum": [
+            "physical_fit",
+            "construction"
+          ]
+        },
+        "physical_test_records": {
+          "items": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "pass",
+            "fail",
+            "unresolved",
+            "not_applicable"
+          ]
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "id",
+        "kind",
+        "class",
+        "status",
+        "depends_on",
+        "conditions",
+        "physical_test_records"
+      ],
+      "type": "object"
+    },
+    "Closure": {
+      "additionalProperties": false,
+      "description": "Every instance closure role must be explicitly covered as a primary or companion role on an allowed side; the primary role cannot be its own companion.",
+      "maxProperties": 256,
+      "properties": {
+        "allowed_sides": {
+          "items": {
+            "enum": [
+              "left",
+              "right",
+              "central",
+              "bilateral"
+            ]
+          },
+          "maxItems": 256,
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "companion_roles": {
+          "items": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 256,
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "id": {
+          "$ref": "#/$defs/ID"
+        },
+        "role": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "id",
+        "role",
+        "allowed_sides",
+        "companion_roles"
+      ],
+      "type": "object"
+    },
+    "Companion": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "accepted_modes": {
+          "items": {
+            "enum": [
+              "separate",
+              "integrated",
+              "template_reuse",
+              "purchased"
+            ]
+          },
+          "maxItems": 256,
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "attachment": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ID"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "coverage": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Coverage"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "family": {
+          "enum": [
+            "sleeve_armhole",
+            "collar_opening",
+            "facing_opening",
+            "binding_opening",
+            "cuff_sleeve",
+            "lower_receiving",
+            "lining",
+            "facing",
+            "closure",
+            "vent",
+            "support",
+            "pocket",
+            "ornament",
+            "custom"
+          ]
+        },
+        "id": {
+          "$ref": "#/$defs/ID"
+        },
+        "material": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "type": "string"
+        },
+        "providers": {
+          "items": {
+            "$ref": "#/$defs/Provider"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "quantity": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "receiver": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ID"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "required_ports": {
+          "items": {
+            "$ref": "#/$defs/Port"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "required_state": {
+          "enum": [
+            "raw",
+            "closed"
+          ]
+        },
+        "role": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "type": "string"
+        },
+        "scope_known": {
+          "type": "boolean"
+        },
+        "seam": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ID"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "side": {
+          "enum": [
+            "left",
+            "right",
+            "central",
+            "bilateral",
+            "any"
+          ]
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "id",
+        "family",
+        "role",
+        "material",
+        "side",
+        "quantity",
+        "accepted_modes",
+        "providers",
+        "receiver",
+        "attachment",
+        "seam",
+        "required_ports",
+        "required_state",
+        "scope_known",
+        "coverage"
+      ],
+      "type": "object"
+    },
+    "Comparison": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Registration"
+        },
+        {
+          "$ref": "#/$defs/CurveComparison"
+        }
+      ]
+    },
+    "Correspondence": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "basis": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "type": "string"
+        },
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        },
+        "id": {
+          "$ref": "#/$defs/ID"
+        },
+        "ports": {
+          "items": {
+            "$ref": "#/$defs/PortMatch"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "role": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "type": "string"
+        },
+        "source": {
+          "items": {
+            "$ref": "#/$defs/InstanceRef"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "status": {
+          "enum": [
+            "matched",
+            "unmatched",
+            "unresolved"
+          ]
+        },
+        "target": {
+          "items": {
+            "$ref": "#/$defs/InstanceRef"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "unresolved": {
+          "items": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "id",
+        "source",
+        "target",
+        "status",
+        "basis",
+        "role",
+        "ports",
+        "evidence",
+        "unresolved"
+      ],
+      "type": "object"
+    },
+    "Coverage": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "provided": {
+          "items": {
+            "$ref": "#/$defs/Pair"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "required": {
+          "items": {
+            "$ref": "#/$defs/Pair"
+          },
+          "maxItems": 256,
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "required",
+        "provided"
+      ],
+      "type": "object"
+    },
+    "CurveComparison": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        },
+        "id": {
+          "$ref": "#/$defs/ID"
+        },
+        "kind": {
+          "const": "curve"
+        },
+        "sample_fractions": {
+          "description": "Additional probes: strictly increasing, exact 0 and 1 endpoints, checked by the comparator. Comparator-owned probes always include the normalized saved vertices of both curves.",
+          "items": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number"
+          },
+          "maxItems": 256,
+          "minItems": 2,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "source": {
+          "$ref": "#/$defs/CurveRef"
+        },
+        "target": {
+          "$ref": "#/$defs/CurveRef"
+        },
+        "tolerance": {
+          "oneOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unresolved": {
+          "items": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "id",
+        "kind",
+        "source",
+        "target",
+        "sample_fractions",
+        "tolerance",
+        "evidence",
+        "unresolved"
+      ],
+      "type": "object"
+    },
+    "CurveRef": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "direction": {
+          "enum": [
+            -1,
+            1
+          ]
+        },
+        "edge": {
+          "$ref": "#/$defs/ID"
+        },
+        "pattern": {
+          "$ref": "#/$defs/ID"
+        },
+        "piece": {
+          "$ref": "#/$defs/ID"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "pattern",
+        "piece",
+        "edge",
+        "direction"
+      ],
+      "type": "object"
+    },
+    "Dependency": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "depends": {
+          "additionalProperties": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "maxProperties": 256,
+          "propertyNames": {
+            "maxLength": 128,
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "id": {
+          "$ref": "#/$defs/ID"
+        },
+        "revision": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "id",
+        "revision",
+        "depends"
+      ],
+      "type": "object"
+    },
+    "Edge": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "end": {
+          "$ref": "#/$defs/ID"
+        },
+        "id": {
+          "$ref": "#/$defs/ID"
+        },
+        "kind": {
+          "enum": [
+            "sewing",
+            "cutting",
+            "free_boundary",
+            "section",
+            "tool"
+          ]
+        },
+        "points": {
+          "$ref": "#/$defs/Polyline"
+        },
+        "role": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "type": "string"
+        },
+        "start": {
+          "$ref": "#/$defs/ID"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "id",
+        "role",
+        "kind",
+        "points",
+        "start",
+        "end"
+      ],
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "basis": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "type": "string"
+        },
+        "class": {
+          "enum": [
+            "measured_proven",
+            "construction_inference",
+            "fit_material_unverified"
+          ]
+        },
+        "conditions": {
+          "items": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "class",
+        "basis",
+        "conditions"
+      ],
+      "type": "object"
+    },
+    "Grain": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "actual": {
+          "$ref": "#/$defs/Point"
+        },
+        "angle_limit": {
+          "minimum": 0,
+          "type": "number"
+        },
+        "declared": {
+          "$ref": "#/$defs/Point"
+        },
+        "directional": {
+          "type": "boolean"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "actual",
+        "declared",
+        "directional",
+        "angle_limit"
+      ],
+      "type": "object"
+    },
+    "ID": {
+      "maxLength": 128,
+      "pattern": "[A-Za-z][A-Za-z0-9_.:-]*",
+      "type": "string"
+    },
+    "Instance": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "closure_roles": {
+          "items": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "face": {
+          "enum": [
+            "up",
+            "down",
+            "unknown"
+          ]
+        },
+        "id": {
+          "$ref": "#/$defs/ID"
+        },
+        "material": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "type": "string"
+        },
+        "reflected": {
+          "type": "boolean"
+        },
+        "reflection_license": {
+          "oneOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "side": {
+          "enum": [
+            "left",
+            "right",
+            "central",
+            "bilateral",
+            "unknown"
+          ]
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "id",
+        "material",
+        "side",
+        "face",
+        "reflected",
+        "reflection_license",
+        "closure_roles"
+      ],
+      "type": "object"
+    },
+    "InstanceRef": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "instance": {
+          "$ref": "#/$defs/ID"
+        },
+        "pattern": {
+          "$ref": "#/$defs/ID"
+        },
+        "piece": {
+          "$ref": "#/$defs/ID"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "pattern",
+        "piece",
+        "instance"
+      ],
+      "type": "object"
+    },
+    "Junction": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "anchored": {
+          "type": "boolean"
+        },
+        "angle_limit": {
+          "oneOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gap_limit": {
+          "minimum": 0,
+          "type": "number"
+        },
+        "id": {
+          "$ref": "#/$defs/ID"
+        },
+        "incoming": {
+          "$ref": "#/$defs/JunctionEdge"
+        },
+        "intent": {
+          "enum": [
+            "smooth",
+            "corner",
+            "unknown"
+          ]
+        },
+        "outgoing": {
+          "$ref": "#/$defs/JunctionEdge"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "id",
+        "incoming",
+        "outgoing",
+        "intent",
+        "angle_limit",
+        "gap_limit",
+        "anchored"
+      ],
+      "type": "object"
+    },
+    "JunctionEdge": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "direction": {
+          "enum": [
+            -1,
+            1
+          ]
+        },
+        "edge": {
+          "$ref": "#/$defs/ID"
+        },
+        "piece": {
+          "$ref": "#/$defs/ID"
+        },
+        "reflection_license": {
+          "oneOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "transform": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 6,
+          "minItems": 6,
+          "type": "array"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "piece",
+        "edge",
+        "direction",
+        "transform",
+        "reflection_license"
+      ],
+      "type": "object"
+    },
+    "Notch": {
+      "additionalProperties": false,
+      "description": "Only physical stations or duplicate glyphs reconciled to exactly one physical mark with the same owner edge, instance, logical ID, role, side and projected station can satisfy a sewn pairing.",
+      "maxProperties": 256,
+      "properties": {
+        "edge": {
+          "$ref": "#/$defs/ID"
+        },
+        "id": {
+          "$ref": "#/$defs/ID"
+        },
+        "instance": {
+          "$ref": "#/$defs/ID"
+        },
+        "logical_id": {
+          "$ref": "#/$defs/ID"
+        },
+        "ray": {
+          "$ref": "#/$defs/Point"
+        },
+        "representation": {
+          "enum": [
+            "physical",
+            "duplicate_glyph",
+            "virtual_control",
+            "drill",
+            "unresolved"
+          ]
+        },
+        "role": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "type": "string"
+        },
+        "side": {
+          "enum": [
+            "left",
+            "right",
+            "central",
+            "bilateral",
+            "unknown"
+          ]
+        },
+        "tip": {
+          "$ref": "#/$defs/Point"
+        },
+        "unresolved": {
+          "items": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "id",
+        "edge",
+        "instance",
+        "tip",
+        "ray",
+        "role",
+        "side",
+        "representation",
+        "logical_id",
+        "unresolved"
+      ],
+      "type": "object"
+    },
+    "NotchPair": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "a": {
+          "$ref": "#/$defs/NotchRef"
+        },
+        "b": {
+          "$ref": "#/$defs/NotchRef"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "a",
+        "b"
+      ],
+      "type": "object"
+    },
+    "NotchRef": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "notch": {
+          "$ref": "#/$defs/ID"
+        },
+        "piece": {
+          "$ref": "#/$defs/ID"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "piece",
+        "notch"
+      ],
+      "type": "object"
+    },
+    "OperationRef": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "operation": {
+          "$ref": "#/$defs/ID"
+        },
+        "piece": {
+          "$ref": "#/$defs/ID"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "piece",
+        "operation"
+      ],
+      "type": "object"
+    },
+    "Pair": {
+      "items": {
+        "type": "number"
+      },
+      "maxItems": 2,
+      "minItems": 2,
+      "type": "array"
+    },
+    "Pattern": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "chains": {
+          "items": {
+            "$ref": "#/$defs/Chain"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "claims": {
+          "items": {
+            "$ref": "#/$defs/Claim"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "closures": {
+          "items": {
+            "$ref": "#/$defs/Closure"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "companions": {
+          "items": {
+            "$ref": "#/$defs/Companion"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "dependencies": {
+          "items": {
+            "$ref": "#/$defs/Dependency"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        },
+        "id": {
+          "$ref": "#/$defs/ID"
+        },
+        "junctions": {
+          "items": {
+            "$ref": "#/$defs/Junction"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "kind": {
+          "enum": [
+            "benchmark",
+            "candidate"
+          ]
+        },
+        "pieces": {
+          "items": {
+            "$ref": "#/$defs/Piece"
+          },
+          "maxItems": 256,
+          "minItems": 1,
+          "type": "array"
+        },
+        "seams": {
+          "items": {
+            "$ref": "#/$defs/Seam"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "source_defects": {
+          "items": {
+            "$ref": "#/$defs/SourceDefect"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "unit_contract": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/UnitContract"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unresolved": {
+          "items": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "id",
+        "kind",
+        "evidence",
+        "unresolved",
+        "unit_contract",
+        "pieces",
+        "chains",
+        "seams",
+        "companions",
+        "dependencies",
+        "closures",
+        "junctions",
+        "claims",
+        "source_defects"
+      ],
+      "type": "object"
+    },
+    "Piece": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "allowances": {
+          "items": {
+            "$ref": "#/$defs/Allowance"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "cut": {
+          "$ref": "#/$defs/Polyline"
+        },
+        "edges": {
+          "items": {
+            "$ref": "#/$defs/Edge"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        },
+        "fold_axis": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Axis"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fold_license": {
+          "oneOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "grain": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Grain"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "id": {
+          "$ref": "#/$defs/ID"
+        },
+        "instances": {
+          "items": {
+            "$ref": "#/$defs/Instance"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "landmarks": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Point"
+          },
+          "maxProperties": 256,
+          "propertyNames": {
+            "maxLength": 128,
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "notches": {
+          "items": {
+            "$ref": "#/$defs/Notch"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "profiles": {
+          "items": {
+            "$ref": "#/$defs/Profile"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "quantity": {
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "maxProperties": 256,
+          "propertyNames": {
+            "maxLength": 128,
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "quantity_basis": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "type": "string"
+        },
+        "raw_quantity": {
+          "oneOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "representation": {
+          "enum": [
+            "full",
+            "on_fold",
+            "construction_state",
+            "tool",
+            "unresolved"
+          ]
+        },
+        "role": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "type": "string"
+        },
+        "seam": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Polyline"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "shaping": {
+          "items": {
+            "$ref": "#/$defs/Shaping"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "unresolved": {
+          "items": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "id",
+        "role",
+        "representation",
+        "raw_quantity",
+        "quantity_basis",
+        "quantity",
+        "instances",
+        "cut",
+        "seam",
+        "fold_axis",
+        "fold_license",
+        "grain",
+        "landmarks",
+        "edges",
+        "shaping",
+        "allowances",
+        "notches",
+        "profiles",
+        "evidence",
+        "unresolved"
+      ],
+      "type": "object"
+    },
+    "PieceRef": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "pattern": {
+          "$ref": "#/$defs/ID"
+        },
+        "piece": {
+          "$ref": "#/$defs/ID"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "pattern",
+        "piece"
+      ],
+      "type": "object"
+    },
+    "Point": {
+      "items": {
+        "type": "number"
+      },
+      "maxItems": 2,
+      "minItems": 2,
+      "type": "array"
+    },
+    "Polyline": {
+      "description": "Saved points; the point cap is a resource control, not a drafting constant.",
+      "items": {
+        "$ref": "#/$defs/Point"
+      },
+      "maxItems": 512,
+      "minItems": 2,
+      "type": "array"
+    },
+    "Port": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "edge": {
+          "$ref": "#/$defs/ID"
+        },
+        "end": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "instance": {
+          "$ref": "#/$defs/ID"
+        },
+        "piece": {
+          "$ref": "#/$defs/ID"
+        },
+        "start": {
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "piece",
+        "instance",
+        "edge",
+        "start",
+        "end"
+      ],
+      "type": "object"
+    },
+    "PortMatch": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "role": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "type": "string"
+        },
+        "source": {
+          "items": {
+            "$ref": "#/$defs/PortRef"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "target": {
+          "items": {
+            "$ref": "#/$defs/PortRef"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "role",
+        "source",
+        "target"
+      ],
+      "type": "object"
+    },
+    "PortRef": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "edge": {
+          "$ref": "#/$defs/ID"
+        },
+        "instance": {
+          "$ref": "#/$defs/ID"
+        },
+        "pattern": {
+          "$ref": "#/$defs/ID"
+        },
+        "piece": {
+          "$ref": "#/$defs/ID"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "pattern",
+        "piece",
+        "instance",
+        "edge"
+      ],
+      "type": "object"
+    },
+    "Profile": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "axis": {
+          "$ref": "#/$defs/Axis"
+        },
+        "boundary": {
+          "enum": [
+            "cut",
+            "seam"
+          ]
+        },
+        "id": {
+          "$ref": "#/$defs/ID"
+        },
+        "metric": {
+          "enum": [
+            "material_width",
+            "outer_span"
+          ]
+        },
+        "operations": {
+          "items": {
+            "$ref": "#/$defs/ID"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "stations": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 256,
+          "minItems": 1,
+          "type": "array"
+        },
+        "targets": {
+          "oneOf": [
+            {
+              "items": {
+                "minimum": 0,
+                "type": "number"
+              },
+              "maxItems": 256,
+              "minItems": 1,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tolerance": {
+          "oneOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "id",
+        "boundary",
+        "axis",
+        "stations",
+        "targets",
+        "metric",
+        "tolerance",
+        "operations"
+      ],
+      "type": "object"
+    },
+    "Provider": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "instances": {
+          "items": {
+            "$ref": "#/$defs/ID"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "mode": {
+          "enum": [
+            "separate",
+            "integrated",
+            "template_reuse",
+            "purchased"
+          ]
+        },
+        "piece": {
+          "$ref": "#/$defs/ID"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "piece",
+        "instances",
+        "mode"
+      ],
+      "type": "object"
+    },
+    "Region": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/ID"
+        },
+        "source": {
+          "items": {
+            "$ref": "#/$defs/ID"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": "array"
+        },
+        "target": {
+          "items": {
+            "$ref": "#/$defs/ID"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": "array"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "id",
+        "source",
+        "target"
+      ],
+      "type": "object"
+    },
+    "Registration": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        },
+        "id": {
+          "$ref": "#/$defs/ID"
+        },
+        "kind": {
+          "const": "registration"
+        },
+        "landmarks": {
+          "items": {
+            "items": {
+              "$ref": "#/$defs/ID"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "type": "array"
+          },
+          "maxItems": 256,
+          "minItems": 2,
+          "type": "array"
+        },
+        "mode": {
+          "enum": [
+            "rigid",
+            "uniform"
+          ]
+        },
+        "reflected": {
+          "type": "boolean"
+        },
+        "reflection_license": {
+          "oneOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "regional_tolerance": {
+          "minimum": 0,
+          "type": "number"
+        },
+        "regions": {
+          "items": {
+            "$ref": "#/$defs/Region"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "source": {
+          "$ref": "#/$defs/PieceRef"
+        },
+        "target": {
+          "$ref": "#/$defs/PieceRef"
+        },
+        "tolerance": {
+          "oneOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unresolved": {
+          "items": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "id",
+        "kind",
+        "source",
+        "target",
+        "landmarks",
+        "mode",
+        "reflected",
+        "reflection_license",
+        "tolerance",
+        "regions",
+        "regional_tolerance",
+        "evidence",
+        "unresolved"
+      ],
+      "type": "object"
+    },
+    "Seam": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "a": {
+          "$ref": "#/$defs/ID"
+        },
+        "authority": {
+          "oneOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "authorized_excess": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "b": {
+          "$ref": "#/$defs/ID"
+        },
+        "id": {
+          "$ref": "#/$defs/ID"
+        },
+        "independent_authorization": {
+          "type": "boolean"
+        },
+        "kind": {
+          "enum": [
+            "equal",
+            "ease",
+            "gather",
+            "stretch",
+            "free"
+          ]
+        },
+        "no_gather_intervals": {
+          "items": {
+            "$ref": "#/$defs/Pair"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "notch_pairs": {
+          "items": {
+            "$ref": "#/$defs/NotchPair"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "station_map": {
+          "oneOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/Pair"
+              },
+              "maxItems": 256,
+              "minItems": 2,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tolerance": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "id",
+        "a",
+        "b",
+        "kind",
+        "independent_authorization",
+        "authority",
+        "authorized_excess",
+        "station_map",
+        "no_gather_intervals",
+        "tolerance",
+        "notch_pairs"
+      ],
+      "type": "object"
+    },
+    "Segment": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "direction": {
+          "enum": [
+            -1,
+            1
+          ]
+        },
+        "edge": {
+          "$ref": "#/$defs/ID"
+        },
+        "end": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "instance": {
+          "$ref": "#/$defs/ID"
+        },
+        "piece": {
+          "$ref": "#/$defs/ID"
+        },
+        "reflection_license": {
+          "oneOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "start": {
+          "minimum": 0,
+          "type": "number"
+        },
+        "transform": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 6,
+          "minItems": 6,
+          "type": "array"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "piece",
+        "instance",
+        "edge",
+        "start",
+        "end",
+        "direction",
+        "transform",
+        "reflection_license"
+      ],
+      "type": "object"
+    },
+    "Settings": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "curvature_window": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "epsilon": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "sample_step": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "tangent_window": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "epsilon",
+        "sample_step",
+        "tangent_window",
+        "curvature_window"
+      ],
+      "type": "object"
+    },
+    "Shaping": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "angle_limit": {
+          "oneOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "apex": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Point"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "chain": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ID"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "depends_on": {
+          "items": {
+            "$ref": "#/$defs/ID"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        },
+        "fold_axis": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Axis"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "id": {
+          "$ref": "#/$defs/ID"
+        },
+        "intake_polygon": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Polyline"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "interval": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Pair"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "junction_intent": {
+          "enum": [
+            "smooth",
+            "corner",
+            "unknown"
+          ]
+        },
+        "kind": {
+          "enum": [
+            "dart",
+            "fish_dart",
+            "tuck",
+            "pleat"
+          ]
+        },
+        "mouth_a": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Point"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mouth_b": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Point"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "paired": {
+          "type": "boolean"
+        },
+        "representation": {
+          "enum": [
+            "intact_mouth_cap",
+            "boundary_v",
+            "interior",
+            "folded_strips"
+          ]
+        },
+        "second_apex": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Point"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sequence_known": {
+          "type": "boolean"
+        },
+        "stitch_lines": {
+          "oneOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/Axis"
+              },
+              "maxItems": 2,
+              "minItems": 2,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tolerance": {
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "id",
+        "kind",
+        "representation",
+        "apex",
+        "second_apex",
+        "mouth_a",
+        "mouth_b",
+        "chain",
+        "interval",
+        "intake_polygon",
+        "stitch_lines",
+        "fold_axis",
+        "paired",
+        "sequence_known",
+        "depends_on",
+        "junction_intent",
+        "angle_limit",
+        "evidence",
+        "tolerance"
+      ],
+      "type": "object"
+    },
+    "SourceDefect": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "code": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "type": "string"
+        },
+        "conditions": {
+          "items": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 256,
+          "minItems": 0,
+          "type": "array"
+        },
+        "original_retained": {
+          "type": "boolean"
+        },
+        "piece": {
+          "$ref": "#/$defs/ID"
+        },
+        "repair_applied": {
+          "type": "boolean"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "piece",
+        "code",
+        "conditions",
+        "original_retained",
+        "repair_applied"
+      ],
+      "type": "object"
+    },
+    "UnitContract": {
+      "additionalProperties": false,
+      "maxProperties": 256,
+      "properties": {
+        "calibration_length": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "conversion": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "raw_length": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "tolerance": {
+          "minimum": 0,
+          "type": "number"
+        },
+        "unit_authority": {
+          "oneOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "propertyNames": {
+        "maxLength": 128,
+        "type": "string"
+      },
+      "required": [
+        "raw_length",
+        "conversion",
+        "calibration_length",
+        "unit_authority",
+        "tolerance"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "urn:pattern-benchmark:v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The packaged comparator checks this schema and cross-record invariants. No raw CAD role inference or physical fit certification. All geometry must use the single declared coordinate unit. Size and work limits are source-independent resource controls, not drafting or garment acceptance constants; runtime checks also enforce cross-record invariants and finite derived arithmetic.",
+  "maxProperties": 256,
+  "properties": {
+    "comparisons": {
+      "items": {
+        "$ref": "#/$defs/Comparison"
+      },
+      "maxItems": 256,
+      "minItems": 0,
+      "type": "array"
+    },
+    "correspondence": {
+      "items": {
+        "$ref": "#/$defs/Correspondence"
+      },
+      "maxItems": 256,
+      "minItems": 0,
+      "type": "array"
+    },
+    "patterns": {
+      "items": {
+        "$ref": "#/$defs/Pattern"
+      },
+      "maxItems": 256,
+      "minItems": 2,
+      "type": "array"
+    },
+    "settings": {
+      "$ref": "#/$defs/Settings"
+    },
+    "units": {
+      "enum": [
+        "mm",
+        "cm",
+        "synthetic"
+      ]
+    },
+    "unresolved": {
+      "items": {
+        "maxLength": 2048,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 256,
+      "minItems": 0,
+      "type": "array"
+    },
+    "version": {
+      "const": "pattern-benchmark/v1"
+    }
+  },
+  "propertyNames": {
+    "maxLength": 128,
+    "type": "string"
+  },
+  "required": [
+    "version",
+    "units",
+    "settings",
+    "patterns",
+    "correspondence",
+    "comparisons",
+    "unresolved"
+  ],
+  "title": "Explicit saved-polyline semantic comparison manifest",
+  "type": "object",
+  "x-resource-limits": {
+    "collection_items": 256,
+    "curve_intervals": 2048,
+    "derived_polyline_points": 4096,
+    "geometry_work": 2000000,
+    "identifier_characters": 128,
+    "input_bytes": 1048576,
+    "nesting": 32,
+    "nodes": 50000,
+    "number_characters": 512,
+    "object_properties": 256,
+    "polyline_points": 512,
+    "report_bytes": 8388608,
+    "string_characters": 2048,
+    "topology_pair_work": 250000,
+    "total_string_characters": 131072
+  }
+}
