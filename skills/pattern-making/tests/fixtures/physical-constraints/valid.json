@@ -1,0 +1,127 @@
+{
+  "version": "physical-constraints/v1",
+  "units": "mm",
+  "provenance": [
+    {
+      "id": "p-geometry",
+      "class": "geometry_only",
+      "source": "synthetic:saved-coupon-readback",
+      "method": "Invented scalar seamline measurements; no real pattern coordinates.",
+      "scope": "Synthetic coupons only, revision r1.",
+      "assumptions": ["These numbers are arithmetic controls, not garment recommendations."]
+    },
+    {
+      "id": "p-plan",
+      "class": "construction_inference",
+      "source": "synthetic:independent-coupon-plan",
+      "method": "Freeze illustrative targets and tolerances before evaluating the measurements.",
+      "scope": "Synthetic coupon constraints only.",
+      "assumptions": ["Allowed fullness, clearance, shrinkage and layer choices are invented for these tests."]
+    },
+    {
+      "id": "p-band-test",
+      "class": "physically_tested",
+      "source": "synthetic:band-observation-record",
+      "method": "Illustrative repeated extension and release observations at the recorded intervals.",
+      "scope": "Synthetic band coupon, course direction, washed state.",
+      "assumptions": ["Fictional test evidence for software testing; no actual material was tested."]
+    },
+    {
+      "id": "p-load-test",
+      "class": "physically_tested",
+      "source": "synthetic:support-observation-record",
+      "method": "Illustrative clamped coupon load held for the recorded duration; read displacement.",
+      "scope": "Synthetic support assembly and clamp-a only.",
+      "assumptions": ["Fictional test evidence for software testing; no actual support was tested."]
+    }
+  ],
+  "constraints": [
+    {
+      "id": "c-gather",
+      "kind": "gather_ratio",
+      "scope": {"assembly": "coupon", "revision": "r1", "region": "gather-zone", "material": "cloth-a", "state": "attachment-ready"},
+      "measurements": {"raw_span": 27, "receiving_span": 9, "provenance": "p-geometry"},
+      "allowed_range": {"min": 2.5, "max": 3.5, "independent": true, "provenance": "p-plan"}
+    },
+    {
+      "id": "c-band",
+      "kind": "stretch_band_ratio",
+      "scope": {"assembly": "coupon", "revision": "r1", "region": "band-zone", "material": "band-a", "state": "washed"},
+      "direction": "course",
+      "measurements": {"cut_span": 18, "host_span": 24, "provenance": "p-geometry"},
+      "tested_range": {"min": 0.7, "max": 0.8, "independent": true, "provenance": "p-band-test", "record_id": "t-band"}
+    },
+    {
+      "id": "c-opening",
+      "kind": "opening_clearance",
+      "scope": {"assembly": "coupon", "revision": "r1", "region": "opening", "material": "cloth-a", "state": "closure-open"},
+      "measurements": {"opening_perimeter": 47, "provenance": "p-geometry"},
+      "clearance": {"subject": "synthetic-tool", "body_or_tool_perimeter": 43, "ease": 4, "independent": true, "provenance": "p-plan"}
+    },
+    {
+      "id": "c-shrink",
+      "kind": "shrinkage_compensation",
+      "scope": {"assembly": "coupon", "revision": "r1", "region": "length", "material": "cloth-a", "state": "before-treatment"},
+      "direction": "warp",
+      "measurements": {"pre_treatment_length": 45, "provenance": "p-geometry"},
+      "compensation": {"target_length": 36, "shrinkage_fraction": 0.2, "direction": "warp", "treatment": "synthetic wash protocol", "tolerance": 1e-8, "independent": true, "provenance": "p-plan"}
+    },
+    {
+      "id": "c-turn",
+      "kind": "turn_of_cloth",
+      "scope": {"assembly": "coupon", "revision": "r1", "region": "one-bend", "material": "stack-a", "state": "turned"},
+      "measurements": {"inner_path": 50, "outer_path": 51.5707963267949, "provenance": "p-geometry"},
+      "model": {"bend_angle_degrees": 90, "effective_layer_offset": 1, "tolerance": 1e-9, "scope": "Corresponding paths through one concentric bend only.", "assumptions": ["Constant effective offset between the measured paths.", "No compression, slip or stretch in this local model."], "independent": true, "provenance": "p-plan"}
+    },
+    {
+      "id": "c-reveal",
+      "kind": "layer_differential",
+      "scope": {"assembly": "coupon", "revision": "r1", "region": "front-hem", "material": "stack-a", "state": "finished"},
+      "measurements": {
+        "a": {"layer": "lining", "side": "left", "datum": "top-seam", "axis": "hemward", "position": 34},
+        "b": {"layer": "shell", "side": "left", "datum": "top-seam", "axis": "hemward", "position": 31},
+        "provenance": "p-geometry"
+      },
+      "target": {"a_layer": "lining", "b_layer": "shell", "side": "left", "datum": "top-seam", "axis": "hemward", "difference": 3, "tolerance": 0.01, "independent": true, "provenance": "p-plan"}
+    },
+    {
+      "id": "c-support",
+      "kind": "support_load",
+      "scope": {"assembly": "coupon", "revision": "r1", "region": "anchor", "material": "stack-a", "state": "assembled"},
+      "geometry_provenance": "p-geometry",
+      "requirement": {"minimum_load_newtons": 7, "maximum_deflection": 2, "minimum_hold_seconds": 15, "fixture": "clamp-a", "load_direction": "down", "independent": true, "provenance": "p-plan"},
+      "test_record": "t-load"
+    }
+  ],
+  "test_records": [
+    {
+      "id": "t-band",
+      "kind": "stretch_recovery",
+      "constraint_id": "c-band",
+      "scope": {"assembly": "coupon", "revision": "r1", "region": "band-zone", "material": "band-a", "state": "washed"},
+      "direction": "course",
+      "tested_min_ratio": 0.7,
+      "tested_max_ratio": 0.8,
+      "relaxed_span": 20,
+      "extended_span": 28,
+      "recovered_span": 20.2,
+      "recovery_seconds": 30,
+      "cycles": 3,
+      "observed_result": "pass",
+      "provenance": "p-band-test"
+    },
+    {
+      "id": "t-load",
+      "kind": "support_load",
+      "constraint_id": "c-support",
+      "scope": {"assembly": "coupon", "revision": "r1", "region": "anchor", "material": "stack-a", "state": "assembled"},
+      "fixture": "clamp-a",
+      "load_direction": "down",
+      "load_newtons": 8,
+      "deflection": 1.25,
+      "hold_seconds": 20,
+      "observed_result": "pass",
+      "provenance": "p-load-test"
+    }
+  ]
+}
