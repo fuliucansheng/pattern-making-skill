@@ -1,0 +1,250 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:pattern-making:physical-constraints:v1",
+  "title": "Explicit physical constraints for provisional first-toile patterns",
+  "description": "Scalar observations and independent criteria only. Runtime checks also enforce finite arithmetic, resource limits, global ID uniqueness, references and evidence binding. No cloth simulation or fit certification.",
+  "type": "object",
+  "additionalProperties": false,
+  "maxProperties": 5,
+  "required": ["version", "units", "provenance", "constraints", "test_records"],
+  "properties": {
+    "version": {"type": "string", "const": "physical-constraints/v1", "maxLength": 128},
+    "units": {"type": "string", "enum": ["mm", "cm"], "maxLength": 2},
+    "provenance": {"type": "array", "minItems": 1, "maxItems": 256, "items": {"$ref": "#/$defs/Provenance"}},
+    "constraints": {
+      "type": "array", "minItems": 1, "maxItems": 128,
+      "items": {"oneOf": [
+        {"$ref": "#/$defs/Gather"}, {"$ref": "#/$defs/Band"},
+        {"$ref": "#/$defs/Opening"}, {"$ref": "#/$defs/Shrink"},
+        {"$ref": "#/$defs/Turn"}, {"$ref": "#/$defs/Reveal"},
+        {"$ref": "#/$defs/Support"}
+      ]}
+    },
+    "test_records": {
+      "type": "array", "maxItems": 128,
+      "items": {"oneOf": [{"$ref": "#/$defs/StretchRecord"}, {"$ref": "#/$defs/SupportRecord"}]}
+    }
+  },
+  "$defs": {
+    "ID": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*(?![\\s\\S])"},
+    "Text": {"type": "string", "minLength": 1, "maxLength": 1024, "pattern": "\\S"},
+    "Positive": {"type": "number", "exclusiveMinimum": 0, "maximum": 1.7976931348623157e308},
+    "Nonnegative": {"type": "number", "minimum": 0, "maximum": 1.7976931348623157e308},
+    "Number": {"type": "number", "minimum": -1.7976931348623157e308, "maximum": 1.7976931348623157e308},
+    "Scope": {
+      "type": "object", "additionalProperties": false, "maxProperties": 5,
+      "required": ["assembly", "revision", "region", "material", "state"],
+      "properties": {
+        "assembly": {"$ref": "#/$defs/ID"}, "revision": {"$ref": "#/$defs/ID"},
+        "region": {"$ref": "#/$defs/ID"}, "material": {"$ref": "#/$defs/ID"}, "state": {"$ref": "#/$defs/ID"}
+      }
+    },
+    "Provenance": {
+      "type": "object", "additionalProperties": false, "maxProperties": 6,
+      "required": ["id", "class", "source", "method", "scope", "assumptions"],
+      "properties": {
+        "id": {"$ref": "#/$defs/ID"},
+        "class": {"type": "string", "enum": ["geometry_only", "construction_inference", "physically_tested"], "maxLength": 64},
+        "source": {"$ref": "#/$defs/Text"}, "method": {"$ref": "#/$defs/Text"}, "scope": {"$ref": "#/$defs/Text"},
+        "assumptions": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/Text"}}
+      }
+    },
+    "Range": {
+      "type": "object", "additionalProperties": false, "maxProperties": 4,
+      "required": ["min", "max", "independent", "provenance"],
+      "properties": {
+        "min": {"$ref": "#/$defs/Positive"}, "max": {"$ref": "#/$defs/Positive"},
+        "independent": {"type": "boolean"}, "provenance": {"$ref": "#/$defs/ID"}
+      }
+    },
+    "TestedRange": {
+      "type": "object", "additionalProperties": false, "maxProperties": 5,
+      "required": ["min", "max", "independent", "provenance"],
+      "properties": {
+        "min": {"$ref": "#/$defs/Positive"}, "max": {"$ref": "#/$defs/Positive"},
+        "independent": {"type": "boolean"}, "provenance": {"$ref": "#/$defs/ID"},
+        "record_id": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/ID"}]}
+      }
+    },
+    "Clearance": {
+      "type": "object", "additionalProperties": false, "maxProperties": 5,
+      "required": ["subject", "body_or_tool_perimeter", "ease", "independent", "provenance"],
+      "properties": {
+        "subject": {"$ref": "#/$defs/ID"}, "body_or_tool_perimeter": {"$ref": "#/$defs/Positive"},
+        "ease": {"$ref": "#/$defs/Nonnegative"}, "independent": {"type": "boolean"},
+        "provenance": {"$ref": "#/$defs/ID"}
+      }
+    },
+    "Compensation": {
+      "type": "object", "additionalProperties": false, "maxProperties": 7,
+      "required": ["target_length", "shrinkage_fraction", "direction", "treatment", "tolerance", "independent", "provenance"],
+      "properties": {
+        "target_length": {"$ref": "#/$defs/Positive"},
+        "shrinkage_fraction": {"type": "number", "minimum": 0, "exclusiveMaximum": 1},
+        "direction": {"$ref": "#/$defs/ID"}, "treatment": {"$ref": "#/$defs/Text"},
+        "tolerance": {"$ref": "#/$defs/Nonnegative"}, "independent": {"type": "boolean"},
+        "provenance": {"$ref": "#/$defs/ID"}
+      }
+    },
+    "BendModel": {
+      "type": "object", "additionalProperties": false, "maxProperties": 7,
+      "required": ["bend_angle_degrees", "effective_layer_offset", "tolerance", "scope", "assumptions", "independent", "provenance"],
+      "properties": {
+        "bend_angle_degrees": {"type": "number", "minimum": 0, "maximum": 360},
+        "effective_layer_offset": {"$ref": "#/$defs/Nonnegative"}, "tolerance": {"$ref": "#/$defs/Nonnegative"},
+        "scope": {"$ref": "#/$defs/Text"},
+        "assumptions": {"type": "array", "minItems": 1, "maxItems": 16, "items": {"$ref": "#/$defs/Text"}},
+        "independent": {"type": "boolean"}, "provenance": {"$ref": "#/$defs/ID"}
+      }
+    },
+    "LayerStation": {
+      "type": "object", "additionalProperties": false, "maxProperties": 5,
+      "required": ["layer", "side", "datum", "axis", "position"],
+      "properties": {
+        "layer": {"$ref": "#/$defs/ID"}, "side": {"$ref": "#/$defs/ID"},
+        "datum": {"$ref": "#/$defs/ID"}, "axis": {"$ref": "#/$defs/ID"}, "position": {"$ref": "#/$defs/Number"}
+      }
+    },
+    "LayerTarget": {
+      "type": "object", "additionalProperties": false, "maxProperties": 9,
+      "required": ["a_layer", "b_layer", "side", "datum", "axis", "difference", "tolerance", "independent", "provenance"],
+      "properties": {
+        "a_layer": {"$ref": "#/$defs/ID"}, "b_layer": {"$ref": "#/$defs/ID"},
+        "side": {"$ref": "#/$defs/ID"}, "datum": {"$ref": "#/$defs/ID"}, "axis": {"$ref": "#/$defs/ID"},
+        "difference": {"$ref": "#/$defs/Number"}, "tolerance": {"$ref": "#/$defs/Nonnegative"},
+        "independent": {"type": "boolean"}, "provenance": {"$ref": "#/$defs/ID"}
+      }
+    },
+    "LoadRequirement": {
+      "type": "object", "additionalProperties": false, "maxProperties": 7,
+      "required": ["minimum_load_newtons", "maximum_deflection", "minimum_hold_seconds", "fixture", "load_direction", "independent", "provenance"],
+      "properties": {
+        "minimum_load_newtons": {"$ref": "#/$defs/Positive"}, "maximum_deflection": {"$ref": "#/$defs/Nonnegative"},
+        "minimum_hold_seconds": {"$ref": "#/$defs/Nonnegative"}, "fixture": {"$ref": "#/$defs/ID"},
+        "load_direction": {"$ref": "#/$defs/ID"}, "independent": {"type": "boolean"}, "provenance": {"$ref": "#/$defs/ID"}
+      }
+    },
+    "Gather": {
+      "type": "object", "additionalProperties": false, "maxProperties": 5,
+      "required": ["id", "kind", "scope", "measurements"],
+      "properties": {
+        "id": {"$ref": "#/$defs/ID"}, "kind": {"type": "string", "const": "gather_ratio", "maxLength": 64},
+        "scope": {"$ref": "#/$defs/Scope"},
+        "measurements": {
+          "type": "object", "additionalProperties": false, "maxProperties": 3,
+          "required": ["raw_span", "receiving_span", "provenance"],
+          "properties": {"raw_span": {"$ref": "#/$defs/Positive"}, "receiving_span": {"$ref": "#/$defs/Positive"}, "provenance": {"$ref": "#/$defs/ID"}}
+        },
+        "allowed_range": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/Range"}]}
+      }
+    },
+    "Band": {
+      "type": "object", "additionalProperties": false, "maxProperties": 6,
+      "required": ["id", "kind", "scope", "direction", "measurements"],
+      "properties": {
+        "id": {"$ref": "#/$defs/ID"}, "kind": {"type": "string", "const": "stretch_band_ratio", "maxLength": 64},
+        "scope": {"$ref": "#/$defs/Scope"}, "direction": {"$ref": "#/$defs/ID"},
+        "measurements": {
+          "type": "object", "additionalProperties": false, "maxProperties": 3,
+          "required": ["cut_span", "host_span", "provenance"],
+          "properties": {"cut_span": {"$ref": "#/$defs/Positive"}, "host_span": {"$ref": "#/$defs/Positive"}, "provenance": {"$ref": "#/$defs/ID"}}
+        },
+        "tested_range": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/TestedRange"}]}
+      }
+    },
+    "Opening": {
+      "type": "object", "additionalProperties": false, "maxProperties": 5,
+      "required": ["id", "kind", "scope", "measurements"],
+      "properties": {
+        "id": {"$ref": "#/$defs/ID"}, "kind": {"type": "string", "const": "opening_clearance", "maxLength": 64},
+        "scope": {"$ref": "#/$defs/Scope"},
+        "measurements": {
+          "type": "object", "additionalProperties": false, "maxProperties": 2,
+          "required": ["opening_perimeter", "provenance"],
+          "properties": {"opening_perimeter": {"$ref": "#/$defs/Positive"}, "provenance": {"$ref": "#/$defs/ID"}}
+        },
+        "clearance": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/Clearance"}]}
+      }
+    },
+    "Shrink": {
+      "type": "object", "additionalProperties": false, "maxProperties": 6,
+      "required": ["id", "kind", "scope", "direction", "measurements"],
+      "properties": {
+        "id": {"$ref": "#/$defs/ID"}, "kind": {"type": "string", "const": "shrinkage_compensation", "maxLength": 64},
+        "scope": {"$ref": "#/$defs/Scope"}, "direction": {"$ref": "#/$defs/ID"},
+        "measurements": {
+          "type": "object", "additionalProperties": false, "maxProperties": 2,
+          "required": ["pre_treatment_length", "provenance"],
+          "properties": {"pre_treatment_length": {"$ref": "#/$defs/Positive"}, "provenance": {"$ref": "#/$defs/ID"}}
+        },
+        "compensation": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/Compensation"}]}
+      }
+    },
+    "Turn": {
+      "type": "object", "additionalProperties": false, "maxProperties": 5,
+      "required": ["id", "kind", "scope", "measurements"],
+      "properties": {
+        "id": {"$ref": "#/$defs/ID"}, "kind": {"type": "string", "const": "turn_of_cloth", "maxLength": 64},
+        "scope": {"$ref": "#/$defs/Scope"},
+        "measurements": {
+          "type": "object", "additionalProperties": false, "maxProperties": 3,
+          "required": ["inner_path", "outer_path", "provenance"],
+          "properties": {"inner_path": {"$ref": "#/$defs/Positive"}, "outer_path": {"$ref": "#/$defs/Positive"}, "provenance": {"$ref": "#/$defs/ID"}}
+        },
+        "model": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/BendModel"}]}
+      }
+    },
+    "Reveal": {
+      "type": "object", "additionalProperties": false, "maxProperties": 5,
+      "required": ["id", "kind", "scope", "measurements"],
+      "properties": {
+        "id": {"$ref": "#/$defs/ID"}, "kind": {"type": "string", "const": "layer_differential", "maxLength": 64},
+        "scope": {"$ref": "#/$defs/Scope"},
+        "measurements": {
+          "type": "object", "additionalProperties": false, "maxProperties": 3,
+          "required": ["a", "b", "provenance"],
+          "properties": {"a": {"$ref": "#/$defs/LayerStation"}, "b": {"$ref": "#/$defs/LayerStation"}, "provenance": {"$ref": "#/$defs/ID"}}
+        },
+        "target": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/LayerTarget"}]}
+      }
+    },
+    "Support": {
+      "type": "object", "additionalProperties": false, "maxProperties": 6,
+      "required": ["id", "kind", "scope", "geometry_provenance"],
+      "properties": {
+        "id": {"$ref": "#/$defs/ID"}, "kind": {"type": "string", "const": "support_load", "maxLength": 64},
+        "scope": {"$ref": "#/$defs/Scope"},
+        "geometry_provenance": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/ID"}]},
+        "requirement": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/LoadRequirement"}]},
+        "test_record": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/ID"}]}
+      }
+    },
+    "StretchRecord": {
+      "type": "object", "additionalProperties": false, "maxProperties": 14,
+      "required": ["id", "kind", "constraint_id", "scope", "direction", "tested_min_ratio", "tested_max_ratio", "relaxed_span", "extended_span", "recovered_span", "recovery_seconds", "cycles", "observed_result", "provenance"],
+      "properties": {
+        "id": {"$ref": "#/$defs/ID"}, "kind": {"type": "string", "const": "stretch_recovery", "maxLength": 64},
+        "constraint_id": {"$ref": "#/$defs/ID"}, "scope": {"$ref": "#/$defs/Scope"}, "direction": {"$ref": "#/$defs/ID"},
+        "tested_min_ratio": {"$ref": "#/$defs/Positive"}, "tested_max_ratio": {"$ref": "#/$defs/Positive"},
+        "relaxed_span": {"$ref": "#/$defs/Positive"}, "extended_span": {"$ref": "#/$defs/Positive"},
+        "recovered_span": {"$ref": "#/$defs/Positive"}, "recovery_seconds": {"$ref": "#/$defs/Nonnegative"},
+        "cycles": {"type": "integer", "minimum": 1, "maximum": 1000000000},
+        "observed_result": {"type": "string", "enum": ["pass", "fail", "inconclusive"], "maxLength": 32},
+        "provenance": {"$ref": "#/$defs/ID"}
+      }
+    },
+    "SupportRecord": {
+      "type": "object", "additionalProperties": false, "maxProperties": 11,
+      "required": ["id", "kind", "constraint_id", "scope", "fixture", "load_direction", "load_newtons", "deflection", "hold_seconds", "observed_result", "provenance"],
+      "properties": {
+        "id": {"$ref": "#/$defs/ID"}, "kind": {"type": "string", "const": "support_load", "maxLength": 64},
+        "constraint_id": {"$ref": "#/$defs/ID"}, "scope": {"$ref": "#/$defs/Scope"},
+        "fixture": {"$ref": "#/$defs/ID"}, "load_direction": {"$ref": "#/$defs/ID"},
+        "load_newtons": {"$ref": "#/$defs/Positive"}, "deflection": {"$ref": "#/$defs/Nonnegative"},
+        "hold_seconds": {"$ref": "#/$defs/Nonnegative"},
+        "observed_result": {"type": "string", "enum": ["pass", "fail", "inconclusive"], "maxLength": 32},
+        "provenance": {"$ref": "#/$defs/ID"}
+      }
+    }
+  }
+}

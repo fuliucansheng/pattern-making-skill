@@ -35,6 +35,9 @@ in CLO3D's Script Editor. See [references/clo3d.md](skills/pattern-making/refere
   real glove patterns (trank, Bolton thumb, fourchettes), dart pivot, slash and spread, curve smoothing,
   pieces with holes, seam allowances, notches, grain lines, grading.
 - **Checks**: every draft reports seam matching, ease, finished measurements. A `!!` line must be fixed.
+- **Physical interpretation**: [explicit constraints](skills/pattern-making/references/physical-interpretation.md)
+  check fullness, tested band ratios, openings, shrinkage, turned layers, reveal and observed support
+  tests for a provisional first toile. Geometry, assumptions and physical evidence stay separate.
 - **CLO3D**: exact Bezier edges, seam lists, one-command assembly through the clo3d-mcp-extended plug-in,
   sensible defaults (collision thickness 0, mesh size by fit), and hand-over to the user when a piece is
   too complex to place automatically.
@@ -65,7 +68,14 @@ python skills/pattern-making/scripts/pattern.py block all --body women --size 38
 python skills/pattern-making/scripts/pattern.py block skirt --measurements me.json --out out
 python skills/pattern-making/scripts/pattern.py block bodice --body men --sizes 44,48,52 --out grading
 python skills/pattern-making/scripts/pattern.py test
+python skills/pattern-making/scripts/physical_constraints.py physical.json --json physical-report.json
 ```
+
+The physical helper uses the standard library and an explicit
+[JSON contract](skills/pattern-making/references/schemas/physical-constraints-v1.schema.json).
+See the [CLI guide and synthetic example](skills/pattern-making/references/physical-interpretation.md).
+Missing criteria/tests remain unresolved; the helper does not simulate cloth, infer material
+properties, certify wearer fit or approve production.
 
 Outputs, inputs in cm and files in mm:
 
@@ -89,6 +99,7 @@ skills/pattern-making/
   examples/             garment specs: notched-lapel jacket (fitted, oversize), velvet coat
   scripts/pattern.py    engine and command line, standard library only
   scripts/garment.py    whole garments from a JSON spec (references/garment-spec.md)
+  scripts/physical_constraints.py explicit physical constraints and test evidence, standard library only
   scripts/sheet.py      PNG pattern sheets (optional, needs Pillow)
 .claude-plugin/         Claude Code plugin and marketplace manifests
 ```

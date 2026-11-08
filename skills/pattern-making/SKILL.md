@@ -32,6 +32,8 @@ the calculations are done by `scripts/pattern.py` (Python 3.8 or newer, standard
 5. **Read the checks.** Each draft prints a report. A line marked `!!` must be fixed before going on.
 6. **Review in 3D and validate physical fit on a toile; correct the pattern, not the simulation.**
    When a piece is too complex to place automatically in CLO3D, hand it over to the person (`references/clo3d.md`).
+   For provisional first-toile constraints, read [physical interpretation](references/physical-interpretation.md).
+   Use independent criteria and material/test provenance; geometry cannot establish support or recovery.
 7. **Stay neutral on the method.** The engine's blocks are proportional and tied to no author. If the
    person follows a given method (Aldrich, Armstrong, Müller, Esmod, Bunka, other), use its values.
 
@@ -115,6 +117,15 @@ measurements, local registration, shaping closure, seam/fullness intervals, notc
 coverage and retained source defects before editing. The executable and its synthetic regressions improve
 geometry diagnostics and error rejection; they do not establish physical fit or replace export/toile checks.
 
+For explicit fullness, tested band/recovery ratios, opening clearance, directional shrinkage,
+turn-of-cloth, signed layer reveal and support/load evidence, author a separate
+[physical-constraint manifest](references/schemas/physical-constraints-v1.schema.json) and run
+`python scripts/physical_constraints.py physical.json --json physical-report.json`.
+Follow [physical interpretation](references/physical-interpretation.md): check named regions separately,
+keep geometry, construction inference and observed tests distinct, and preserve `pass`, `fail`,
+`requires_physical_test` and `unavailable`. Missing criteria never authorize acceptance; support needs
+a bound measured test. This helper does not simulate cloth or approve fit/production.
+
 ## Construction laws and engine checks
 
 1. **Reciprocal intervals**: effective sewing lengths reconcile within the frozen tolerance (ordinary
@@ -184,6 +195,7 @@ flare, 16 cm wrap, funnel collar, lined). Index: `references/kb/INDEX.md`. Forma
 | Analyse a photo, recognise constructions | `references/reference-analysis.md` |
 | Validate construction or compare AI/human patterns | `references/construction-validation.md`, `references/human-pattern-benchmarks.md`, `scripts/pattern_benchmark.py` |
 | Construct and accept connected curves/components (mandatory) | `references/curves-and-seam-connections.md` |
+| Interpret physical constraints for a provisional first toile | [Physical interpretation](references/physical-interpretation.md), `scripts/physical_constraints.py` |
 | Develop a sketch, sculptural volumes, unconventional cutting | `references/design-from-sketch.md` |
 | Skirts, trousers, shorts, jumpsuits | `references/techniques/skirts-trousers.md` |
 | Bodices, dart manipulation, dresses, tops, shirts | `references/techniques/bodices-dresses-tops.md` |
